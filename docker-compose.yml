@@ -1,0 +1,70 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: agriLinkServer
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - mongo
+    env_file:
+      - .env.docker
+    volumes:
+      - ./server:/server
+      - /server/node_modules
+    
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: agriLinkClient
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - NODE_ENV=development
+    volumes:
+      - ./client:/client
+      - /client/node_modules
+    
+  mongo:
+    image: mongo:7
+    container_name: agriLink_mongo
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - agriLink_mongo_data:/data/db
+      
+  redis:
+    image: redis:7-alpine
+    container_name: agriLink_redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - agriLink_redis_data:/data
+      
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: agriLink_redisinsight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    volumes:
+      - agriLink_redisinsight_data:/data
+      
+volumes:
+  agriLink_mongo_data:
+  agriLink_redis_data:
+  agriLink_redisinsight_data:

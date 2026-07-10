@@ -4,7 +4,7 @@ import app from "./src/app.js";
 import connectDB from './src/config/db.js'
 import { startServer } from './src/config/redis.js'
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 
 startServer().then(() => {
     connectDB().then(() => {

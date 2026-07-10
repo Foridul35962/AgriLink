@@ -1,0 +1,38 @@
+# dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# next build output
+.next
+out
+dist
+
+# env files
+.env
+.env.*
+!.env.example
+
+# git
+.git
+.gitignore
+
+# logs & coverage
+logs
+*.log
+coverage
+.nyc_output
+
+# editor & OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# misc
+README.md
