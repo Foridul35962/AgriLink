@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["farmer", "aratdar", "retailer", "consumer", "admin"],
+        enum: ["farmer", "aratdar", "retailer"],
         required: true,
     },
     district: {
@@ -41,7 +41,12 @@ userSchema.index(
     { unique: true, sparse: true }
 );
 
+userSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: 259200 } // 3 days
+)
 
-const Users = mongoose.model("User", userSchema);
 
-export default Users;
+const RequestUsers = mongoose.model("RequestUser", userSchema);
+
+export default RequestUsers;

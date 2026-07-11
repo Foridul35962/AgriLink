@@ -8,23 +8,18 @@ import sendSMS from "../config/sms.js";
 import redis from "../config/redis.js";
 import ApiResponse from "../helpers/ApiResponse.js";
 import jwt from 'jsonwebtoken'
+import RequestUsers from "../models/RequestUsers.model.js";
 
 export const registration = [
     check("name")
         .trim()
         .notEmpty()
         .withMessage("name is required"),
-    check("userName")
-        .trim()
-        .notEmpty()
-        .withMessage("user name is required"),
     check("email")
-        .optional({ checkFalsy: true })
         .trim()
         .isEmail()
         .withMessage("email is invalid"),
     check("phoneNumber")
-        .optional({ checkFalsy: true })
         .trim()
         .isMobilePhone("bn-BD")
         .withMessage("phone number is invalid"),
@@ -48,17 +43,12 @@ export const registration = [
             throw new ApiErrors(400, "invalid value", error.array())
         }
 
-        const { name, userName, email, phoneNumber, password, role, district } = req.body
+        const { name, email, phoneNumber, password, role, district } = req.body
         if (!["farmer", "aratdar", "retailer", "consumer"].includes(role)) {
             throw new ApiErrors(400, "invalid role")
         }
 
-        let limitKey
-        if (email) {
-            limitKey = `authLimit:${email}`
-        } else {
-            limitKey = `authLimit:${phoneNumber}`
-        }
+        const limitKey = `authLimit:${email}`
 
         const count = await redis.incr(limitKey)
 
@@ -78,7 +68,7 @@ export const registration = [
             throw new ApiErrors(429, `please wait ${ttl}s because you try too many time`)
         }
 
-        const orConditions = [{ userName }]
+        const orConditions = []
         if (email) orConditions.push({ email })
         if (phoneNumber) orConditions.push({ phoneNumber })
 
@@ -88,6 +78,16 @@ export const registration = [
 
         if (duplicateUser) {
             throw new ApiErrors(400, "user is already registered")
+        }
+
+        if (["farmer", "aratdar", "retailer"].includes(role)) {
+            const existingRequest = await RequestUsers.findOne({
+                $or: orConditions
+            })
+
+            if (existingRequest) {
+                throw new ApiErrors(400, "user already requested. wait for admin response")
+            }
         }
 
         const hashedPass = await bcrypt.hash(password, 12)
@@ -121,7 +121,6 @@ export const registration = [
         await redis.set(redisKey,
             JSON.stringify({
                 name: name,
-                userName: userName,
                 role: role,
                 email: email,
                 phoneNumber: phoneNumber,
@@ -176,15 +175,25 @@ export const verifyRegistration = AsyncHandler(async (req, res) => {
     }
 
     try {
-        await Users.create({
-            name: users.name,
-            userName: users.userName,
-            email: users.email,
-            phoneNumber: users.phoneNumber,
-            district: users.district,
-            role: users.role,
-            password: users.password
-        })
+        if (["farmer", "aratdar", "retailer"].includes(users.role)) {
+            await RequestUsers.create({
+                name: users.name,
+                email: users.email,
+                phoneNumber: users.phoneNumber,
+                district: users.district,
+                role: users.role,
+                password: users.password
+            })
+        } else {
+            await Users.create({
+                name: users.name,
+                email: users.email,
+                phoneNumber: users.phoneNumber,
+                district: users.district,
+                role: users.role,
+                password: users.password
+            })
+        }
     } catch (error) {
         throw new ApiErrors(500, "user registration failed")
     }
@@ -526,7 +535,6 @@ export const resendOtp = [
 
             await redis.set(redisKey, JSON.stringify({
                 name: users.name,
-                userName: users.userName,
                 email: users.email,
                 phoneNumber: users.phoneNumber,
                 district: users.district,
