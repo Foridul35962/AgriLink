@@ -37,11 +37,6 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 userSchema.index(
-    { email: 1 },
-    { unique: true, sparse: true }
-);
-
-userSchema.index(
   { createdAt: 1 },
   { expireAfterSeconds: 259200 } // 3 days
 )
