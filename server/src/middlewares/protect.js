@@ -22,7 +22,7 @@ const protect = AsyncHandler(async(req, res, next)=>{
     }
 
     const user = {
-        userId,
+        _id: userId,
         role
     }
 
