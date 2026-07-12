@@ -125,3 +125,106 @@ export const generatePasswordResetMail = (otp) => {
     `
   };
 };
+
+export const generateApprovalMail = () => {
+  const currentYear = new Date().getFullYear();
+  return {
+    subject: 'Welcome to AgraLink! Your Registration Request is Approved 🎉',
+    html: `
+      <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
+        <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
+          
+          <!-- Header Area -->
+          <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 40px 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgraLink</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Your Journey to Digital Agriculture Starts Here</p>
+          </div>
+
+          <!-- Body Area -->
+          <div style="padding: 40px 35px;">
+            <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Account Approved!</h2>
+            <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
+              Great news! The administrator has reviewed and <strong>approved</strong> your registration request. Your verification is complete, and full access has been granted to your account.
+            </p>
+
+            <!-- Login Info Box -->
+            <div style="background-color: #f1f5f9; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+              <p style="color: #334155; font-size: 15px; margin: 0 0 10px 0; font-weight: 500;">
+                You can now log in to your account using your registered:
+              </p>
+              <span style="display: inline-block; background: #ffffff; color: #059669; font-size: 14px; font-weight: 600; padding: 6px 16px; border-radius: 20px; border: 1px solid #e2e8f0; margin: 5px;">
+                Email Address
+              </span>
+              <span style="display: inline-block; background: #ffffff; color: #059669; font-size: 14px; font-weight: 600; padding: 6px 16px; border-radius: 20px; border: 1px solid #e2e8f0; margin: 5px;">
+                Password
+              </span>
+            </div>
+
+            <!-- Action Button -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="YOUR_LOGIN_PAGE_URL" style="display: inline-block; background: #059669; color: #ffffff; font-size: 16px; font-weight: 600; padding: 14px 35px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
+                Log In to Your Account
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Footer Area -->
+          <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+              &copy; ${currentYear} AgraLink Inc. All rights reserved. <br>
+              If you have any questions, please contact our support team.
+            </p>
+          </div>
+        </div>
+      </div>
+    `
+  };
+};
+
+export const generateRejectionMail = () => {
+  const currentYear = new Date().getFullYear();
+  return {
+    subject: 'Update regarding your AgraLink registration request ⚠️',
+    html: `
+      <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
+        <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
+          
+          <!-- Header Area -->
+          <div style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 40px 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgraLink</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Your Journey to Digital Agriculture Starts Here</p>
+          </div>
+
+          <!-- Body Area -->
+          <div style="padding: 40px 35px;">
+            <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Request Declined</h2>
+            <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
+              Thank you for your interest in joining AgraLink. After reviewing your registration details, unfortunately, our administrator could not approve your request at this time.
+            </p>
+
+            <!-- Warning/Info Box -->
+            <div style="background-color: #fef2f2; border: 1px dashed #fca5a5; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+              <p style="color: #991b1b; font-size: 14px; margin: 0; font-weight: 500; line-height: 1.5;">
+                This usually happens due to incomplete profile details, incorrect information, or failing to meet our verification criteria.
+              </p>
+            </div>
+
+            <!-- Notice text -->
+            <p style="color: #64748b; font-size: 14px; text-align: center; line-height: 1.5; margin-bottom: 10px;">
+              If you believe this was a mistake or wish to submit your request again with valid information, you can always sign up fresh from our platform.
+            </p>
+          </div>
+
+          <!-- Footer Area -->
+          <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+              &copy; ${currentYear} AgraLink Inc. All rights reserved. <br>
+              If you have any queries regarding this decision, feel free to reply to this email.
+            </p>
+          </div>
+        </div>
+      </div>
+    `
+  };
+};
