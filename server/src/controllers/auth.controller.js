@@ -578,7 +578,28 @@ export const resendOtp = [
 ]
 
 export const fetchUser = AsyncHandler(async (req, res) => {
-    const user = req.user
+    const userId = req.user._id
+
+    const redisKey = `profile:${userId}`
+    const redisUser = await redis.get(redisKey)
+
+    let user
+
+    if (redisUser) {
+        user = JSON.parse(redisUser)
+    } else {
+        user = await Users.findById(userId)
+            .select("-password")
+
+        if (!user) {
+            throw new ApiErrors(404, "user not found")
+        }
+
+        await redis.set(redisKey,
+            JSON.stringify(user),
+            "EX", 300
+        )
+    }
 
     return res
         .status(200)
