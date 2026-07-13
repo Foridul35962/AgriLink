@@ -276,3 +276,51 @@ export const generateWarningMail = (topic) => {
     `
   };
 };
+
+export const generateRemovalMail = (reason) => {
+  const currentYear = new Date().getFullYear();
+  return {
+    subject: 'Important: Your AgriLink Account Has Been Removed 🚫',
+    html: `
+      <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
+        <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
+          
+          <!-- Header Area (Danger/Removal Theme) -->
+          <div style="background: linear-gradient(135deg, #dc2626, #991b1b); padding: 40px 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgriLink</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Account Termination Notice</p>
+          </div>
+
+          <!-- Body Area -->
+          <div style="padding: 40px 35px;">
+            <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Account Removed</h2>
+            <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
+              We regret to inform you that your AgriLink account has been permanently removed by our administration team due to repeated or severe violations of our terms of service and community guidelines.
+            </p>
+
+            <!-- Reason Box -->
+            <div style="background-color: #fef2f2; border: 1px dashed #f87171; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+              <p style="color: #991b1b; font-size: 13px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px;">Reason for Removal</p>
+              <p style="color: #7f1d1d; font-size: 15px; margin: 0; font-weight: 600; line-height: 1.5;">
+                ${reason || 'Severe violation of AgriLink Community Policies.'}
+              </p>
+            </div>
+
+            <!-- Notice text -->
+            <p style="color: #64748b; font-size: 14px; text-align: center; line-height: 1.5; margin-bottom: 10px;">
+              As a result of this action, you will no longer be able to access your profile, services, or any associated data on the AgriLink platform. 
+            </p>
+          </div>
+
+          <!-- Footer Area -->
+          <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+              &copy; ${currentYear} AgriLink Inc. All rights reserved. <br>
+              This is a system-generated notification regarding your account status.
+            </p>
+          </div>
+        </div>
+      </div>
+    `
+  };
+};
