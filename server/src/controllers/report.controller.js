@@ -199,3 +199,28 @@ export const makeWarning = AsyncHandler(async (req, res) => {
             new ApiResponse(200, "warning send successfully")
         )
 })
+
+export const reoprtViewDone = AsyncHandler(async (req, res) => {
+    const { reportId } = req.body
+    if (!reportId) {
+        throw new ApiErrors(400, "report id is required")
+    }
+
+    if (!mongoose.isValidObjectId(reportId)) {
+        throw new ApiErrors(400, "invalid report id")
+    }
+
+    const report = await Reports.findByIdAndUpdate(reportId, {
+        isReviewed: true
+    })
+
+    if (!report) {
+        throw new ApiErrors(404, "report is not found")
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, "report view done")
+        )
+})
