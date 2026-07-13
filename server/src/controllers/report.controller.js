@@ -5,6 +5,9 @@ import AsyncHandler from "../helpers/AsyncHandler.js";
 import Reports from "../models/Reports.model.js";
 import redis from "../config/redis.js";
 import { check, validationResult } from 'express-validator'
+import { generateWarningMail, sendBrevoMail } from "../config/mail.js";
+import Notification from "../models/Notification.model.js";
+import { NOTIFICATION_TYPES } from "../constants/notification.types.js";
 
 export const createReports = [
     check('reportedUserId')
@@ -50,6 +53,18 @@ export const createReports = [
         if (!report) {
             throw new ApiErrors(400, "report created failed")
         }
+
+        Notification.create({
+            sender: null,
+            recipient: userId,
+            type: NOTIFICATION_TYPES.REPORT_RECEIVED,
+            title: "Report Submitted Successfully",
+            message: `Your report regarding "${topic}" has been received. Our support team will review it shortly.`,
+            relatedId: report._id
+        })
+            .then((notification) => {
+                // TODO: Socket need
+            })
 
         return res
             .status(201)
@@ -132,3 +147,55 @@ export const viewReportById = AsyncHandler(async (req, res) => {
             new ApiResponse(200, responseData, "Report details and history fetched successfully")
         );
 });
+
+export const makeWarning = AsyncHandler(async (req, res) => {
+    const { reportId } = req.body
+    if (!reportId) {
+        throw new ApiErrors(400, "report id is required")
+    }
+
+    if (!mongoose.isValidObjectId(reportId)) {
+        throw new ApiErrors(400, "invalid report id")
+    }
+
+    const report = await Reports.findById(reportId)
+        .populate({ path: "reportedUserId", select: "email" })
+        .select("reportedUserId topic isReviewed")
+
+    if (!report) {
+        throw new ApiErrors(404, "report is not found")
+    }
+
+    if (report.isReviewed) {
+        throw new ApiErrors(400, "report is reviewed")
+    }
+
+    report.isReviewed = true
+
+    await report.save()
+
+    const { subject, html } = generateWarningMail(report.topic)
+
+    sendBrevoMail(report.reportedUserId.email, subject, html)
+        .catch(() => {
+            console.error("message send failed")
+        })
+
+    Notification.create({
+        sender: null,
+        recipient: report.reportedUserId._id,
+        type: NOTIFICATION_TYPES.WARNING,
+        title: "Account Warning Issued",
+        message: `Your account has received a warning due to community guidelines violation related to: "${report.topic}". Further violations may lead to account suspension.`,
+        relatedId: report._id
+    })
+        .then((notification) => {
+            // TODO: Socket need
+        })
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, "warning send successfully")
+        )
+})

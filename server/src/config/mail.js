@@ -35,20 +35,20 @@ export const sendBrevoMail = async (to, subject, html) => {
 export const generateVerificationMail = (otp) => {
   const currentYear = new Date().getFullYear();
   return {
-    subject: 'Verify Your AgraLink Account ✅',
+    subject: 'Verify Your AgriLink Account ✅',
     html: `
       <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
         <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
           
           <div style="background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 40px 20px; text-align: center;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgraLink</h1>
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgriLink</h1>
             <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Your Journey to Wellness Starts Here</p>
           </div>
 
           <div style="padding: 40px 35px;">
             <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Verify Your Email</h2>
             <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
-              Thank you for joining AgraLink! To complete your registration and secure your account, please use the verification code below:
+              Thank you for joining AgriLink! To complete your registration and secure your account, please use the verification code below:
             </p>
 
             <div style="text-align: center; margin-bottom: 30px;">
@@ -69,7 +69,7 @@ export const generateVerificationMail = (otp) => {
 
           <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
             <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-              &copy; ${currentYear} AgraLink Inc. All rights reserved. <br>
+              &copy; ${currentYear} AgriLink Inc. All rights reserved. <br>
               If you did not create an account, please ignore this email.
             </p>
           </div>
@@ -88,14 +88,14 @@ export const generatePasswordResetMail = (otp) => {
         <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #fee2e2;">
           
           <div style="background: linear-gradient(135deg, #e11d48, #be123c); padding: 40px 20px; text-align: center;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgraLink</h1>
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgriLink</h1>
             <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px;">Security & Account Recovery</p>
           </div>
 
           <div style="padding: 40px 35px;">
             <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Password Reset Request</h2>
             <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
-              We received a request to reset your AgraLink password. Use the following One-Time Password (OTP) to proceed:
+              We received a request to reset your AgriLink password. Use the following One-Time Password (OTP) to proceed:
             </p>
 
             <div style="text-align: center; margin-bottom: 30px;">
@@ -116,7 +116,7 @@ export const generatePasswordResetMail = (otp) => {
 
           <div style="background: #fdfcfc; padding: 25px; text-align: center; border-top: 1px solid #fee2e2;">
             <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-              &copy; ${currentYear} AgraLink Security Team. <br>
+              &copy; ${currentYear} AgriLink Security Team. <br>
               Protecting your health data with care.
             </p>
           </div>
@@ -129,14 +129,14 @@ export const generatePasswordResetMail = (otp) => {
 export const generateApprovalMail = () => {
   const currentYear = new Date().getFullYear();
   return {
-    subject: 'Welcome to AgraLink! Your Registration Request is Approved 🎉',
+    subject: 'Welcome to AgriLink! Your Registration Request is Approved 🎉',
     html: `
       <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
         <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
           
           <!-- Header Area -->
           <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 40px 20px; text-align: center;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgraLink</h1>
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgriLink</h1>
             <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Your Journey to Digital Agriculture Starts Here</p>
           </div>
 
@@ -172,7 +172,7 @@ export const generateApprovalMail = () => {
           <!-- Footer Area -->
           <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
             <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-              &copy; ${currentYear} AgraLink Inc. All rights reserved. <br>
+              &copy; ${currentYear} AgriLink Inc. All rights reserved. <br>
               If you have any questions, please contact our support team.
             </p>
           </div>
@@ -185,14 +185,14 @@ export const generateApprovalMail = () => {
 export const generateRejectionMail = () => {
   const currentYear = new Date().getFullYear();
   return {
-    subject: 'Update regarding your AgraLink registration request ⚠️',
+    subject: 'Update regarding your AgriLink registration request ⚠️',
     html: `
       <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
         <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
           
           <!-- Header Area -->
           <div style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 40px 20px; text-align: center;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgraLink</h1>
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgriLink</h1>
             <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Your Journey to Digital Agriculture Starts Here</p>
           </div>
 
@@ -200,7 +200,7 @@ export const generateRejectionMail = () => {
           <div style="padding: 40px 35px;">
             <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Request Declined</h2>
             <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
-              Thank you for your interest in joining AgraLink. After reviewing your registration details, unfortunately, our administrator could not approve your request at this time.
+              Thank you for your interest in joining AgriLink. After reviewing your registration details, unfortunately, our administrator could not approve your request at this time.
             </p>
 
             <!-- Warning/Info Box -->
@@ -219,8 +219,56 @@ export const generateRejectionMail = () => {
           <!-- Footer Area -->
           <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
             <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-              &copy; ${currentYear} AgraLink Inc. All rights reserved. <br>
+              &copy; ${currentYear} AgriLink Inc. All rights reserved. <br>
               If you have any queries regarding this decision, feel free to reply to this email.
+            </p>
+          </div>
+        </div>
+      </div>
+    `
+  };
+};
+
+export const generateWarningMail = (topic) => {
+  const currentYear = new Date().getFullYear();
+  return {
+    subject: 'Important: Account Warning Notification - AgriLink ⚠️',
+    html: `
+      <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px; min-height: 100%;">
+        <div style="max-width: 550px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
+          
+          <!-- Header Area (Warning Theme) -->
+          <div style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 40px 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">AgriLink</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px; font-weight: 400;">Account Safety & Community Guidelines</p>
+          </div>
+
+          <!-- Body Area -->
+          <div style="padding: 40px 35px;">
+            <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 22px; text-align: center;">Official Warning</h2>
+            <p style="color: #475569; line-height: 1.6; font-size: 16px; text-align: center; margin-bottom: 30px;">
+              We have received a formal report regarding recent activity on your account. After reviewing the case, our administration team has issued a formal warning for violating our community guidelines.
+            </p>
+
+            <!-- Warning/Violation Box -->
+            <div style="background-color: #fffbeb; border: 1px dashed #fcd34d; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+              <p style="color: #92400e; font-size: 13px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px;">Reason for Report</p>
+              <p style="color: #78350f; font-size: 15px; margin: 0; font-weight: 600; line-height: 1.5;">
+                ${topic || 'Violation of AgriLink Community Standards'}
+              </p>
+            </div>
+
+            <!-- Notice text -->
+            <p style="color: #64748b; font-size: 14px; text-align: center; line-height: 1.5; margin-bottom: 10px;">
+              Please ensure your future behavior aligns with our platform policies. Further violations or multiple reports may lead to <strong>permanent suspension</strong> of your AgriLink account.
+            </p>
+          </div>
+
+          <!-- Footer Area -->
+          <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+              &copy; ${currentYear} AgriLink Inc. All rights reserved. <br>
+              If you believe this report was unfair or wish to appeal, please reply to this email.
             </p>
           </div>
         </div>
