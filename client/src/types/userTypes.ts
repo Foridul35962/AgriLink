@@ -1,0 +1,31 @@
+export interface regitrationType {
+    name: string
+    email: string
+    phoneNumber: string
+    password: string
+    role: "farmer" | "aratdar" | "retailer" | "consumer"
+    district: string
+}
+
+export interface verifyInfoType {
+    email: string
+    otp: number
+}
+
+export interface loginType {
+    email: string
+    password: string
+}
+
+export interface resendOtpTyp {
+    email: string
+    topic: "forgetPass" | "registration"
+}
+
+export interface userType {
+    name: string
+    email: string
+    phoneNumber: string
+    role: "farmer" | "aratdar" | "retailer" | "consumer" | "admin"
+    district: string
+}
