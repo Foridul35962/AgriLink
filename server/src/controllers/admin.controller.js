@@ -1,19 +1,21 @@
-import { generateApprovalMail, generateRejectionMail, sendBrevoMail } from "../config/mail.js";
+import mongoose from "mongoose";
+import { generateApprovalMail, generateRejectionMail, generateRemovalMail, sendBrevoMail } from "../config/mail.js";
 import ApiErrors from "../helpers/ApiErrors.js";
 import ApiResponse from "../helpers/ApiResponse.js";
 import AsyncHandler from "../helpers/AsyncHandler.js";
 import RequestUsers from "../models/RequestUsers.model.js";
 import Users from "../models/Users.model.js";
+import Reports from "../models/Reports.model.js";
 
 export const getUsersRequest = AsyncHandler(async (req, res) => {
     const { role } = req.params
-    
+
     if (!["farmer", "aratdar", "retailer"].includes(role)) {
         throw new ApiErrors(400, "invalid role")
     }
-    
+
     const page = Number(req.query.page) || 1;
-    
+
     const limit = 15;
     const skip = (page - 1) * limit;
 
@@ -92,5 +94,41 @@ export const rejectAddRequest = AsyncHandler(async (req, res) => {
         .status(200)
         .json(
             new ApiResponse(200, userId, "user rejected successfully")
+        )
+})
+
+export const removeMember = AsyncHandler(async (req, res) => {
+    const { userId, reason, reportId } = req.body
+
+    if (!userId || !reason) {
+        throw new ApiErrors(400, "all field are required")
+    }
+
+    if (!mongoose.isValidObjectId(userId)) {
+        throw new ApiErrors(400, "invalid userid")
+    }
+
+    const user = await Users.findByIdAndDelete(userId)
+    if (!user) {
+        throw new ApiErrors(404, "user is not found")
+    }
+
+    const { subject, html } = generateRemovalMail(reason)
+
+    sendBrevoMail(user.email, subject, html)
+        .catch((err) => {
+            console.error("remove mail send failed", err)
+        })
+
+    if (reportId) {
+        Reports.findByIdAndUpdate(reportId, {
+            isReviewed: true
+        })
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, userId, "user removed successfully")
         )
 })
