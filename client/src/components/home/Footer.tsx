@@ -1,0 +1,99 @@
+/**
+ * AgriLink — Footer
+ * Path: components/home/Footer.tsx
+ */
+
+import Link from "next/link";
+import { Sprout, Mail, Phone, ScanFace, Inbox } from "lucide-react";
+
+const FOOTER_LINKS = {
+  Platform: [
+    { label: "Features", href: "#features" },
+    { label: "How it works", href: "#how-it-works" },
+    { label: "Who it's for", href: "#roles" },
+  ],
+  Company: [
+    { label: "About us", href: "#" },
+    { label: "Contact", href: "#contact" },
+    { label: "Careers", href: "#" },
+  ],
+  Legal: [
+    { label: "Privacy policy", href: "#" },
+    { label: "Terms of service", href: "#" },
+  ],
+};
+
+export default function Footer() {
+  return (
+    <footer id="contact" className="bg-gray-50 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-6 py-14">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <div className="w-9 h-9 rounded-xl bg-emerald-700 flex items-center justify-center">
+                <Sprout size={18} className="text-white" />
+              </div>
+              <span className="text-lg font-semibold tracking-tight text-emerald-900">
+                AgriLink
+              </span>
+            </Link>
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-5">
+              Connecting farmers, aratdars, retailers, and consumers across
+              Bangladesh — fair prices, fewer middlemen.
+            </p>
+            <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
+              <Mail size={15} />
+              support@agrilink.com
+            </div>
+            <div className="flex items-center gap-3 text-sm text-gray-500">
+              <Phone size={15} />
+              +880 1XXX-XXXXXX
+            </div>
+          </div>
+
+          {Object.entries(FOOTER_LINKS).map(([section, links]) => (
+            <div key={section}>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">
+                {section}
+              </h4>
+              <ul className="space-y-3">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-gray-500 hover:text-emerald-700 transition"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-gray-400">
+            © {new Date().getFullYear()} AgriLink. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="#"
+              className="w-9 h-9 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-emerald-700 hover:border-emerald-300 transition"
+              aria-label="Facebook"
+            >
+              <ScanFace size={16} />
+            </a>
+            <a
+              href="#"
+              className="w-9 h-9 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-emerald-700 hover:border-emerald-300 transition"
+              aria-label="Instagram"
+            >
+              <Inbox size={16} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
