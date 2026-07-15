@@ -9,7 +9,7 @@ export interface regitrationType {
 
 export interface verifyInfoType {
     email: string
-    otp: number
+    otp: string
 }
 
 export interface loginType {
