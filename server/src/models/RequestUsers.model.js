@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { DISTRICTS } from "../constants/common.types.js";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -32,13 +33,14 @@ const userSchema = new mongoose.Schema({
     district: {
         type: String,
         required: true,
+        enum: DISTRICTS,
         trim: true,
     },
 }, { timestamps: true });
 
 userSchema.index(
-  { createdAt: 1 },
-  { expireAfterSeconds: 259200 } // 3 days
+    { createdAt: 1 },
+    { expireAfterSeconds: 259200 } // 3 days
 )
 
 
