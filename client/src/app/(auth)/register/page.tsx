@@ -1,7 +1,7 @@
 "use client"
 
-import RegisterPage from '@/app/components/autintacation/RegistrationDesign'
-import VerifyOtpPage from '@/app/components/autintacation/VerifyOtpPage'
+import RegisterPage from '@/components/autintacation/RegistrationDesign'
+import VerifyOtpPage from '@/components/autintacation/VerifyOtpPage'
 import React, { useState } from 'react'
 
 const page = () => {
