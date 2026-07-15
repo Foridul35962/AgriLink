@@ -9,6 +9,7 @@ import redis from "../config/redis.js";
 import ApiResponse from "../helpers/ApiResponse.js";
 import jwt from 'jsonwebtoken'
 import RequestUsers from "../models/RequestUsers.model.js";
+import { DISTRICTS } from "../constants/common.types.js";
 
 export const registration = [
     check("name")
@@ -46,6 +47,10 @@ export const registration = [
         const { name, email, phoneNumber, password, role, district } = req.body
         if (!["farmer", "aratdar", "retailer", "consumer"].includes(role)) {
             throw new ApiErrors(400, "invalid role")
+        }
+
+        if (!DISTRICTS.includes(district)) {
+            throw new ApiErrors(400, "invalid district")
         }
 
         const limitKey = `authLimit:${email}`

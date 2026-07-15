@@ -144,17 +144,6 @@ const authSlice = createSlice({
     initialState,
     reducers:{},
     extraReducers:(builder)=> {
-        //registration
-        builder
-            .addCase(registration.pending, (state)=>{
-                state.authLoading = true
-            })
-            .addCase(registration.fulfilled, (state)=>{
-                state.authLoading = false
-            })
-            .addCase(registration.rejected, (state)=>{
-                state.authLoading = false
-            })
         //login
         builder
             .addCase(login.pending, (state)=>{
