@@ -1,6 +1,6 @@
 "use client"
 
-import FirstLoad from '@/app/components/loading/FirstLoad'
+import FirstLoad from '@/components/loading/FirstLoad'
 import { RootState } from '@/store/store'
 import { redirect } from 'next/navigation'
 import React from 'react'

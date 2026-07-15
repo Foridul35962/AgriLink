@@ -1,8 +1,8 @@
 "use client"
 
-import ForgetPassDesign from '@/app/components/autintacation/ForgetPassDesign'
-import ResetPassPage from '@/app/components/autintacation/ResetPassPage'
-import VerifyOtpPage from '@/app/components/autintacation/VerifyOtpPage'
+import ForgetPassDesign from '@/components/autintacation/ForgetPassDesign'
+import ResetPassPage from '@/components/autintacation/ResetPassPage'
+import VerifyOtpPage from '@/components/autintacation/VerifyOtpPage'
 import React, { useState } from 'react'
 
 const page = () => {
