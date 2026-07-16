@@ -1,15 +1,13 @@
 "use client";
 
-/**
- * AgriLink — CTA Section
- * Path: components/home/CTA.tsx
- */
-
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Sprout, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CTA() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-5xl mx-auto px-6">
@@ -18,7 +16,7 @@ export default function CTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-green-600 px-8 py-16 sm:px-16 text-center"
+          className="relative overflow-hidden rounded-3xl bg-linear-to-br from-emerald-800 via-emerald-700 to-green-600 px-8 py-16 sm:px-16 text-center"
         >
           <div className="absolute inset-0 opacity-[0.12]">
             {Array.from({ length: 10 }).map((_, i) => (
@@ -47,17 +45,16 @@ export default function CTA() {
 
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-4">
-              Ready to grow with AgriLink?
+              {t.cta.title}
             </h2>
             <p className="text-emerald-50/80 max-w-lg mx-auto mb-8 leading-relaxed">
-              Join thousands of farmers, aratdars, retailers, and consumers
-              already trading smarter, together.
+              {t.cta.subtitle}
             </p>
             <Link
               href="/register"
               className="inline-flex items-center gap-2 rounded-lg bg-white hover:bg-emerald-50 transition px-6 py-3 text-sm font-medium text-emerald-800"
             >
-              Create your free account
+              {t.cta.button}
               <ArrowRight size={16} />
             </Link>
           </div>

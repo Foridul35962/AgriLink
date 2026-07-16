@@ -11,11 +11,20 @@ import {
   ShoppingBasket,
   TrendingUp,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
+  const { t } = useLanguage();
+
+  const roleChips = [
+    { icon: Tractor, label: t.hero.roles.farmer },
+    { icon: Warehouse, label: t.hero.roles.aratdar },
+    { icon: Store, label: t.hero.roles.retailer },
+    { icon: ShoppingBasket, label: t.hero.roles.consumer },
+  ];
+
   return (
     <section id="home" className="relative overflow-hidden bg-white">
-      {/* Ambient farmland row pattern */}
       <div className="absolute inset-0 opacity-[0.035] pointer-events-none">
         {Array.from({ length: 14 }).map((_, i) => (
           <div
@@ -43,7 +52,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-4 py-1.5 text-xs font-medium text-emerald-700 mb-6"
           >
             <TrendingUp size={14} />
-            Connecting every link of the agri chain
+            {t.hero.badge}
           </motion.div>
 
           <motion.h1
@@ -52,8 +61,8 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-gray-900 leading-tight"
           >
-            From the field to the market,{" "}
-            <span className="text-emerald-700">grown together.</span>
+            {t.hero.titleLine}{" "}
+            <span className="text-emerald-700">{t.hero.titleHighlight}</span>
           </motion.h1>
 
           <motion.p
@@ -62,8 +71,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-6 text-lg text-gray-500 max-w-xl mx-auto leading-relaxed"
           >
-            AgriLink connects farmers, aratdars, retailers, and consumers on
-            one platform — fair prices, fewer middlemen, faster deliveries.
+            {t.hero.subtitle}
           </motion.p>
 
           <motion.div
@@ -76,31 +84,25 @@ export default function Hero() {
               href="/register"
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 transition px-6 py-3 text-sm font-medium text-white"
             >
-              Create free account
+              {t.hero.ctaPrimary}
               <ArrowRight size={16} />
             </Link>
             <a
               href="#how-it-works"
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/50 transition px-6 py-3 text-sm font-medium text-gray-700"
             >
-              See how it works
+              {t.hero.ctaSecondary}
             </a>
           </motion.div>
         </div>
 
-        {/* Role chips row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto"
         >
-          {[
-            { icon: Tractor, label: "Farmers" },
-            { icon: Warehouse, label: "Aratdars" },
-            { icon: Store, label: "Retailers" },
-            { icon: ShoppingBasket, label: "Consumers" },
-          ].map(({ icon: Icon, label }, i) => (
+          {roleChips.map(({ icon: Icon, label }, i) => (
             <motion.div
               key={label}
               initial={{ opacity: 0, y: 10 }}
