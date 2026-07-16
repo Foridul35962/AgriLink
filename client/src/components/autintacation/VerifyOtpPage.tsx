@@ -29,7 +29,7 @@ export default function VerifyOtpPage({
     setEmail,
     topic }: {
         email: string,
-        setIsverified?: React.Dispatch<React.SetStateAction<boolean>>,
+        setIsverified: React.Dispatch<React.SetStateAction<boolean>>,
         setEmail?: React.Dispatch<React.SetStateAction<string>>,
         topic: "registration" | "forgetPass"
     }) {
@@ -99,12 +99,10 @@ export default function VerifyOtpPage({
         try {
             if (topic === "registration") {
                 await dispatch(verifyRegi({ email: email, otp: otp })).unwrap()
-                toast.success("Registration Successfully")
-                router.push("/login")
             } else if (topic === "forgetPass") {
                 await dispatch(verifyForgetPass({ email: email, otp: otp })).unwrap()
-                setIsverified && setIsverified(true)
             }
+            setIsverified(true)
         } catch (err: any) {
             setServerError(err.message || "Invalid code. Please try again.");
         }
