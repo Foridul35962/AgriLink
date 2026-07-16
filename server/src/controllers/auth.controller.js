@@ -45,7 +45,7 @@ export const registration = [
         }
 
         const { name, email, phoneNumber, password, role, district } = req.body
-        if (!["farmer", "aratdar", "retailer", "consumer"].includes(role)) {
+        if (!["farmer", "aratdar", "retailer"].includes(role)) {
             throw new ApiErrors(400, "invalid role")
         }
 
@@ -85,14 +85,12 @@ export const registration = [
             throw new ApiErrors(400, "user is already registered")
         }
 
-        if (["farmer", "aratdar", "retailer"].includes(role)) {
-            const existingRequest = await RequestUsers.findOne({
-                $or: orConditions
-            })
+        const existingRequest = await RequestUsers.findOne({
+            $or: orConditions
+        })
 
-            if (existingRequest) {
-                throw new ApiErrors(400, "user already requested. wait for admin response")
-            }
+        if (existingRequest) {
+            throw new ApiErrors(400, "user already requested. wait for admin response")
         }
 
         const hashedPass = await bcrypt.hash(password, 12)
@@ -180,25 +178,14 @@ export const verifyRegistration = AsyncHandler(async (req, res) => {
     }
 
     try {
-        if (["farmer", "aratdar", "retailer"].includes(users.role)) {
-            await RequestUsers.create({
-                name: users.name,
-                email: users.email,
-                phoneNumber: users.phoneNumber,
-                district: users.district,
-                role: users.role,
-                password: users.password
-            })
-        } else {
-            await Users.create({
-                name: users.name,
-                email: users.email,
-                phoneNumber: users.phoneNumber,
-                district: users.district,
-                role: users.role,
-                password: users.password
-            })
-        }
+        await RequestUsers.create({
+            name: users.name,
+            email: users.email,
+            phoneNumber: users.phoneNumber,
+            district: users.district,
+            role: users.role,
+            password: users.password
+        })
     } catch (error) {
         throw new ApiErrors(500, "user registration failed")
     }
