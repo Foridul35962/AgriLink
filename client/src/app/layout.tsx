@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AgriLink",
-  description: "Connecting farmers, aratdars, retailers, and consumers across Bangladesh.",
+  description: "Connecting farmers, aratdars and retailers across Bangladesh.",
 };
 
 export default async function RootLayout({

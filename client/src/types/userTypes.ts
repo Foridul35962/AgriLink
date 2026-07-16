@@ -3,7 +3,7 @@ export interface regitrationType {
     email: string
     phoneNumber: string
     password: string
-    role: "farmer" | "aratdar" | "retailer" | "consumer"
+    role: "farmer" | "aratdar" | "retailer"
     district: string
 }
 
@@ -26,6 +26,6 @@ export interface userType {
     name: string
     email: string
     phoneNumber: string
-    role: "farmer" | "aratdar" | "retailer" | "consumer" | "admin"
+    role: "farmer" | "aratdar" | "retailer" | "admin"
     district: string
 }

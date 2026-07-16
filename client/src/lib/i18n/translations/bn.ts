@@ -27,7 +27,6 @@ const bn: AppTranslations = {
       farmer: "কৃষক",
       aratdar: "আড়তদার",
       retailer: "খুচরা বিক্রেতা",
-      consumer: "ভোক্তা",
     },
   },
   stats: {

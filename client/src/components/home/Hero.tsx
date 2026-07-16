@@ -20,7 +20,6 @@ export default function Hero() {
     { icon: Tractor, label: t.hero.roles.farmer },
     { icon: Warehouse, label: t.hero.roles.aratdar },
     { icon: Store, label: t.hero.roles.retailer },
-    { icon: ShoppingBasket, label: t.hero.roles.consumer },
   ];
 
   return (

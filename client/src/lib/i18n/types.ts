@@ -24,7 +24,6 @@ export interface AppTranslations {
       farmer: string;
       aratdar: string;
       retailer: string;
-      consumer: string;
     };
   };
   stats: {
