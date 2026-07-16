@@ -20,14 +20,13 @@ const en: AppTranslations = {
     titleLine: "From the field to the market,",
     titleHighlight: "grown together.",
     subtitle:
-      "AgriLink connects farmers, aratdars, retailers, and consumers on one platform — fair prices, fewer middlemen, faster deliveries.",
+      "AgriLink connects farmers, aratdars and retailers on one platform — fair prices, fewer middlemen, faster deliveries.",
     ctaPrimary: "Create free account",
     ctaSecondary: "See how it works",
     roles: {
       farmer: "Farmers",
       aratdar: "Aratdars",
       retailer: "Retailers",
-      consumer: "Consumers",
     },
   },
   stats: {
@@ -84,7 +83,7 @@ const en: AppTranslations = {
       {
         title: "Create your account",
         description:
-          "Sign up in minutes and tell us whether you're a farmer, aratdar, retailer, or consumer.",
+          "Sign up in minutes and tell us whether you're a farmer, aratdar or retailer.",
       },
       {
         title: "List or browse",
@@ -126,16 +125,6 @@ const en: AppTranslations = {
         description: "Stock fresh produce straight from source, at better margins.",
         points: ["Direct sourcing", "Consistent supply", "Order tracking"],
       },
-      {
-        title: "Consumers",
-        description:
-          "Know where your food comes from and support local farmers.",
-        points: [
-          "Farm-fresh produce",
-          "Transparent pricing",
-          "Support local growers",
-        ],
-      },
     ],
   },
   testimonials: {
@@ -165,12 +154,12 @@ const en: AppTranslations = {
   cta: {
     title: "Ready to grow with AgriLink?",
     subtitle:
-      "Join thousands of farmers, aratdars, retailers, and consumers already trading smarter, together.",
+      "Join thousands of farmers, aratdars and retailers already trading smarter, together.",
     button: "Create your free account",
   },
   footer: {
     description:
-      "Connecting farmers, aratdars, retailers, and consumers across Bangladesh — fair prices, fewer middlemen.",
+      "Connecting farmers, aratdars and retailers across Bangladesh — fair prices, fewer middlemen.",
     email: "support@agrilink.com",
     phone: "+880 1XXX-XXXXXX",
     sections: {

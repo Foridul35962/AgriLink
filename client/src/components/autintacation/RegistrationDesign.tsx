@@ -16,7 +16,6 @@ import {
     Tractor,
     Warehouse,
     Store,
-    ShoppingBasket,
     Check,
     ArrowRight,
 } from "lucide-react";
@@ -25,7 +24,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { registration } from "@/store/slice/authSlice";
 
-type Role = "farmer" | "aratdar" | "retailer" | "consumer";
+type Role = "farmer" | "aratdar" | "retailer";
 
 type RegisterFormValues = {
     name: string;
@@ -40,7 +39,6 @@ const ROLES: { value: Role; label: string; icon: typeof Tractor }[] = [
     { value: "farmer", label: "Farmer", icon: Tractor },
     { value: "aratdar", label: "Aratdar", icon: Warehouse },
     { value: "retailer", label: "Retailer", icon: Store },
-    { value: "consumer", label: "Consumer", icon: ShoppingBasket },
 ];
 
 // Matches express-validator's isMobilePhone("bn-BD")
