@@ -99,7 +99,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto"
+          className="mt-16 grid grid-cols-3 gap-3 max-w-3xl mx-auto"
         >
           {roleChips.map(({ icon: Icon, label }, i) => (
             <motion.div
