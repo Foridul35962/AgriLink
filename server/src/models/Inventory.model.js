@@ -37,7 +37,7 @@ const investorySchema = new mongoose.Schema({
         url: {
             type: String
         },
-        publicKey: {
+        publicId: {
             type: String
         }
     },
