@@ -1,29 +1,13 @@
-/**
- * AgriLink — Footer
- * Path: components/home/Footer.tsx
- */
+"use client";
 
 import Link from "next/link";
 import { Sprout, Mail, Phone, ScanFace, Inbox } from "lucide-react";
-
-const FOOTER_LINKS = {
-  Platform: [
-    { label: "Features", href: "#features" },
-    { label: "How it works", href: "#how-it-works" },
-    { label: "Who it's for", href: "#roles" },
-  ],
-  Company: [
-    { label: "About us", href: "#" },
-    { label: "Contact", href: "#contact" },
-    { label: "Careers", href: "#" },
-  ],
-  Legal: [
-    { label: "Privacy policy", href: "#" },
-    { label: "Terms of service", href: "#" },
-  ],
-};
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+  const { platform, company, legal } = t.footer.sections;
+
   return (
     <footer id="contact" className="bg-gray-50 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-6 py-14">
@@ -38,26 +22,25 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-5">
-              Connecting farmers, aratdars, retailers, and consumers across
-              Bangladesh — fair prices, fewer middlemen.
+              {t.footer.description}
             </p>
             <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
               <Mail size={15} />
-              support@agrilink.com
+              {t.footer.email}
             </div>
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <Phone size={15} />
-              +880 1XXX-XXXXXX
+              {t.footer.phone}
             </div>
           </div>
 
-          {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-            <div key={section}>
+          {[platform, company, legal].map((section) => (
+            <div key={section.title}>
               <h4 className="text-sm font-semibold text-gray-900 mb-4">
-                {section}
+                {section.title}
               </h4>
               <ul className="space-y-3">
-                {links.map((link) => (
+                {section.links.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
@@ -74,7 +57,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} AgriLink. All rights reserved.
+            © {new Date().getFullYear()} AgriLink. {t.footer.copyright}
           </p>
           <div className="flex items-center gap-4">
             <a
