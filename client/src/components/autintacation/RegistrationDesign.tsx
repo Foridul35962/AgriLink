@@ -197,7 +197,7 @@ export default function RegisterPage({ setEmail }: { setEmail: React.Dispatch<Re
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 I am a...
                             </label>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <div className="grid grid-cols-3 gap-2">
                                 {ROLES.map(({ value, label, icon: Icon }) => {
                                     const active = selectedRole === value;
                                     return (
