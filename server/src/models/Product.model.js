@@ -3,65 +3,70 @@ import { CropCategory } from "../constants/product.types.js";
 import { DISTRICTS } from "../constants/common.types.js";
 
 const productSchema = new mongoose.Schema({
-    farmerId:{
+    farmerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"User",
+        ref: "User",
         required: true
     },
-    name:{
+    auctionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Auction",
+        required: true
+    },
+    name: {
         type: String,
         required: true,
         trim: true
     },
-    category:{
+    category: {
         type: String,
         required: true,
         enum: CropCategory
     },
-    quantity:{
+    quantity: {
         type: Number,
         required: true,
         min: 0
     },
-    unit:{
+    unit: {
         type: String,
         required: true,
         enum: ["kg", "mon", "ton", "piece"],
         default: "kg"
     },
-    pricePerUnit:{
-        type:Number,
+    pricePerUnit: {
+        type: Number,
         required: true,
-        min:0
+        min: 0
     },
-    district:{
+    district: {
         type: String,
         required: true,
         enum: DISTRICTS
     },
-    harvestDate:{
+    harvestDate: {
         type: Date,
         required: true
     },
-    image:{
-        url:{
-            type:String
+    image: {
+        url: {
+            type: String
         },
-        publicId:{
-            type:String
+        publicId: {
+            type: String
         }
     },
-    description:{
-        type:String,
-        maxLength:300
+    description: {
+        type: String,
+        maxLength: 300
     },
-    status:{
-        type:String,
+    status: {
+        type: String,
         required: true,
-        enum:["available", "sold", "expired"],
-        default:"available"
+        enum: ["available", "sold", "expired"],
+        default: "available"
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 productSchema.index({ district: 1, category: 1 });
 
