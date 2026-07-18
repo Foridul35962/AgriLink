@@ -324,3 +324,75 @@ export const generateRemovalMail = (reason) => {
     `
   };
 };
+
+export const generateAuctionWinnerMail = ({
+  aratdarName,
+  productName,
+  bidAmount
+}) => {
+  const currentYear = new Date().getFullYear();
+
+  return {
+    subject: `🎉 Congratulations! You Won the Bid for ${productName}` ,
+
+    html: `
+      <div style="font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 10px;">
+        <div style="max-width: 560px; margin: auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
+
+          <!-- Header -->
+          <div style="background: linear-gradient(135deg, #16a34a, #15803d); padding: 40px 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">AgriLink</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px;">Bid Winner Confirmation</p>
+          </div>
+
+          <!-- Body -->
+          <div style="padding: 40px 35px;">
+            <h2 style="color: #1e293b; margin: 0 0 15px; font-size: 24px; text-align: center;">
+              🎉 Congratulations, ${aratdarName}!
+            </h2>
+
+            <p style="color: #475569; line-height: 1.7; font-size: 16px; text-align: center; margin-bottom: 30px;">
+              Your bid has been <strong>successfully selected as the winning bid</strong> for the following product listed on AgriLink.
+            </p>
+
+            <!-- Product Details -->
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 22px; margin-bottom: 30px;">
+              <h3 style="color: #0f172a; margin-top: 0; margin-bottom: 18px; font-size: 18px;">Winning Bid Details</h3>
+
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Product</td>
+                  <td style="padding: 8px 0; color: #0f172a; font-size: 14px; font-weight: 700; text-align: right;">${productName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #64748b; font-size: 14px;">Winning Bid</td>
+                  <td style="padding: 8px 0; color: #15803d; font-size: 16px; font-weight: 800; text-align: right;">৳${bidAmount}</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Action Box -->
+            <div style="background-color: #ecfdf5; border: 1px solid #86efac; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px;">
+              <p style="color: #166534; font-size: 13px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;">Next Step</p>
+              <p style="color: #14532d; font-size: 16px; margin: 0; font-weight: 600; line-height: 1.6;">
+                Please <strong>confirm your order within the AgriLink platform</strong> to proceed with payment, delivery, and transaction completion.
+              </p>
+            </div>
+
+            <p style="color: #64748b; font-size: 14px; text-align: center; line-height: 1.6; margin-bottom: 0;">
+              Thank you for participating in the AgriLink auction marketplace. We appreciate your trust in connecting directly with farmers for fair and transparent trade.
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div style="background: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+              &copy; ${currentYear} AgriLink Inc. All rights reserved.<br>
+              This is a system-generated notification regarding your auction result.
+            </p>
+          </div>
+        </div>
+      </div>
+    `
+  };
+};
