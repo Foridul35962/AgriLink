@@ -10,6 +10,9 @@ import redis from '../config/redis.js'
 import mongoose from 'mongoose'
 import Auction from '../models/auctions.model.js'
 import Bids from '../models/bids.model.js'
+import Notification from '../models/Notification.model.js'
+import { NOTIFICATION_TYPES } from '../constants/notification.types.js'
+import { generateAuctionWinnerMail, sendBrevoMail } from '../config/mail.js'
 
 export const addProduct = [
     check("name")
@@ -384,7 +387,7 @@ export const getProduct = AsyncHandler(async (req, res) => {
         throw new ApiErrors(400, "product id is required");
     }
 
-    if (!["farmer", "aratdar"].includes(userRole)) {
+    if (!["farmer", "aratdar", "admin"].includes(userRole)) {
         throw new ApiErrors(401, "unauthorized access")
     }
 
@@ -474,6 +477,262 @@ export const getProduct = AsyncHandler(async (req, res) => {
                 200,
                 response,
                 "product fetched successfully"
+            )
+        );
+});
+
+export const getAllProducts = AsyncHandler(async (req, res) => {
+    const { category, name, district } = req.query;
+    const page = Number(req.query.page) || 1;
+
+    const limit = 15;
+    const skip = (page - 1) * limit;
+
+    const matchStage = {
+        status: "available"
+    };
+
+    if (name) {
+        matchStage.name = { $regex: name, $options: "i" };
+    }
+    if (category) {
+        matchStage.category = category
+    }
+    if (district) {
+        matchStage.district = district
+    }
+
+    const pipelineResult = await Products.aggregate([
+        { $match: matchStage },
+        {
+            $facet: {
+                metadata: [{ $count: "totalProducts" }],
+                data: [
+                    { $sort: { createdAt: -1 } },
+                    { $skip: skip },
+                    { $limit: limit },
+                    {
+                        $project: {
+                            _id: 1,
+                            name: 1,
+                            category: 1,
+                            pricePerUnit: 1,
+                            quantity: 1,
+                            unit: 1,
+                            image: { url: "$image.url" }
+                        }
+                    }
+                ]
+            }
+        }
+    ]);
+
+    const result = pipelineResult[0];
+    const products = result?.data || [];
+    const totalProducts = result?.metadata[0]?.totalProducts || 0;
+
+    const finalResult = {
+        products,
+        pagination: {
+            currentPage: page,
+            limit,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit)
+        }
+    }
+
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, finalResult, "product fetch done")
+        )
+})
+
+export const addBidding = AsyncHandler(async (req, res) => {
+    const { auctionId, bidAmount } = req.body;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+
+    // Validation
+    if (!auctionId || bidAmount === undefined) {
+        throw new ApiErrors(400, "all fields are required");
+    }
+
+    if (!mongoose.isValidObjectId(auctionId)) {
+        throw new ApiErrors(400, "invalid product id");
+    }
+
+    const amount = Number(bidAmount);
+
+    if (isNaN(amount) || amount <= 0) {
+        throw new ApiErrors(400, "invalid bid amount");
+    }
+
+    // Get auction and existing bid
+    const [auction, existingBid] = await Promise.all([
+        Auction.findById(auctionId),
+        Bids.findOne({
+            auctionId,
+            aratdarId: userId
+        })
+    ]);
+
+    if (!auction) {
+        throw new ApiErrors(404, "auction not found");
+    }
+
+    // Check auction time
+    if (auction.endTime.getTime() < Date.now()) {
+        throw new ApiErrors(400, "bid time is expired");
+    }
+
+    // Check start price
+    if (amount < auction.startPrice) {
+        throw new ApiErrors(400, "bid amount is lower than start price");
+    }
+
+    await redis.del(`product:${auction.productId}`)
+
+    // Check current highest bid
+    if (amount <= auction.currentHighestBid) {
+        throw new ApiErrors(400, "bid must be higher than current highest bid");
+    }
+
+    let bid;
+
+    // Update existing bid
+    if (existingBid) {
+        if (existingBid.bidAmount === amount) {
+            throw new ApiErrors(400, "bid already exists with same amount");
+        }
+
+        existingBid.bidAmount = amount;
+        await existingBid.save();
+
+        bid = existingBid;
+    } else {
+        // Create new bid
+        bid = await Bids.create({
+            aratdarId: userId,
+            auctionId,
+            bidAmount: amount
+        });
+    }
+
+    if (!bid) {
+        throw new ApiErrors(500, "failed to create bid");
+    }
+
+    // Update auction highest bid
+    auction.currentHighestBid = amount;
+    auction.highestBidder = userId;
+
+    await auction.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            bidId: bid._id,
+            bidAmount: bid.bidAmount,
+            auctionId: auction._id,
+            currentHighestBid: auction.currentHighestBid
+        }, "bid placed successfully")
+    );
+});
+
+export const acceptBidding = AsyncHandler(async (req, res) => {
+    const { auctionId, bidId } = req.body;
+    const userId = req.user._id;
+
+    if (!auctionId || !bidId) {
+        throw new ApiErrors(400, "all field are required");
+    }
+
+    if (!mongoose.isValidObjectId(auctionId)) {
+        throw new ApiErrors(400, "invalid auction id");
+    }
+
+    if (!mongoose.isValidObjectId(bidId)) {
+        throw new ApiErrors(400, "invalid bid id");
+    }
+
+    const [auction, bid] = await Promise.all([
+        Auction.findById(auctionId)
+            .populate({
+                path: "productId",
+                select: "name farmerId"
+            }),
+
+        Bids.findById(bidId)
+            .populate({
+                path: "aratdarId",
+                select: "name email"
+            })
+    ]);
+
+    if (!auction) {
+        throw new ApiErrors(404, "auction is not found");
+    }
+
+    if (!bid) {
+        throw new ApiErrors(404, "bid is not found");
+    }
+
+    // only product owner can accept bid
+    if (auction.productId.farmerId.toString() !== userId.toString()) {
+        throw new ApiErrors(403, "you are not allowed to accept this bid");
+    }
+
+    if (auction.endTime.getTime() > Date.now()) {
+        throw new ApiErrors(400, "auction is not ended");
+    }
+
+    auction.winnerBidId = bid._id;
+    auction.status = "WINNER_SELECTED";
+
+    bid.status = "WINNER";
+
+
+    await Promise.all([
+        auction.save(),
+        bid.save()
+    ]);
+
+    const { subject, html } = generateAuctionWinnerMail({
+        aratdarName: bid.aratdarId.name,
+        bidAmount: bid.bidAmount,
+        productName: auction.productId.name
+    });
+
+    Promise.all([
+        Notification.create({
+            recipient: bid.aratdarId._id,
+            sender: userId,
+            type: NOTIFICATION_TYPES.ORDER_PLACED,
+            title: "🎉 Congratulations! Your Bid Won",
+            message: `Your bid for ${auction.productId.name} has been accepted. Please confirm your order to continue.`,
+            relatedId: auction.productId._id
+        }),
+
+        sendBrevoMail(
+            bid.aratdarId.email,
+            subject,
+            html
+        )
+
+    ]).catch((error) => {
+        console.error("Background notification/email failed:", error);
+    });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    bid,
+                    auction
+                },
+                "winner selected successfully"
             )
         );
 });
