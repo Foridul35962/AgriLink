@@ -254,6 +254,8 @@ export const editProduct = [
             throw new ApiErrors(500, "product update failed")
         }
 
+        updatedProduct.image.publicId = undefined
+
         if (typeof redis !== 'undefined' && redis.del) {
             await redis.del(`product:${productId}`)
         }
@@ -665,7 +667,7 @@ export const acceptBidding = AsyncHandler(async (req, res) => {
         Bids.findById(bidId)
             .populate({
                 path: "aratdarId",
-                select: "name email"
+                select: "name email phoneNumber"
             })
     ]);
 
