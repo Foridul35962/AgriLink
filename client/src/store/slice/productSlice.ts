@@ -237,7 +237,7 @@ const productSlice = createSlice({
                 state.productLoading = false
                 state.allProducts = action.payload.data
             })
-            .addCase(getAllMyProducts.rejected, (state) => {
+            .addCase(getAllProducts.rejected, (state) => {
                 state.productLoading = false
             })
         //add bidding
