@@ -262,7 +262,49 @@ const bn: AppTranslations = {
     submitButton: "পণ্য যোগ করুন",
     submittingButton: "পণ্য যোগ করা হচ্ছে...",
     serverError: "কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।",
-  }
+  },
+  adminMemberRequests: {
+    header: {
+      title: "সদস্য অনুমোদনের অনুরোধ",
+      subtitle: "নতুন নিবন্ধিত সদস্যদের অনুরোধগুলো পর্যালোচনা এবং অনুমোদন করুন",
+    },
+    filter: {
+      allRoles: "সকল ভূমিকা (Roles)",
+      farmer: "কৃষক (Farmer)",
+      aratdar: "আড়তদার (Aratdar)",
+      retailer: "খুচরা বিক্রেতা (Retailer)",
+    },
+    stats: {
+      showing: "দেখাচ্ছে",
+      of: "এর মধ্যে",
+      pendingRequests: "টি অপেক্ষমাণ অনুরোধ",
+      filterLabel: "ফিল্টার",
+    },
+    emptyState: {
+      title: "কোনো অপেক্ষমাণ অনুরোধ পাওয়া যায়নি",
+      subtitle: "বর্তমানে এই ক্যাটাগরিতে অনুমোদনের জন্য কোনো সদস্যের অনুরোধ নেই।",
+    },
+    table: {
+      memberName: "সদস্যের নাম",
+      role: "ভূমিকা (Role)",
+      contactInfo: "যোগাযোগের তথ্য",
+      district: "জেলা",
+      actions: "পদক্ষেপ (Actions)",
+    },
+    roles: {
+      farmer: "কৃষক",
+      aratdar: "আড়তদার",
+      retailer: "খুচরা বিক্রেতা",
+    },
+    actions: {
+      accept: "অনুমোদন করুন",
+      reject: "বাতিল করুন",
+    },
+    pagination: {
+      page: "পৃষ্ঠা",
+      of: "এর",
+    },
+  },
 };
 
 export default bn;

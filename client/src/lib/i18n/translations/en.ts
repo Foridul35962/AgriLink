@@ -237,8 +237,49 @@ const en: AppTranslations = {
     submitButton: "Add product",
     submittingButton: "Adding product...",
     serverError: "Something went wrong. Please try again.",
-
-  }
+  },
+  adminMemberRequests: {
+    header: {
+      title: "Member Approval Requests",
+      subtitle: "Review and approve new registered member requests",
+    },
+    filter: {
+      allRoles: "All Roles",
+      farmer: "Farmer (কৃষক)",
+      aratdar: "Aratdar (আড়তদার)",
+      retailer: "Retailer (খুচরা বিক্রেতা)",
+    },
+    stats: {
+      showing: "Showing",
+      of: "of",
+      pendingRequests: "pending requests",
+      filterLabel: "Filter",
+    },
+    emptyState: {
+      title: "No Pending Requests Found",
+      subtitle: "There are currently no member requests waiting for approval in this category.",
+    },
+    table: {
+      memberName: "Member Name",
+      role: "Role",
+      contactInfo: "Contact Info",
+      district: "District",
+      actions: "Actions",
+    },
+    roles: {
+      farmer: "farmer",
+      aratdar: "aratdar",
+      retailer: "retailer",
+    },
+    actions: {
+      accept: "Accept",
+      reject: "Reject",
+    },
+    pagination: {
+      page: "Page",
+      of: "of",
+    },
+  },
 };
 
 export default en;
