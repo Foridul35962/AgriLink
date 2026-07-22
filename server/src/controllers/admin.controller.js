@@ -8,29 +8,49 @@ import Users from "../models/Users.model.js";
 import Reports from "../models/Reports.model.js";
 
 export const getUsersRequest = AsyncHandler(async (req, res) => {
-    const { role } = req.params
-
-    if (!["farmer", "aratdar", "retailer"].includes(role)) {
-        throw new ApiErrors(400, "invalid role")
+    const { role } = req.query;
+    if (role && !["farmer", "aratdar", "retailer"].includes(role)) {
+        throw new ApiErrors(400, "Invalid role");
     }
 
     const page = Number(req.query.page) || 1;
-
     const limit = 15;
     const skip = (page - 1) * limit;
 
-    const users = await RequestUsers.find({ role })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .select("name email phoneNumber district")
+    const query = {};
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, users, "requested user fetch successfully")
+    if (role) {
+        query.role = role;
+    }
+
+    const [users, totalUsers] = await Promise.all([
+        RequestUsers.find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .select("name email role phoneNumber district"),
+
+        RequestUsers.countDocuments(query)
+    ]);
+
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                users,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalUsers,
+                    limit
+                }
+            },
+            "Requested users fetched successfully"
         )
-})
+    );
+});
 
 export const acceptAddRequest = AsyncHandler(async (req, res) => {
     const { userId } = req.body
