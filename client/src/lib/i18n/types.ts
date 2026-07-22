@@ -110,4 +110,46 @@ export interface AppTranslations {
     submittingButton: string;
     serverError: string;
   };
+  adminMemberRequests: {
+    header: {
+      title: string;
+      subtitle: string;
+    };
+    filter: {
+      allRoles: string;
+      farmer: string;
+      aratdar: string;
+      retailer: string;
+    };
+    stats: {
+      showing: string;
+      of: string;
+      pendingRequests: string;
+      filterLabel: string;
+    };
+    emptyState: {
+      title: string;
+      subtitle: string;
+    };
+    table: {
+      memberName: string;
+      role: string;
+      contactInfo: string;
+      district: string;
+      actions: string;
+    };
+    roles: {
+      farmer: string;
+      aratdar: string;
+      retailer: string;
+    };
+    actions: {
+      accept: string;
+      reject: string;
+    };
+    pagination: {
+      page: string;
+      of: string;
+    };
+  };
 }
