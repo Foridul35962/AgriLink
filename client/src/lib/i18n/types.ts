@@ -67,4 +67,47 @@ export interface AppTranslations {
     };
     copyright: string;
   };
+  addProduct: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    fields: {
+      name: { label: string; placeholder: string };
+      category: { label: string; placeholder: string };
+      quantity: { label: string; placeholder: string };
+      unit: { label: string };
+      pricePerUnit: { label: string; placeholder: string };
+      district: { label: string; placeholder: string };
+      harvestDate: { label: string };
+      description: { label: string; placeholder: string; charsRemaining: string };
+      image: {
+        label: string;
+        dragText: string;
+        browseText: string;
+        requirements: string;
+        change: string;
+        remove: string;
+      };
+    };
+    categories: string[];
+    units: { kg: string; mon: string; ton: string; piece: string };
+    errors: {
+      nameRequired: string;
+      categoryRequired: string;
+      quantityRequired: string;
+      quantityMin: string;
+      priceRequired: string;
+      priceMin: string;
+      districtRequired: string;
+      districtInvalid: string;
+      harvestDateRequired: string;
+      harvestDateInvalid: string;
+      unitRequired: string;
+      descriptionMax: string;
+      imageRequired: string;
+    };
+    submitButton: string;
+    submittingButton: string;
+    serverError: string;
+  };
 }
