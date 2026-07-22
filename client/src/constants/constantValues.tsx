@@ -12,3 +12,18 @@ export const DISTRICTS = [
   "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj",
   "Sunamganj", "Sylhet", "Tangail", "Thakurgaon",
 ];
+
+export const CATEGORY_VALUES = [
+  "Rice",
+  "Wheat",
+  "Vegetables",
+  "Fruits",
+  "Spices",
+  "Pulses",
+  "Jute",
+  "Fish",
+  "Poultry & Dairy",
+  "Other",
+]
+
+export const UNITS = ["kg", "mon", "ton", "piece"]

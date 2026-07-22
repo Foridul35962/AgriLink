@@ -1,3 +1,4 @@
+import { CATEGORY_VALUES } from "@/constants/constantValues";
 import type { AppTranslations } from "../types";
 
 const en: AppTranslations = {
@@ -189,6 +190,55 @@ const en: AppTranslations = {
     },
     copyright: "All rights reserved.",
   },
+  addProduct: {
+    badge: "List a new product",
+    title: "Add your product",
+    subtitle:
+      "Fill in the details below so buyers can find and order your product.",
+    fields: {
+      name: { label: "Product name", placeholder: "e.g. Premium Basmati Rice" },
+      category: { label: "Category", placeholder: "Select category" },
+      quantity: { label: "Quantity", placeholder: "e.g. 500" },
+      unit: { label: "Unit" },
+      pricePerUnit: { label: "Price per unit (৳)", placeholder: "e.g. 45.50" },
+      district: { label: "District", placeholder: "Select district" },
+      harvestDate: { label: "Harvest date" },
+      description: {
+        label: "Description (optional)",
+        placeholder: "Tell buyers more about quality, variety, storage, etc.",
+        charsRemaining: "characters remaining",
+      },
+      image: {
+        label: "Product image",
+        dragText: "Drag & drop an image here, or",
+        browseText: "browse",
+        requirements: "PNG or JPG, up to 5MB",
+        change: "Change image",
+        remove: "Remove",
+      },
+    },
+    categories: CATEGORY_VALUES,
+    units: { kg: "Kilogram (kg)", mon: "Mon", ton: "Ton", piece: "Piece" },
+    errors: {
+      nameRequired: "Product name is required",
+      categoryRequired: "Category is required",
+      quantityRequired: "Quantity is required",
+      quantityMin: "Quantity must be greater than 0",
+      priceRequired: "Price is required",
+      priceMin: "Price must be greater than 0",
+      districtRequired: "District is required",
+      districtInvalid: "Invalid district",
+      harvestDateRequired: "Harvest date is required",
+      harvestDateInvalid: "Harvest date must be a valid date",
+      unitRequired: "Unit is required",
+      descriptionMax: "Description must be under 300 characters",
+      imageRequired: "Product image is required",
+    },
+    submitButton: "Add product",
+    submittingButton: "Adding product...",
+    serverError: "Something went wrong. Please try again.",
+
+  }
 };
 
 export default en;
