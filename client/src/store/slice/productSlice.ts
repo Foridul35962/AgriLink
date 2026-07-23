@@ -1,4 +1,4 @@
-import { acceptBidType, addBidType, AddProductResponse, GetAllMyProductsResponse, GetAllProductsResponse, GetProductResponse } from "@/types/productTypes";
+import { acceptBidType, addBidType, AddProductResponse, Bid, GetAllMyProductsResponse, GetAllProductsResponse, GetProductResponse } from "@/types/productTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -38,7 +38,7 @@ export const deleteProduct = createAsyncThunk(
     "product/delete",
     async ({ productId }: { productId: string }, { rejectWithValue }) => {
         try {
-            const res = await axios.delete(`${SERVER_URL}/edit/${productId}`,
+            const res = await axios.delete(`${SERVER_URL}/delete/${productId}`,
                 { withCredentials: true }
             )
             return res.data
@@ -51,10 +51,13 @@ export const deleteProduct = createAsyncThunk(
 
 export const getAllMyProducts = createAsyncThunk(
     "product/getAllMy",
-    async (_: null, { rejectWithValue }) => {
+    async (data: { category?: string, status?: string, page: Number }, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/all-my-product`,
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    params: data
+                }
             )
             return res.data
         } catch (error) {
@@ -242,17 +245,28 @@ const productSlice = createSlice({
             })
         //add bidding
         builder
-            .addCase(addBid.pending, (state) => {
-                state.productLoading = true
-            })
             .addCase(addBid.fulfilled, (state, action) => {
-                state.productLoading = false
-                if (state.product) {
-                    // state.product.topBids 
+                if (!state.product) return;
+
+                const { aratdarId, bidAmount, currentHighestBid } = action.payload.data;
+
+                state.product.auction.currentHighestBid = currentHighestBid;
+
+                const newBid: Bid = {
+                    _id: "",
+                    auctionId: state.product.auction._id,
+                    aratdarId,
+                    bidAmount,
+                    status: "PLACED",
+                    createdAt: "",
+                    updatedAt: "",
+                };
+
+                if (state.product.topBids.length === 0) {
+                    state.product.topBids.push(newBid);
+                } else {
+                    state.product.topBids[0] = newBid;
                 }
-            })
-            .addCase(addBid.rejected, (state) => {
-                state.productLoading = false
             })
         //accept bid
         builder

@@ -618,7 +618,7 @@ export const addBidding = AsyncHandler(async (req, res) => {
             aratdarId: userId,
             auctionId,
             bidAmount: amount
-        });
+        })
     }
 
     if (!bid) {
@@ -631,11 +631,15 @@ export const addBidding = AsyncHandler(async (req, res) => {
 
     await auction.save();
 
+    const populatedBid = await Bids.findById(bid._id).populate(
+        "aratdarId",
+        "name district phoneNumber"
+    );
+
     return res.status(200).json(
         new ApiResponse(200, {
-            bidId: bid._id,
+            aratdarId: populatedBid.aratdarId,
             bidAmount: bid.bidAmount,
-            auctionId: auction._id,
             currentHighestBid: auction.currentHighestBid
         }, "bid placed successfully")
     );
@@ -688,8 +692,19 @@ export const acceptBidding = AsyncHandler(async (req, res) => {
         throw new ApiErrors(400, "auction is not ended");
     }
 
+    if (
+        auction.selectedAt &&
+        auction.selectedAt.getTime() + 12 * 60 * 60 * 1000 > Date.now()
+    ) {
+        throw new ApiErrors(
+            400,
+            "You cannot select another winner before the 12-hour confirmation period ends"
+        );
+    }
+
     auction.winnerBidId = bid._id;
     auction.status = "WINNER_SELECTED";
+    auction.selectedAt = Date.now
 
     bid.status = "WINNER";
 

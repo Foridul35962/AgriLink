@@ -1,11 +1,11 @@
 export interface addBidType {
-    auctionId: string
-    bidAmount: number
+  auctionId: string
+  bidAmount: number
 }
 
-export interface acceptBidType{
-    auctionId:string
-    bidId:string
+export interface acceptBidType {
+  auctionId: string
+  bidId: string
 }
 
 export interface AddProductResponse {
@@ -100,9 +100,15 @@ export interface AddBiddingResponse {
   currentHighestBid: number;
 }
 
-export interface AcceptBiddingResponse {
-  bid: Bid;
-  auction: Auction;
+export interface AddBiddingResponse {
+  aratdarId: {
+    _id: string;
+    name: string;
+    district: string;
+    phoneNumber: string;
+  };
+  bidAmount: number;
+  currentHighestBid: number;
 }
 
 
@@ -154,12 +160,12 @@ export interface Auction {
   endTime: string;
 
   status:
-    | "ACTIVE"
-    | "ENDED"
-    | "WAITING_FARMER_SELECTION"
-    | "WINNER_SELECTED"
-    | "ORDER_CREATED"
-    | "CANCELLED";
+  | "ACTIVE"
+  | "ENDED"
+  | "WAITING_FARMER_SELECTION"
+  | "WINNER_SELECTED"
+  | "ORDER_CREATED"
+  | "CANCELLED";
 
   winnerBidId: string | null;
   selectedAt: string | null;
@@ -173,22 +179,22 @@ export interface Bid {
   auctionId: string;
 
   aratdarId:
-    | string
-    | {
-        _id: string;
-        name: string;
-        phoneNumber: string;
-        district: string;
-        email?: string;
-      };
+  | string
+  | {
+    _id: string;
+    name: string;
+    phoneNumber: string;
+    district: string;
+    email?: string;
+  };
 
   bidAmount: number;
 
   status:
-    | "PLACED"
-    | "WINNER"
-    | "LOST"
-    | "CANCELLED";
+  | "PLACED"
+  | "WINNER"
+  | "LOST"
+  | "CANCELLED";
 
   createdAt: string;
   updatedAt: string;
