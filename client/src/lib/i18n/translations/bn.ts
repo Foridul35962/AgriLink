@@ -305,6 +305,38 @@ const bn: AppTranslations = {
       of: "এর",
     },
   },
+  myProducts: {
+    title: "আমার পণ্যসমূহ",
+    subtitle: "আপনার যোগ করা পণ্য, স্টক স্ট্যাটাস এবং লিস্টিং পরিচালনা করুন।",
+    allCategories: "সকল ক্যাটাগরি",
+    allStatuses: "সকল স্ট্যাটাস",
+    showing: "দেখানো হচ্ছে",
+    of: "মোট",
+    products: "টি পণ্য",
+    noProductsFound: "কোনো পণ্য পাওয়া যায়নি",
+    noProductsDesc: "আপনার নির্বাচিত ফিল্টারের সাথে কোনো পণ্য মেলেনি।",
+    quantity: "পরিমাণ",
+    pricePer: "মূল্য /",
+    totalValue: "মোট মূল্য:",
+    page: "পৃষ্ঠা",
+    categories: {
+      Rice: "চাল",
+      Wheat: "গম",
+      Vegetables: "শাকসবজি",
+      Fruits: "ফল",
+      Spices: "মসলা",
+      Pulses: "ডাল",
+      Jute: "পাট",
+      Fish: "মাছ",
+      "Poultry & Dairy": "পোল্ট্রি ও দুগ্ধজাত",
+      Other: "অন্যান্য",
+    },
+    status: {
+      available: "উপলব্ধ",
+      sold: "বিক্রি হয়ে গেছে",
+      expired: "মেয়াদোত্তীর্ণ",
+    },
+  },
 };
 
 export default bn;

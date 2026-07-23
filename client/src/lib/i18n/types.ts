@@ -152,4 +152,25 @@ export interface AppTranslations {
       of: string;
     };
   };
+  myProducts: {
+    title: string;
+    subtitle: string;
+    allCategories: string;
+    allStatuses: string;
+    showing: string;
+    of: string;
+    products: string;
+    noProductsFound: string;
+    noProductsDesc: string;
+    quantity: string;
+    pricePer: string;
+    totalValue: string;
+    page: string;
+    categories: Record<string, string>;
+    status: {
+      available: string;
+      sold: string;
+      expired: string;
+    };
+  };
 }

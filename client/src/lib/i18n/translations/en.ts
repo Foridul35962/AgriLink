@@ -280,6 +280,38 @@ const en: AppTranslations = {
       of: "of",
     },
   },
+  myProducts: {
+    title: "My Products",
+    subtitle: "Manage your added products, stock status, and listings.",
+    allCategories: "All Categories",
+    allStatuses: "All Status",
+    showing: "Showing",
+    of: "of",
+    products: "products",
+    noProductsFound: "No Products Found",
+    noProductsDesc: "There are no products matching your selected filters.",
+    quantity: "Quantity",
+    pricePer: "Price /",
+    totalValue: "Total Value:",
+    page: "Page",
+    categories: {
+      Rice: "Rice",
+      Wheat: "Wheat",
+      Vegetables: "Vegetables",
+      Fruits: "Fruits",
+      Spices: "Spices",
+      Pulses: "Pulses",
+      Jute: "Jute",
+      Fish: "Fish",
+      "Poultry & Dairy": "Poultry & Dairy",
+      Other: "Other",
+    },
+    status: {
+      available: "Available",
+      sold: "Sold Out",
+      expired: "Expired",
+    },
+  },
 };
 
 export default en;
