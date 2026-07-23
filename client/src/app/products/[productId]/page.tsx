@@ -171,6 +171,20 @@ export default function ProductDetailPage() {
     ? new Date(auction.endTime).getTime() < Date.now()
     : false;
 
+  // ১. ১২ ঘণ্টা পার হয়েছে কিনা চেক করার লজিক (auction.selectedAt থেকে)
+  const selectedTime = auction?.selectedAt ? new Date(auction.selectedAt).getTime() : 0;
+  const is12HoursPassed = selectedTime ? Date.now() > selectedTime + 12 * 60 * 60 * 1000 : false;
+
+  // ২. অর্ডার তৈরি হয়নি এমন অবস্থা
+  const isOrderNotCreated = auction?.status !== "ORDER_CREATED";
+
+  const canSelectWinner =
+    isOwner &&
+    isAuctionEnded &&
+    isOrderNotCreated &&
+    (!auction?.selectedAt || is12HoursPassed);
+
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -423,15 +437,15 @@ export default function ProductDetailPage() {
                       <div
                         key={bid._id}
                         className={`p-3 rounded-2xl border flex items-center justify-between gap-2 transition-all ${index === 0
-                            ? "bg-emerald-50/40 border-emerald-200/80"
-                            : "bg-slate-50/60 border-slate-100"
+                          ? "bg-emerald-50/40 border-emerald-200/80"
+                          : "bg-slate-50/60 border-slate-100"
                           }`}
                       >
                         <div className="flex items-center gap-3">
                           <span
                             className={`w-6 h-6 rounded-lg text-[11px] font-extrabold flex items-center justify-center ${index === 0
-                                ? "bg-emerald-600 text-white"
-                                : "bg-slate-200 text-slate-600"
+                              ? "bg-emerald-600 text-white"
+                              : "bg-slate-200 text-slate-600"
                               }`}
                           >
                             #{index + 1}
@@ -460,7 +474,7 @@ export default function ProductDetailPage() {
                           </span>
 
                           {/* Set Winner Button */}
-                          {isOwner && isAuctionEnded && !winner && (
+                          {canSelectWinner && (
                             <button
                               disabled={selectingWinnerId === bid._id}
                               onClick={() => handleSelectWinner(bid._id)}
