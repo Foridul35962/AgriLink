@@ -173,4 +173,38 @@ export interface AppTranslations {
       expired: string;
     };
   };
+  productDetail: {
+    loading: string;
+    edit: string;
+    delete: string;
+    bidsLocked: string;
+    quantity: string;
+    pricePerUnit: string;
+    harvestDate: string;
+    description: string;
+    farmerInfo: string;
+    liveAuction: string;
+    startPrice: string;
+    highestBid: string;
+    topBids: string;
+    bidsCount: string;
+    noBids: string;
+    winner: string;
+    deleteModalTitle: string;
+    deleteModalDesc: string;
+    cancel: string;
+    confirmDelete: string;
+    deleting: string;
+    placeBid: string;
+    enterBidAmount: string;
+    bidAmountPlaceholder: string;
+    submitBid: string;
+    submitting: string;
+    selectWinner: string;
+    selecting: string;
+    bidModalTitle: string;
+    auctionEnded: string;
+    auctionEndTime: string,
+    locale: string
+  };
 }
