@@ -357,6 +357,32 @@ const en: AppTranslations = {
     saveChanges: "Save Changes",
     fetchError: "Failed to fetch product details",
   },
+  adminReports: {
+    badge: "Admin Portal",
+    title: "Submitted Reports",
+    subtitle: "Manage and review all system reports submitted by users.",
+    table: {
+      id: "Report ID",
+      topic: "Topic / Summary",
+      action: "Action",
+      viewDetails: "View Details",
+      emptyState: "No reports found.",
+    },
+    emptyState: {
+      title: "No Reports Found",
+      description:
+        "There are currently no reports submitted in the system. Check back later or refresh the list.",
+      refresh: "Refresh List",
+    },
+    pagination: {
+      showing: "Showing",
+      of: "of",
+      reports: "reports",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+    },
+  },
 };
 
 export default en;

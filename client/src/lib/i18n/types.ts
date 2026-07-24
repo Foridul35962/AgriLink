@@ -218,4 +218,29 @@ export interface AppTranslations {
     saveChanges: string;
     fetchError: string;
   };
+  adminReports: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    table: {
+      id: string;
+      topic: string;
+      action: string;
+      viewDetails: string;
+      emptyState: string;
+    };
+    emptyState: {
+      title: string;
+      description: string;
+      refresh: string;
+    };
+    pagination: {
+      showing: string;
+      of: string;
+      reports: string;
+      previous: string;
+      next: string;
+      page: string;
+    };
+  };
 }
