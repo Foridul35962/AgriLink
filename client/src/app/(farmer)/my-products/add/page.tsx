@@ -139,7 +139,7 @@ export default function AddProductPage() {
       }
 
       await dispatch(addProduct(formData)).unwrap()
-      router.push("/products");
+      router.push("/my-products");
     } catch (err: any) {
       console.error("❌ Submission Error:", err);
       setServerError(err.message || t.addProduct.serverError);

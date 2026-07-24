@@ -68,7 +68,7 @@ export default function ProductDetailPage() {
       setIsDeleting(true);
       await dispatch(deleteProduct({ productId: productData?.product._id as string })).unwrap()
       setIsDeleteModalOpen(false);
-      router.push("/products");
+      router.push("/my-products");
     } catch (error) {
       console.error("Failed to delete product:", error);
     } finally {
@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
             </p>
           </div>
           <button
-            onClick={() => router.push("/products")}
+            onClick={() => router.push(`${user?.role === "aratdar" ? "/products" : user?.role === "farmer" && "/my-products"}`)}
             className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
           >
             <ArrowLeft size={16} />
@@ -204,7 +204,7 @@ export default function ProductDetailPage() {
             {isOwner && !hasBids && (
               <>
                 <Link
-                  href={`/products/edit/${product._id}`}
+                  href={`/my-products/edit/${product._id}`}
                   className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs px-3.5 py-2 rounded-xl transition shadow-sm"
                 >
                   <Edit3 size={15} />
