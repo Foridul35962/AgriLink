@@ -270,21 +270,14 @@ const productSlice = createSlice({
             })
         //accept bid
         builder
-            .addCase(acceptBid.pending, (state) => {
-                state.productLoading = true
-            })
             .addCase(acceptBid.fulfilled, (state, action) => {
-                state.productLoading = false
                 if (state.product) {
                     state.product.auction = action.payload.data.auction
-                    if (state.product.winner) {
-                        state.product.winner.aratdar = action.payload.data.bid.aratdarId
-                        state.product.winner.bidAmount = action.payload.data.bid.bidAmount
-                    }
+                    state.product.winner = {
+                        aratdar: action.payload.data.bid.aratdarId,
+                        bidAmount: action.payload.data.bid.bidAmount,
+                    };
                 }
-            })
-            .addCase(acceptBid.rejected, (state) => {
-                state.productLoading = false
             })
     },
 })
