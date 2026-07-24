@@ -207,4 +207,15 @@ export interface AppTranslations {
     auctionEndTime: string,
     locale: string
   };
+  editProduct: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    noChanges: string;
+    updateSuccess: string;
+    updateError: string;
+    updating: string;
+    saveChanges: string;
+    fetchError: string;
+  };
 }
