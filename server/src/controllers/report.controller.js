@@ -75,23 +75,40 @@ export const createReports = [
 ]
 
 export const viewAllReports = AsyncHandler(async (req, res) => {
-    const page = Number(req.query.page) || 1;
+    const page = Math.max(Number(req.query.page) || 1, 1);
 
     const limit = 20;
     const skip = (page - 1) * limit;
 
-    const reports = await Reports.find({ isReviewed: false })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .select("topic")
+    const filter = { isReviewed: false };
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, reports, "all report fetch successfully")
+    const [reports, totalReports] = await Promise.all([
+        Reports.find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .select("topic"),
+        Reports.countDocuments(filter)
+    ]);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                reports,
+                pagination: {
+                    page,
+                    limit,
+                    totalReports,
+                    totalPages: Math.ceil(totalReports / limit),
+                    hasNextPage: page < Math.ceil(totalReports / limit),
+                    hasPrevPage: page > 1,
+                },
+            },
+            "all reports fetched successfully"
         )
-})
+    );
+});
 
 export const viewReportById = AsyncHandler(async (req, res) => {
     const { reportId } = req.params;
@@ -196,7 +213,7 @@ export const makeWarning = AsyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, "warning send successfully")
+            new ApiResponse(200, reportId, "warning send successfully")
         )
 })
 
@@ -221,6 +238,6 @@ export const reoprtViewDone = AsyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, "report view done")
+            new ApiResponse(200, reportId, "report view done")
         )
 })
