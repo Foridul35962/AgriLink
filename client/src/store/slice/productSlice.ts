@@ -180,17 +180,15 @@ const productSlice = createSlice({
             })
         //edit product
         builder
-            .addCase(editProduct.pending, (state) => {
-                state.productLoading = true
-            })
             .addCase(editProduct.fulfilled, (state, action) => {
-                state.productLoading = false
                 if (state.product) {
                     state.product.product = action.payload.data
                 }
-            })
-            .addCase(editProduct.rejected, (state) => {
-                state.productLoading = false
+                const productId = action.payload.data._id
+                const index = state.myProducts.products.findIndex((product) => product._id === productId)
+                if (index > -1) {
+                    state.myProducts.products[index] = action.payload.data
+                }
             })
         //delete product
         builder
@@ -270,21 +268,14 @@ const productSlice = createSlice({
             })
         //accept bid
         builder
-            .addCase(acceptBid.pending, (state) => {
-                state.productLoading = true
-            })
             .addCase(acceptBid.fulfilled, (state, action) => {
-                state.productLoading = false
                 if (state.product) {
                     state.product.auction = action.payload.data.auction
-                    if (state.product.winner) {
-                        state.product.winner.aratdar = action.payload.data.bid.aratdarId
-                        state.product.winner.bidAmount = action.payload.data.bid.bidAmount
-                    }
+                    state.product.winner = {
+                        aratdar: action.payload.data.bid.aratdarId,
+                        bidAmount: action.payload.data.bid.bidAmount,
+                    };
                 }
-            })
-            .addCase(acceptBid.rejected, (state) => {
-                state.productLoading = false
             })
     },
 })

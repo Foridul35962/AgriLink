@@ -704,10 +704,11 @@ export const acceptBidding = AsyncHandler(async (req, res) => {
 
     auction.winnerBidId = bid._id;
     auction.status = "WINNER_SELECTED";
-    auction.selectedAt = Date.now
+    auction.selectedAt = Date.now()
 
     bid.status = "WINNER";
 
+    await redis.del(`product:${auction.productId._id}`)
 
     await Promise.all([
         auction.save(),

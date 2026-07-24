@@ -192,7 +192,7 @@ export default function MyProductsPage() {
           <div className="flex flex-wrap items-center gap-3">
             {/* ➕ Add Product Button */}
             <Link
-              href="/products/add"
+              href="/my-products/add"
               className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium text-sm px-4 py-2.5 rounded-2xl shadow-md shadow-emerald-600/20 transition-all duration-200"
             >
               <Plus size={18} />
@@ -290,7 +290,7 @@ export default function MyProductsPage() {
               {/* Empty state bottom action */}
               <div className="pt-2">
                 <Link
-                  href="/products/add"
+                  href="/my-products/add"
                   className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-sm transition"
                 >
                   <Plus size={16} />

@@ -371,6 +371,17 @@ const bn: AppTranslations = {
     auctionEndTime: "নীলাম শেষের সময়:",
     locale: "bn-BD"
   },
+  editProduct: {
+    badge: "পণ্য সম্পাদনা",
+    title: "পণ্যের তথ্য সম্পাদনা করুন",
+    subtitle: "পণ্যের তথ্য আপডেট করুন এবং পরিবর্তনগুলো সংরক্ষণ করুন।",
+    noChanges: "কোনো পরিবর্তন করা হয়নি।",
+    updateSuccess: "পণ্য সফলভাবে আপডেট করা হয়েছে!",
+    updateError: "পণ্য আপডেট করতে ব্যর্থ হয়েছে",
+    updating: "আপডেট হচ্ছে...",
+    saveChanges: "পরিবর্তন সংরক্ষণ করুন",
+    fetchError: "পণ্যের তথ্য লোড করতে ব্যর্থ হয়েছে",
+  },
 };
 
 export default bn;

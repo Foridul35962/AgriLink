@@ -346,6 +346,17 @@ const en: AppTranslations = {
     auctionEndTime: "Auction End Time:",
     locale: "en-US"
   },
+  editProduct: {
+    badge: "Edit Product",
+    title: "Edit Product Details",
+    subtitle: "Update product information and save changes.",
+    noChanges: "No changes were made.",
+    updateSuccess: "Product updated successfully!",
+    updateError: "Failed to update product",
+    updating: "Updating...",
+    saveChanges: "Save Changes",
+    fetchError: "Failed to fetch product details",
+  },
 };
 
 export default en;
