@@ -113,7 +113,7 @@ export const addProduct = [
             startPrice,
             currentHighestBid: 0,
             startTime: new Date(),
-            endTime: new Date(Date.now() + 6 * 60 * 60 * 1000),
+            endTime: new Date(Date.now() + 12 * 60 * 60 * 1000),
             status: "ACTIVE"
         };
 
@@ -491,7 +491,10 @@ export const getAllProducts = AsyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     const matchStage = {
-        status: "available"
+        status: "available",
+        createdAt: {
+            $gte: new Date(Date.now() - 12 * 60 * 60 * 1000)
+        }
     };
 
     if (name) {
