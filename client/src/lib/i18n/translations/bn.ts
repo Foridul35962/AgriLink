@@ -479,6 +479,22 @@ const bn: AppTranslations = {
     reportedUserRole: "অভিযুক্ত ব্যবহারকারী",
     loadingDetails: "রিপোর্ট বিস্তারিত লোড হচ্ছে...",
   },
+  productsPage: {
+    title: "কৃষি পণ্যের মার্কেটপ্লেস",
+    subtitle: "বাংলাদেশের প্রান্তিক কৃষকদের উৎপাদিত শতভাগ তাজা ও ভেজালমুক্ত পণ্য সরাসরি ক্রয় করুন।",
+    searchPlaceholder: "পণ্যের নাম লিখে খুঁজুন...",
+    categoryLabel: "ক্যাটাগরি",
+    districtLabel: "জেলা",
+    allCategories: "সব ক্যাটাগরি",
+    allDistricts: "সব জেলা",
+    resetFilters: "ফিল্টার মুছুন",
+    noProducts: "আপনার অনুসন্ধানের সাথে মিলে এমন কোনো পণ্য খুঁজে পাওয়া যায়নি।",
+    pricePerUnit: "মূল্য",
+    availableQty: "মজুদ",
+    previous: "আগেরটি",
+    next: "পরেরটি",
+    pageLabel: "পৃষ্ঠা",
+  },
 };
 
 export default bn;

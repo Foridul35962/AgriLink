@@ -454,6 +454,22 @@ const en: AppTranslations = {
     reportedUserRole: "Reported User",
     loadingDetails: "Loading Report Details...",
   },
+  productsPage: {
+    title: "Fresh Agricultural Market",
+    subtitle: "Directly connecting local farmers with consumers for pure, authentic, and fresh produce across Bangladesh.",
+    searchPlaceholder: "Search for crops, fruits, or items...",
+    categoryLabel: "Category",
+    districtLabel: "District",
+    allCategories: "All Categories",
+    allDistricts: "All Districts",
+    resetFilters: "Clear Filters",
+    noProducts: "We couldn't find any products matching your search criteria.",
+    pricePerUnit: "Price",
+    availableQty: "In Stock",
+    previous: "Prev",
+    next: "Next",
+    pageLabel: "Page",
+  },
 };
 
 export default en;

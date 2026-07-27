@@ -314,4 +314,20 @@ export interface AppTranslations {
     reportedUserRole: string;
     loadingDetails: string;
   };
+  productsPage: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    categoryLabel: string;
+    districtLabel: string;
+    allCategories: string;
+    allDistricts: string;
+    resetFilters: string;
+    noProducts: string;
+    pricePerUnit: string;
+    availableQty: string;
+    previous: string;
+    next: string;
+    pageLabel: string;
+  };
 }
