@@ -23,7 +23,7 @@ export const getAllReport = createAsyncThunk(
     "report/getAll",
     async (params: { page: number }, { rejectWithValue }) => {
         try {
-            const res = await axios.get(`${SERVER_URL}/create`, {
+            const res = await axios.get(`${SERVER_URL}/all-reports`, {
                 withCredentials: true,
                 params
             })
@@ -144,29 +144,15 @@ const reportSlice = createSlice({
             })
         //send report warning
         builder
-            .addCase(sendReportWarning.pending, (state) => {
-                state.reportLoading = true
-            })
             .addCase(sendReportWarning.fulfilled, (state, action) => {
-                state.reportLoading = false
                 const reportId = action.payload.data
                 state.allReports.reports = state.allReports.reports.filter((report) => report._id !== reportId)
-            })
-            .addCase(sendReportWarning.rejected, (state) => {
-                state.reportLoading = false
             })
         //set report view done
         builder
-            .addCase(setReportViewDone.pending, (state) => {
-                state.reportLoading = true
-            })
             .addCase(setReportViewDone.fulfilled, (state, action) => {
-                state.reportLoading = false
                 const reportId = action.payload.data
                 state.allReports.reports = state.allReports.reports.filter((report) => report._id !== reportId)
-            })
-            .addCase(setReportViewDone.rejected, (state) => {
-                state.reportLoading = false
             })
     },
 })

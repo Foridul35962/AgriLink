@@ -243,4 +243,75 @@ export interface AppTranslations {
       page: string;
     };
   };
+  createReport: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    fields: {
+      topic: {
+        label: string;
+        placeholder: string;
+      };
+      description: {
+        label: string;
+        placeholder: string;
+        charsRemaining: string;
+      };
+      reportedUser: {
+        label: string;
+      };
+    };
+    buttons: {
+      submit: string;
+      submitting: string;
+      cancel: string;
+    };
+    messages: {
+      success: string;
+      error: string;
+      topicRequired: string;
+      topicLength: string;
+      descriptionRequired: string;
+      descriptionLength: string;
+    },
+  };
+  adminReport: {
+    backToDashboard: string;
+    reviewed: string;
+    pendingReview: string;
+    reportId: string;
+    description: string;
+    submittedOn: string;
+    reportedTarget: string;
+    reporter: string;
+    removeReportedUser: string;
+    removeReporter: string;
+    adminReviewActions: string;
+    adminActionsDesc: string;
+    sendWarning: string;
+    markAsDone: string;
+    alreadyReviewed: string;
+    reportedUserHistory: string;
+    reporterHistory: string;
+    noOffenses: string;
+    noSubmissions: string;
+    resolved: string;
+    pending: string;
+    sendWarningTitle: string;
+    sendWarningDesc: string;
+    sendWarningSuffix: string;
+    cancel: string;
+    confirmAndSend: string;
+    removeUserTitle: string;
+    removeUserDesc: string;
+    removeUserSuffix: string;
+    reasonLabel: string;
+    reasonPlaceholder: string;
+    confirmRemoval: string;
+    unknownUser: string;
+    unknownReporter: string;
+    reporterRole: string;
+    reportedUserRole: string;
+    loadingDetails: string;
+  };
 }
