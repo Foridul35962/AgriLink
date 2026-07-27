@@ -8,8 +8,13 @@ import { useSelector } from 'react-redux'
 
 const ProductProvider = ({ children }: { children: React.ReactNode }) => {
     const { isUserFetch, user } = useSelector((state: RootState) => state.auth)
-    if (isUserFetch && user?.role === "retailer") {
-        redirect("/")
+    if (isUserFetch) {
+        if (!user) {
+            redirect("/")
+        }
+        if (user.role === "retailer") {
+            redirect("/")
+        }
     }
     return (
         <>
