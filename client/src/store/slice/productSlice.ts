@@ -1,4 +1,4 @@
-import { acceptBidType, addBidType, AddProductResponse, Bid, GetAllMyProductsResponse, GetAllProductsResponse, GetProductResponse } from "@/types/productTypes";
+import { acceptBidType, addBidType, AddProductResponse, Bid, GetAllMyProductsResponse, GetAllProductsResponse, getAllProductsType, GetProductResponse } from "@/types/productTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -71,7 +71,7 @@ export const getProduct = createAsyncThunk(
     "product/get",
     async ({ productId }: { productId: string }, { rejectWithValue }) => {
         try {
-            const res = await axios.get(`${SERVER_URL}/${productId}`,
+            const res = await axios.get(`${SERVER_URL}/product/${productId}`,
                 { withCredentials: true }
             )
             return res.data
@@ -84,10 +84,13 @@ export const getProduct = createAsyncThunk(
 
 export const getAllProducts = createAsyncThunk(
     "product/getAll",
-    async (_: null, { rejectWithValue }) => {
+    async (params: getAllProductsType, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/all`,
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    params
+                }
             )
             return res.data
         } catch (error) {
@@ -149,7 +152,7 @@ const initialState: initialStateType = {
     allProducts: {
         products: [],
         pagination: {
-            currentPage: 1,
+            currentPage: 0,
             limit: 0,
             totalPages: 0,
             totalProducts: 0

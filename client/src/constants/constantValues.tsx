@@ -27,3 +27,35 @@ export const CATEGORY_VALUES = [
 ]
 
 export const UNITS = ["kg", "mon", "ton", "piece"]
+
+export const CATEGORIES_MAP = [
+  { en: "Rice", bn: "চাল" },
+  { en: "Wheat", bn: "গম" },
+  { en: "Vegetables", bn: "শাকসবজি" },
+  { en: "Fruits", bn: "ফল" },
+  { en: "Spices", bn: "মসলা" },
+  { en: "Pulses", bn: "ডাল" },
+  { en: "Jute", bn: "পাট" },
+  { en: "Fish", bn: "মাছ" },
+  { en: "Poultry & Dairy", bn: "পোল্ট্রি ও দুগ্ধজাত" },
+  { en: "Other", bn: "অন্যান্য" },
+] as const;
+
+export const DISTRICTS_BN: Record<string, string> = {
+  Bagerhat: "বাগেরহাট", Bandarban: "বান্দরবান", Barguna: "বরগুনা", Barishal: "বরিশাল", Bhola: "ভোলা",
+  Bogura: "বগুড়া", Brahmanbaria: "ব্রাহ্মণবাড়িয়া", Chandpur: "চাঁদপুর", Chapainawabganj: "চাঁপাইনবাবগঞ্জ",
+  Chattogram: "চট্টগ্রাম", Chuadanga: "চুয়াডাঙ্গা", "Cox's Bazar": "কক্সবাজার", Cumilla: "কুমিল্লা",
+  Dhaka: "ঢাকা", Dinajpur: "দিনাজপুর", Faridpur: "ফরিদপুর", Feni: "ফেনী", Gaibandha: "গাইবান্ধা",
+  Gazipur: "গাজীপুর", Gopalganj: "গোপালগঞ্জ", Habiganj: "হবিগঞ্জ", Jamalpur: "জামালপুর", Jashore: "যশোর",
+  Jhalokati: "ঝালকাঠি", Jhenaidah: "ঝিনাইদহ", Joypurhat: "জয়পুরহাট", Khagrachari: "খাগড়াছড়ি",
+  Khulna: "খুলনা", Kishoreganj: "কিশোরগঞ্জ", Kurigram: "কুড়িগ্রাম", Kushtia: "কুষ্টিয়া",
+  Lakshmipur: "লক্ষ্মীপুর", Lalmonirhat: "লালমনিরহাট", Madaripur: "মাদারীপুর", Magura: "মাগুরা",
+  Manikganj: "মানিকগঞ্জ", Meherpur: "মেহেরপুর", Moulvibazar: "মৌলভীবাজার", Munshiganj: "মুন্সীগঞ্জ",
+  Mymensingh: "ময়মনসিংহ", Naogaon: "নওগাঁ", Narail: "নড়াইল", Narayanganj: "নারায়ণগঞ্জ",
+  Narsingdi: "নরসিংদী", Natore: "নাটোর", Netrokona: "নেত্রকোণা", Nilphamari: "নীলফামারী",
+  Noakhali: "নোয়াখালী", Pabna: "পাবনা", Panchagarh: "পঞ্চগড়", Patuakhali: "পটুয়াখালী",
+  Pirojpur: "পিরোজপুর", Rajbari: "রাজবাড়ী", Rajshahi: "রাজশাহী", Rangamati: "রাঙ্গামাটি",
+  Rangpur: "রংপুর", Satkhira: "সাতক্ষীরা", Shariatpur: "শরীয়তপুর", Sherpur: "শেরপুর",
+  Sirajganj: "সিরাজগঞ্জ", Sunamganj: "সুনামগঞ্জ", Sylhet: "সিলেট", Tangail: "টাঙ্গাইল",
+  Thakurgaon: "ঠাকুরগাঁও"
+};
