@@ -38,7 +38,12 @@ export default function AdminReportsPage() {
   }, [searchParams, router]);
 
   useEffect(() => {
-    dispatch(getAllReport({ page: pageFromUrl }));
+    const fetch = async()=>{
+      await dispatch(getAllReport({ page: pageFromUrl })).unwrap()
+    }
+    if (allReports.pagination.page!==pageFromUrl) {
+      fetch()
+    }
   }, [dispatch, pageFromUrl]);
 
   const reportsList = allReports?.reports || [];
