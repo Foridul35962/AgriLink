@@ -13,7 +13,7 @@ import Bids from '../models/bids.model.js'
 import Notification from '../models/Notification.model.js'
 import { NOTIFICATION_TYPES } from '../constants/notification.types.js'
 import { generateAuctionWinnerMail, sendBrevoMail } from '../config/mail.js'
-import Orders from '../models/order.model.js'
+import Orders from '../models/Order.model.js'
 
 export const addProduct = [
     check("name")
