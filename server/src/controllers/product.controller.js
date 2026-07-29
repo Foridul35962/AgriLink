@@ -13,6 +13,7 @@ import Bids from '../models/bids.model.js'
 import Notification from '../models/Notification.model.js'
 import { NOTIFICATION_TYPES } from '../constants/notification.types.js'
 import { generateAuctionWinnerMail, sendBrevoMail } from '../config/mail.js'
+import Orders from '../models/order.model.js'
 
 export const addProduct = [
     check("name")
@@ -757,3 +758,127 @@ export const acceptBidding = AsyncHandler(async (req, res) => {
             )
         );
 });
+
+export const createProductOrder = AsyncHandler(async (req, res) => {
+    const userId = req.user._id
+
+    const { productId, auctionId } = req.body
+    if (!productId || !auctionId) {
+        throw new ApiErrors(400, "all field are required")
+    }
+
+    if (!mongoose.isValidObjectId(productId)) {
+        throw new ApiErrors(400, "invalid productId")
+    }
+
+    if (!mongoose.isValidObjectId(auctionId)) {
+        throw new ApiErrors(400, "invalid auctionId")
+    }
+
+    // const session = await mongoose.startSession();
+
+    try {
+        // session.startTransaction();
+
+        const [product, auction] = await Promise.all([
+            Products.findById(productId)
+                .select("farmerId name quantity unit")
+                .populate({
+                    path: "farmerId",
+                    select: "email name"
+                })
+            // .session(session)
+            ,
+
+            Auction.findById(auctionId)
+                .select("endTime status winnerBidId")
+                .populate({
+                    path: "winnerBidId",
+                    select: "aratdarId bidAmount"
+                })
+            // .session(session)
+        ])
+
+        if (!product) {
+            throw new ApiErrors(404, "product is not found")
+        }
+
+        if (!auction) {
+            throw new ApiErrors(404, "auction is not found")
+        }
+
+        if (auction.endTime > Date.now()) {
+            throw new ApiErrors(400, "bidding is not ended")
+        }
+
+        if (auction.status !== "WINNER_SELECTED") {
+            throw new ApiErrors(400, "farmer is not selected winner")
+        }
+
+        if (auction.status === "ORDER_CREATED") {
+            throw new ApiErrors(400, "order already created")
+        }
+
+        if (!auction.winnerBidId) {
+            throw new ApiErrors(400, "winner bid not found")
+        }
+
+        if (auction.winnerBidId.aratdarId.toString() !== userId.toString()) {
+            throw new ApiErrors(401, "user is not winner")
+        }
+
+        const pricePerUnit = auction.winnerBidId.bidAmount / product.quantity
+
+        auction.status = "ORDER_CREATED"
+
+        const [order, updatedAuction] = await Promise.all([
+            Orders.create({
+                sellerId: product.farmerId._id,
+                buyerId: userId,
+                sellerRole: "farmer",
+                buyerRole: "aratdar",
+                productId: product._id,
+                quantity: product.quantity,
+                unit: product.unit,
+                pricePerUnit,
+                totalAmount: auction.winnerBidId.bidAmount,
+                status: "PENDING"
+            },
+                // {session}
+            ),
+
+            auction.save(
+                // {session}
+            )
+        ])
+
+        await session.commitTransaction();
+
+        if (!order) {
+            throw new ApiErrors(500, "order created failed")
+        }
+
+        Notification.create({
+            recipient: product.farmerId._id,
+            sender: userId,
+            type: NOTIFICATION_TYPES.ORDER_PLACED,
+            title: "New Order Received",
+            message: `Your ${product.name} has been ordered by an aratdar. Please check the order details.`,
+            relatedId: order._id
+        })
+
+        // socket.io need
+
+        return res
+            .status(201)
+            .json(
+                new ApiResponse(201, order, "order created successfully")
+            )
+    } catch (error) {
+        // await session.abortTransaction();
+
+        throw error;
+    } finally {
+        // session.endSession();
+    }
+})
