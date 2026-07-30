@@ -852,7 +852,7 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
             )
         ])
 
-        await session.commitTransaction();
+        // await session.commitTransaction();
 
         if (!order) {
             throw new ApiErrors(500, "order created failed")

@@ -1,6 +1,7 @@
 import { AratdarPlacedOrderDetailsResponse, AratdarPlacedOrderResponse, changeFarmerOrderStatusType, FarmerReceiveOrderDetailsResponse, FarmerReceiveOrderResponse } from "@/types/orderTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
+import { createOrder } from "./productSlice";
 
 const SERVER_URL = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/order`
 
@@ -181,6 +182,20 @@ const orderSlice = createSlice({
                 state.aratdarPlaceOrderDetails = action.payload.data
             })
             .addCase(getAratdarPlacedOrderDetails.rejected, (state) => {
+                state.orderLoading = false
+            })
+        builder
+            .addCase(createOrder.pending, (state) => {
+                state.orderLoading = true
+            })
+            .addCase(createOrder.fulfilled, (state, action) => {
+                state.orderLoading = false
+                state.aratdarPlaceOrderDetails = action.payload.data
+                if (state.aratdarPlaceOrders.orders.length > 0) {
+                    state.aratdarPlaceOrders.orders = [action.payload.data, ...state.aratdarPlaceOrders.orders]
+                }
+            })
+            .addCase(createOrder.rejected, (state) => {
                 state.orderLoading = false
             })
     },

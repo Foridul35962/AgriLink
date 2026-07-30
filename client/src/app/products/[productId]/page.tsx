@@ -23,17 +23,21 @@ import {
   ArrowLeft,
   Sparkles,
   TrendingUp,
+  ShoppingCart,
+  Loader2,
 } from "lucide-react";
 
 import { AppDispatch, RootState } from "@/store/store";
-import { acceptBid, addBid, deleteProduct, getProduct } from "@/store/slice/productSlice";
+import { acceptBid, addBid, createOrder, deleteProduct, getProduct } from "@/store/slice/productSlice";
 import { useLanguage } from "@/context/LanguageContext";
+import { toast } from "react-toastify";
 
 export default function ProductDetailPage() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { productId } = useParams();
   const { t } = useLanguage();
+  const { orderLoading } = useSelector((state: RootState) => state.order)
 
   // Auth User Redux State
   const { user } = useSelector((state: RootState) => state.auth);
@@ -105,6 +109,15 @@ export default function ProductDetailPage() {
     }
   };
 
+  const handleOrder = async () => {
+    try {
+      const res = await dispatch(createOrder({ productId: productId as string, auctionId: auction._id })).unwrap()
+      router.push(`/aratdar/order/placed/${res.data._id}`)
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
   // 🟢 ১. প্রথমবার ফ্যাচ হওয়া পর্যন্ত অথবা লোডিং চলাকালীন শাইন স্পিনার দেখাবে
   if (!isFetched || productLoading) {
     return (
@@ -162,6 +175,14 @@ export default function ProductDetailPage() {
       ? product.farmerId._id
       : product.farmerId;
 
+  // Safe Extract Winner Aratdar ID
+  const winnerAratdarId =
+    typeof winner?.aratdar === "object"
+      ? winner.aratdar._id
+      : winner?.aratdarId || winner?.aratdar;
+
+  const isCurrentWinner = user ? user._id === winnerAratdarId : false;
+
   // Conditions
   const isOwner = user ? user._id === farmerId : false;
   const isAratdar = user ? user.role === "aratdar" : false;
@@ -171,11 +192,11 @@ export default function ProductDetailPage() {
     ? new Date(auction.endTime).getTime() < Date.now()
     : false;
 
-  // ১. ১২ ঘণ্টা পার হয়েছে কিনা চেক করার লজিক (auction.selectedAt থেকে)
+  // ১. ১২ ঘণ্টা পার হয়েছে কিনা চেক করার লজিক (auction.selectedAt থেকে)
   const selectedTime = auction?.selectedAt ? new Date(auction.selectedAt).getTime() : 0;
   const is12HoursPassed = selectedTime ? Date.now() > selectedTime + 12 * 60 * 60 * 1000 : false;
 
-  // ২. অর্ডার তৈরি হয়নি এমন অবস্থা
+  // ২. অর্ডার তৈরি হয়নি এমন অবস্থা
   const isOrderNotCreated = auction?.status !== "ORDER_CREATED";
 
   const canSelectWinner =
@@ -497,7 +518,7 @@ export default function ProductDetailPage() {
             </div>
 
             {winner && (
-              <div className="bg-linear-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-md space-y-3">
+              <div className="bg-linear-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-md space-y-4">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={18} className="text-emerald-200" />
                   <h4 className="font-bold text-xs uppercase tracking-wider">
@@ -513,6 +534,27 @@ export default function ProductDetailPage() {
                     ৳{winner.bidAmount}
                   </span>
                 </div>
+
+                {/* 🟢 ORDER NOW BUTTON FOR WINNING ARATDAR */}
+                {isCurrentWinner && auction?.status === "WINNER_SELECTED" && (
+                  <button
+                    disabled={orderLoading}
+                    onClick={handleOrder}
+                    className="w-full mt-2 py-3 cursor-pointer disabled:cursor-not-allowed bg-white hover:bg-emerald-50 text-emerald-800 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {orderLoading ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin text-emerald-700" />
+                        <span>{t.productDetail?.orderLoading}</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart size={16} />
+                        <span>{t.productDetail?.orderNow}</span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             )}
           </div>
