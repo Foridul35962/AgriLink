@@ -130,7 +130,7 @@ export const changeFarmerOrderStatus = AsyncHandler(async (req, res) => {
             sellerRole: "farmer"
         },
         {
-            status: stauts
+            status: status
         }
     )
 
