@@ -1,4 +1,4 @@
-import { acceptBidType, addBidType, AddProductResponse, Bid, GetAllMyProductsResponse, GetAllProductsResponse, getAllProductsType, GetProductResponse } from "@/types/productTypes";
+import { acceptBidType, addBidType, AddProductResponse, Bid, createOrderType, GetAllMyProductsResponse, GetAllProductsResponse, getAllProductsType, GetProductResponse } from "@/types/productTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -120,6 +120,21 @@ export const acceptBid = createAsyncThunk(
     async (data: acceptBidType, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/accept-bid`, data,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const createOrder = createAsyncThunk(
+    "product/createOrder",
+    async (data: createOrderType, { rejectWithValue }) => {
+        try {
+            const res = await axios.post(`${SERVER_URL}/create-order`, data,
                 { withCredentials: true }
             )
             return res.data

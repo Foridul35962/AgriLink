@@ -3,6 +3,11 @@ export interface addBidType {
   bidAmount: number
 }
 
+export interface createOrderType {
+  productId: string
+  auctionId: string
+}
+
 export interface getAllProductsType {
   category?: string
   name?: string
