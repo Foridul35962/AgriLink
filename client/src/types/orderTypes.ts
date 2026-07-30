@@ -1,6 +1,6 @@
 export interface changeFarmerOrderStatusType {
     orderId: string
-    stauts: "PROCESSING" | "SHIPPED" | "DELIVERED"
+    status: "PROCESSING" | "SHIPPED" | "DELIVERED"
 }
 
 // --------------------------------

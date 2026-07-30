@@ -7,10 +7,11 @@ const SERVER_URL = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/order`
 
 export const getFarmerReceiveOrders = createAsyncThunk(
     "order/farmerReceive",
-    async (_: null, { rejectWithValue }) => {
+    async (params:{page:number}, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/farmer-receive`, {
-                withCredentials: true
+                withCredentials: true,
+                params
             })
             return res.data
         } catch (error) {
@@ -54,10 +55,11 @@ export const changeFarmerOrderStatus = createAsyncThunk(
 
 export const getAratdarPlacedOrders = createAsyncThunk(
     "order/aratdarPlaced",
-    async (_: null, { rejectWithValue }) => {
+    async (params:{page:number}, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/aratdar-placed`, {
-                withCredentials: true
+                withCredentials: true,
+                params
             })
             return res.data
         } catch (error) {
@@ -142,11 +144,7 @@ const orderSlice = createSlice({
                 state.orderLoading = false
             })
         builder
-            .addCase(changeFarmerOrderStatus.pending, (state) => {
-                state.orderLoading = true
-            })
             .addCase(changeFarmerOrderStatus.fulfilled, (state, action) => {
-                state.orderLoading = false
                 const orderId = action.payload.data.orderId
                 const status = action.payload.data.status
                 if (state.farmerReceivesOrderDetails) {
@@ -158,9 +156,6 @@ const orderSlice = createSlice({
                         state.farmerReceiveOrders.orders[idx].status = status
                     }
                 }
-            })
-            .addCase(changeFarmerOrderStatus.rejected, (state) => {
-                state.orderLoading = false
             })
         builder
             .addCase(getAratdarPlacedOrders.pending, (state) => {
