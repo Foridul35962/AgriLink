@@ -332,4 +332,75 @@ export interface AppTranslations {
     next: string;
     pageLabel: string;
   };
+  aratdarOrders: {
+    title: string;
+    subtitle: string;
+    orderId: string;
+    product: string;
+    quantity: string;
+    totalAmount: string;
+    status: string;
+    date: string;
+    noOrders: string;
+    noOrdersSub: string;
+    viewDetails: string;
+    currency: string;
+    page: string;
+    of: string;
+    previous: string;
+    next: string;
+  };
+  aratdarOrderDetails: {
+    back: string;
+    title: string;
+    orderInfo: string;
+    quantity: string;
+    totalAmount: string;
+    currency: string;
+    sellerInfo: string;
+    sellerName: string;
+    phoneNumber: string;
+    email: string;
+    notProvided: string;
+    notFound: string;
+    notFoundSub: string;
+  };
+  farmerReceiveOrders: {
+    title: string;
+    subtitle: string;
+    ledgerEntries: string;
+    placed: string;
+    totalAmount: string;
+    currency: string;
+    noOrders: string;
+    noOrdersSub: string;
+    page: string;
+    of: string;
+    previous: string;
+    next: string;
+  };
+  farmerReceiveOrderDetails: {
+    back: string;
+    title: string;
+    orderInfo: string;
+    quantity: string;
+    totalAmount: string;
+    currency: string;
+    buyerInfo: string;
+    buyerName: string;
+    phoneNumber: string;
+    email: string;
+    district: string;
+    updateStatus: string;
+    statusUpdatedSuccess: string;
+    updatingStatus: string;
+    notProvided: string;
+    notFound: string;
+    notFoundSub: string;
+    statusOptions: {
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+    };
+  };
 }
