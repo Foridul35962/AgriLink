@@ -112,7 +112,7 @@ export default function ProductDetailPage() {
   const handleOrder = async () => {
     try {
       const res = await dispatch(createOrder({ productId: productId as string, auctionId: auction._id })).unwrap()
-      router.push(`/aratdar/place-orders/${res.data._id}`)
+      router.push(`/aratdar/order/placed/${res.data._id}`)
     } catch (error: any) {
       toast.error(error.message)
     }
