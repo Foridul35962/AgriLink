@@ -206,6 +206,8 @@ export interface AppTranslations {
     auctionEnded: string;
     auctionEndTime: string,
     locale: string
+    orderLoading: string
+    orderNow: string
   };
   editProduct: {
     badge: string;

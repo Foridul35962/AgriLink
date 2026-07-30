@@ -369,7 +369,9 @@ const bn: AppTranslations = {
     bidModalTitle: "নিলামে অংশ নিন",
     auctionEnded: "নিলামের সময় শেষ",
     auctionEndTime: "নীলাম শেষের সময়:",
-    locale: "bn-BD"
+    locale: "bn-BD",
+    orderLoading: "অর্ডার তৈরি হচ্ছে...",
+    orderNow: "অর্ডার করুন"
   },
   editProduct: {
     badge: "পণ্য সম্পাদনা",

@@ -344,7 +344,9 @@ const en: AppTranslations = {
     bidModalTitle: "Place Your Bid",
     auctionEnded: "Auction Ended",
     auctionEndTime: "Auction End Time:",
-    locale: "en-US"
+    locale: "en-US",
+    orderLoading: "Creating Order...",
+    orderNow: "Order Now"
   },
   editProduct: {
     badge: "Edit Product",
