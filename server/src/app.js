@@ -7,6 +7,7 @@ import adminRouter from './routes/admin.route.js'
 import reportRouter from './routes/report.route.js'
 import productRouter from './routes/product.route.js'
 import orderRouter from './routes/order.route.js'
+import cropRouter from './routes/crop.route.js'
 
 const app = express()
 
@@ -25,6 +26,7 @@ app.use('/api/admin', adminRouter)
 app.use('/api/report', reportRouter)
 app.use('/api/product', productRouter)
 app.use('/api/order', orderRouter)
+app.use('/api/crop', cropRouter)
 
 app.get('/', (req, res) => {
     res.send("AgriLink server is running ...")
