@@ -547,7 +547,7 @@ export const updateCropRecommendation = [
             throw new ApiErrors(400, "minimum one field are required")
         }
 
-        const cropRecommendation = await CropRecommendations.findById({ cropRecommendationId })
+        const cropRecommendation = await CropRecommendations.findById(cropRecommendationId)
         if (!cropRecommendation) {
             throw new ApiErrors(404, "crop recommendation is not found")
         }
