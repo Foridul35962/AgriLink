@@ -107,7 +107,7 @@ export const createCrop = [
         const crop = await Crops.create({
             name,
             banglaName,
-            image,
+            image: upload,
             category,
             description,
             weatherRequirement,
@@ -120,6 +120,8 @@ export const createCrop = [
         if (!crop) {
             throw new ApiErrors(500, "crop create failed")
         }
+
+        crop.image.publicId = undefined
 
         return res
             .status(500)
@@ -325,7 +327,8 @@ export const updateCrop = AsyncHandler(async (req, res) => {
         crop.image = upload;
     }
 
-    await crop.save();
+    const updatedCrop = await crop.save();
+    crop.image.publicId = undefined
 
     // Clear cache
     await redis.del(`cropDetails:${cropId}`);
@@ -333,7 +336,7 @@ export const updateCrop = AsyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(
             200,
-            crop,
+            updatedCrop,
             "crop updated successfully"
         )
     );
@@ -558,14 +561,14 @@ export const updateCropRecommendation = [
         cropRecommendation.reason = reason ?? cropRecommendation.reason
         cropRecommendation.tips = tips ?? cropRecommendation.tips
 
-        await cropRecommendation.save()
+        const updatedRecommendation = await cropRecommendation.save()
 
         await redis.del(`cropDetails:${cropRecommendation.cropId}`);
 
         return res
             .status(200)
             .json(
-                new ApiResponse(200, cropRecommendation, "crop recommendation updated")
+                new ApiResponse(200, updatedRecommendation, "crop recommendation updated")
             )
     })
 ]
