@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DISTRICTS } from "../constants/common.types";
+import { DISTRICTS } from "../constants/common.types.js";
 
 const cropRecommendationSchema = new mongoose.Schema({
     cropId: {
