@@ -161,6 +161,7 @@ const cropSlice = createSlice({
             })
             .addCase(createCrop.fulfilled, (state, action) => {
                 state.cropLoading = false
+                state.cropDetails = action.payload.data
                 if (state.allCrops.crops.length > 0) {
                     state.allCrops.crops = [...action.payload.data, state.allCrops.crops]
                 } else {
