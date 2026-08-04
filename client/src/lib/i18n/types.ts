@@ -441,6 +441,8 @@ export interface AppTranslations {
     recNote: string;
     skip: string;
     submitRec: string;
+    updateRec: string;
+    update: string;
     submitting: string;
     validation: {
       nameRequired: string;
@@ -452,5 +454,55 @@ export interface AppTranslations {
       districtRequired: string;
       monthRequired: string;
     };
+  };
+  cropDetailsPage: {
+    loading: string
+    notFoundTitle: string
+    notFoundDesc: string
+    backButton: string
+    editCrop: string
+    addRecommendation: string
+    editRecommendation: string
+    category: string
+    description: string
+    waterRequirement: string
+    water: {
+      low: string
+      medium: string
+      high: string
+    }
+    cultivationDuration: string
+    days: string
+    suitableSoil: string
+    cultivationTips: string
+    weatherRequirement: string
+    temperature: string
+    humidity: string
+    rainProbability: string
+    rainfall: string
+    recommendationTitle: string
+    noRecommendationTitle: string
+    noRecommendationDesc: string
+    districts: string
+    plantingMonths: string
+    season: string
+    reason: string
+    tips: string
+    seasons: {
+      "kharif-1": string
+      "kharif-2": string
+      rabi: string
+      all: string
+    }
+    categories: {
+      cereal: string
+      vegetable: string
+      fruit: string
+      pulse: string
+      oilseed: string
+      spice: string
+      "cash-crop": string
+      other: string
+    }
   };
 }
