@@ -11,8 +11,8 @@ cropRouter.get("/all", controller.getAllCrop)
 cropRouter.get("/details/:cropId", controller.getCrop)
 cropRouter.patch("/update/:cropId", protect, isAdmin, upload, controller.updateCrop)
 cropRouter.delete("/delete/:cropId", protect, isAdmin, controller.deleteCrop)
-cropRouter.post("/create/recommendation", protect, isAdmin, controller.createCropRecommendation)
-cropRouter.patch("/update/recommendation", protect, isAdmin, controller.updateCropRecommendation)
-cropRouter.delete("/delete/recommendation/:cropRecommendationId", protect, isAdmin, controller.deleteCropRecommendation)
+cropRouter.post("/create-recommendation", protect, isAdmin, controller.createCropRecommendation)
+cropRouter.patch("/update-recommendation", protect, isAdmin, controller.updateCropRecommendation)
+cropRouter.delete("/delete-recommendation/:cropRecommendationId", protect, isAdmin, controller.deleteCropRecommendation)
 
 export default cropRouter
