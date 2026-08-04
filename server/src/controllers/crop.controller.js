@@ -124,7 +124,7 @@ export const createCrop = [
         crop.image.publicId = undefined
 
         return res
-            .status(500)
+            .status(201)
             .json(
                 new ApiResponse(201, crop, "crop created successfully")
             )
