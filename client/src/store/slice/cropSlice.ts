@@ -84,7 +84,7 @@ export const createRecommendation = createAsyncThunk(
     "crop/recommendation",
     async (data: CreateRecommendationTypes, { rejectWithValue }) => {
         try {
-            const res = await axios.post(`${SERVER_URL}/create/recommendation`, data,
+            const res = await axios.post(`${SERVER_URL}/create-recommendation`, data,
                 { withCredentials: true }
             )
             return res.data
@@ -99,7 +99,7 @@ export const updateRecommendation = createAsyncThunk(
     "crop/updaterecommendation",
     async (data: UpdateRecommendationTypes, { rejectWithValue }) => {
         try {
-            const res = await axios.patch(`${SERVER_URL}/update/recommendation`, data,
+            const res = await axios.patch(`${SERVER_URL}/update-recommendation`, data,
                 { withCredentials: true }
             )
             return res.data
@@ -114,7 +114,7 @@ export const deleteRecommendation = createAsyncThunk(
     "crop/deleterecommendation",
     async ({ cropRecommendationId }: { cropRecommendationId: string }, { rejectWithValue }) => {
         try {
-            const res = await axios.delete(`${SERVER_URL}/delete/recommendation/:${cropRecommendationId}`,
+            const res = await axios.delete(`${SERVER_URL}/delete-recommendation/:${cropRecommendationId}`,
                 { withCredentials: true }
             )
             return res.data
@@ -234,7 +234,7 @@ const cropSlice = createSlice({
             .addCase(createRecommendation.fulfilled, (state, action) => {
                 state.cropLoading = false
                 const recommendation: CropRecommendation = action.payload.data
-                if (state.cropDetails.crop?._id === recommendation._id) {
+                if (state.cropDetails.crop?._id === recommendation.cropId) {
                     state.cropDetails.recommendation = recommendation
                 }
             })
@@ -242,23 +242,13 @@ const cropSlice = createSlice({
                 state.cropLoading = false
             })
         builder
-            .addCase(updateRecommendation.pending, (state) => {
-                state.cropLoading = true
-            })
             .addCase(updateRecommendation.fulfilled, (state, action) => {
-                state.cropLoading = false
                 const recommendation: CropRecommendation = action.payload.data
-                if (state.cropDetails.crop?._id === recommendation._id) {
+                if (state.cropDetails.crop?._id === recommendation.cropId) {
                     state.cropDetails.recommendation = recommendation
                 }
             })
-            .addCase(updateRecommendation.rejected, (state) => {
-                state.cropLoading = false
-            })
         builder
-            .addCase(deleteRecommendation.pending, (state) => {
-                state.cropLoading = true
-            })
             .addCase(deleteRecommendation.fulfilled, (state, action) => {
                 state.cropLoading = false
                 const { cropId, cropRecommendationId } = action.payload.data
@@ -266,9 +256,6 @@ const cropSlice = createSlice({
                     state.cropDetails.recommendation?._id === cropRecommendationId) {
                     state.cropDetails.recommendation = null
                 }
-            })
-            .addCase(deleteRecommendation.rejected, (state) => {
-                state.cropLoading = false
             })
     },
 })
