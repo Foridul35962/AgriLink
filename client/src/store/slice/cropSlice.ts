@@ -114,7 +114,7 @@ export const deleteRecommendation = createAsyncThunk(
     "crop/deleterecommendation",
     async ({ cropRecommendationId }: { cropRecommendationId: string }, { rejectWithValue }) => {
         try {
-            const res = await axios.delete(`${SERVER_URL}/delete-recommendation/:${cropRecommendationId}`,
+            const res = await axios.delete(`${SERVER_URL}/delete-recommendation/${cropRecommendationId}`,
                 { withCredentials: true }
             )
             return res.data
