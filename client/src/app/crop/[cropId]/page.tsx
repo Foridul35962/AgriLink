@@ -1,9 +1,9 @@
 "use client"
 
 import { useLanguage } from '@/context/LanguageContext'
-import { getCropDetails } from '@/store/slice/cropSlice'
+import { getCropDetails, deleteCrop, deleteRecommendation } from '@/store/slice/cropSlice'
 import { AppDispatch, RootState } from '@/store/store'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,16 +21,22 @@ import {
     Lightbulb,
     MapPin,
     ClipboardList,
+    Trash2,
 } from 'lucide-react'
 import { DISTRICTS_BN, MONTHS } from '@/constants/constantValues'
 
 const CropDetailsPage = () => {
     const dispatch = useDispatch<AppDispatch>()
+    const router = useRouter()
     const { cropDetails, cropLoading } = useSelector((state: RootState) => state.crop)
     const { user } = useSelector((state: RootState) => state.auth)
     const { t, locale } = useLanguage()
     const { cropId } = useParams()
     const [notFound, setNotFound] = useState(false)
+
+    // Delete modal states
+    const [deleteModalType, setDeleteModalType] = useState<'crop' | 'recommendation' | null>(null)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const isAdmin = user?.role === 'admin'
 
@@ -65,6 +71,26 @@ const CropDetailsPage = () => {
     // district name (English, DB e jeভাবে stored) -> locale onujayi label
     const getDistrictLabel = (district: string) => {
         return locale === 'bn' ? (DISTRICTS_BN[district] ?? district) : district
+    }
+
+    // ---------- Delete Handler ----------
+    const handleDeleteConfirm = async () => {
+        if (!deleteModalType || !cropId) return
+        try {
+            setIsDeleting(true)
+            if (deleteModalType === 'crop') {
+                await dispatch(deleteCrop({ cropId: cropId as string })).unwrap()
+                setDeleteModalType(null)
+                router.push('/crop')
+            } else if (deleteModalType === 'recommendation') {
+                await dispatch(deleteRecommendation({ cropRecommendationId: cropDetails.recommendation?._id as string })).unwrap()
+                setDeleteModalType(null)
+            }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsDeleting(false)
+        }
     }
 
     // ---------- Loading state ----------
@@ -156,13 +182,22 @@ const CropDetailsPage = () => {
                             </div>
 
                             {isAdmin && (
-                                <Link
-                                    href={`/crop/edit/details/${cropId}`}
-                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-green-200 text-green-700 text-sm font-medium hover:bg-green-50 transition-colors"
-                                >
-                                    <Pencil className="w-3.5 h-3.5" />
-                                    {t.cropDetailsPage.editCrop}
-                                </Link>
+                                <div className="flex items-center gap-2">
+                                    <Link
+                                        href={`/crop/edit/details/${cropId}`}
+                                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-green-200 text-green-700 text-sm font-medium hover:bg-green-50 transition-colors"
+                                    >
+                                        <Pencil className="w-3.5 h-3.5" />
+                                        {t.cropDetailsPage.editCrop}
+                                    </Link>
+                                    <button
+                                        onClick={() => setDeleteModalType('crop')}
+                                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors cursor-pointer"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        {locale === 'bn' ? 'মুছে ফেলুন' : 'Delete'}
+                                    </button>
+                                </div>
                             )}
                         </div>
 
@@ -242,24 +277,24 @@ const CropDetailsPage = () => {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     {(crop.weatherRequirement.minTemperature !== undefined ||
                                         crop.weatherRequirement.maxTemperature !== undefined) && (
-                                        <div className="rounded-xl bg-gray-50 px-3 py-2.5">
-                                            <Thermometer className="w-4 h-4 text-gray-500 mb-1" />
-                                            <p className="text-[11px] text-gray-400">{t.cropDetailsPage.temperature}</p>
-                                            <p className="text-sm font-medium text-gray-700">
-                                                {crop.weatherRequirement.minTemperature ?? '—'}° - {crop.weatherRequirement.maxTemperature ?? '—'}°C
-                                            </p>
-                                        </div>
-                                    )}
+                                            <div className="rounded-xl bg-gray-50 px-3 py-2.5">
+                                                <Thermometer className="w-4 h-4 text-gray-500 mb-1" />
+                                                <p className="text-[11px] text-gray-400">{t.cropDetailsPage.temperature}</p>
+                                                <p className="text-sm font-medium text-gray-700">
+                                                    {crop.weatherRequirement.minTemperature ?? '—'}° - {crop.weatherRequirement.maxTemperature ?? '—'}°C
+                                                </p>
+                                            </div>
+                                        )}
                                     {(crop.weatherRequirement.minHumidity !== undefined ||
                                         crop.weatherRequirement.maxHumidity !== undefined) && (
-                                        <div className="rounded-xl bg-gray-50 px-3 py-2.5">
-                                            <Droplet className="w-4 h-4 text-gray-500 mb-1" />
-                                            <p className="text-[11px] text-gray-400">{t.cropDetailsPage.humidity}</p>
-                                            <p className="text-sm font-medium text-gray-700">
-                                                {crop.weatherRequirement.maxHumidity ?? '—'}%
-                                            </p>
-                                        </div>
-                                    )}
+                                            <div className="rounded-xl bg-gray-50 px-3 py-2.5">
+                                                <Droplet className="w-4 h-4 text-gray-500 mb-1" />
+                                                <p className="text-[11px] text-gray-400">{t.cropDetailsPage.humidity}</p>
+                                                <p className="text-sm font-medium text-gray-700">
+                                                    {crop.weatherRequirement.maxHumidity ?? '—'}%
+                                                </p>
+                                            </div>
+                                        )}
                                     {crop.weatherRequirement.maxRainProbability !== undefined && (
                                         <div className="rounded-xl bg-gray-50 px-3 py-2.5">
                                             <CloudRain className="w-4 h-4 text-gray-500 mb-1" />
@@ -294,22 +329,33 @@ const CropDetailsPage = () => {
                             </div>
 
                             {isAdmin && (
-                                <Link
-                                    href={`/crop/edit/recommendation/${cropId}`}
-                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-green-700 text-white text-sm font-medium hover:bg-green-800 transition-colors shadow-sm"
-                                >
-                                    {recommendation ? (
-                                        <>
-                                            <Pencil className="w-3.5 h-3.5" />
-                                            {t.cropDetailsPage.editRecommendation}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Plus className="w-3.5 h-3.5" />
-                                            {t.cropDetailsPage.addRecommendation}
-                                        </>
+                                <div className="flex items-center gap-2">
+                                    <Link
+                                        href={`/crop/edit/recommendation/${cropId}`}
+                                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-green-700 text-white text-sm font-medium hover:bg-green-800 transition-colors shadow-sm"
+                                    >
+                                        {recommendation ? (
+                                            <>
+                                                <Pencil className="w-3.5 h-3.5" />
+                                                {t.cropDetailsPage.editRecommendation}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Plus className="w-3.5 h-3.5" />
+                                                {t.cropDetailsPage.addRecommendation}
+                                            </>
+                                        )}
+                                    </Link>
+                                    {recommendation && (
+                                        <button
+                                            onClick={() => setDeleteModalType('recommendation')}
+                                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors cursor-pointer"
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                            {locale === 'bn' ? 'মুছে ফেলুন' : 'Delete'}
+                                        </button>
                                     )}
-                                </Link>
+                                </div>
                             )}
                         </div>
 
@@ -386,6 +432,40 @@ const CropDetailsPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* ---------- Delete Confirmation Modal ---------- */}
+            {deleteModalType && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+                    <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl animate-[pop_0.2s_ease-out]">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            {locale === 'bn' ? 'আপনি কি নিশ্চিত?' : 'Are you sure?'}
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            {deleteModalType === 'crop'
+                                ? (locale === 'bn' ? 'এই ফসলটি মুছে ফেলা হলে এটি আর ফিরে পাওয়া যাবে না।' : 'Deleting this crop will permanently remove it from the system.')
+                                : (locale === 'bn' ? 'এই সুপারিশটি মুছে ফেলা হলে এটি আর ফিরে পাওয়া যাবে না।' : 'Deleting this recommendation will permanently remove it.')}
+                        </p>
+                        <div className="flex items-center justify-end gap-3">
+                            <button
+                                disabled={isDeleting}
+                                onClick={() => setDeleteModalType(null)}
+                                className="px-4 py-2 rounded-full border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50"
+                            >
+                                {locale === 'bn' ? 'বাতিল' : 'Cancel'}
+                            </button>
+                            <button
+                                disabled={isDeleting}
+                                onClick={handleDeleteConfirm}
+                                className="px-4 py-2 rounded-full bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                            >
+                                {isDeleting
+                                    ? (locale === 'bn' ? 'মুছে ফেলা হচ্ছে...' : 'Deleting...')
+                                    : (locale === 'bn' ? 'হ্যাঁ, মুছে ফেলুন' : 'OK')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

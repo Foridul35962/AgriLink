@@ -587,6 +587,12 @@ const bn: AppTranslations = {
     changeImage: "ছবি পরিবর্তন করুন",
     description: "বিবরণ",
     descriptionPlaceholder: "ফসল সম্পর্কে সংক্ষেপে কিছু লিখুন...",
+    cultivationSection: "চাষাবাদের বিস্তারিত",
+    waterRequirement: "পানির প্রয়োজনীয়তা",
+    suitableSoil: "উপযুক্ত মাটি",
+    cultivationDuration: "চাষের সময়কাল",
+    cultivationTips: "চাষাবাদের নির্দেশিকা/টিপস",
+    cultivationTipsPlaceholder: "চাষাবাদের জন্য পরামর্শ বা নির্দেশিকা লিখুন...",
     weatherRequirement: "আবহাওয়া শর্তাবলী",
     minTemp: "সর্বনিম্ন তাপমাত্রা (°C)",
     maxTemp: "সর্বোচ্চ তাপমাত্রা (°C)",
@@ -668,6 +674,45 @@ const bn: AppTranslations = {
       spice: "মসলা",
       "cash-crop": "অর্থকরী ফসল",
       other: "অন্যান্য",
+    },
+  },
+  cropList: {
+    title: "ফসলের তালিকা",
+    subtitle: "আপনার জমি ও প্রয়োজন অনুযায়ী উপযুক্ত ফসল খুঁজে নিন",
+
+    loading: "ফসল লোড হচ্ছে...",
+    noCrops: "কোনো ফসল পাওয়া যায়নি",
+    noCropsDescription:
+      "আপনার সার্চ বা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।",
+
+    category: "ক্যাটাগরি",
+    waterRequirement: "পানির প্রয়োজন",
+    suitableSoil: "উপযোগী মাটি",
+
+    page: "পৃষ্ঠা",
+    of: "এর",
+    prev: "পূর্ববর্তী",
+    next: "পরবর্তী",
+
+    searchPlaceholder: "ফসলের নাম দিয়ে খুঁজুন...",
+    allCategories: "সকল ক্যাটাগরি",
+    searchBtn: "খুঁজুন",
+    clearFilters: "ফিল্টার পরিষ্কার করুন",
+
+    showingResults: "ফলাফল দেখানো হচ্ছে",
+    cropsFound: "টি ফসল পাওয়া গেছে",
+
+    categories: {
+      cereal: "শস্য",
+      vegetable: "শাকসবজি",
+      fruit: "ফল",
+      pulse: "ডাল",
+    },
+
+    waterLevels: {
+      low: "কম",
+      medium: "মাঝারি",
+      high: "বেশি",
     },
   },
 };

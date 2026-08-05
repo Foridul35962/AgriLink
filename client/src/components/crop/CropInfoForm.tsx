@@ -15,24 +15,28 @@ interface CropFormInputs {
     banglaName: string
     category: string
     description?: string
+    waterRequirement?: 'low' | 'medium' | 'high' | ''
+    suitableSoil?: string
+    cultivationDuration?: number
+    cultivationTips?: string
     weatherRequirement: {
         minTemperature: number
         maxTemperature: number
+        minHumidity?: number
         maxHumidity?: number
         maxRainProbability?: number
+        maxRainfall?: number
     }
     image: FileList
 }
 
 interface CropInfoFormProps {
     mode: 'create' | 'edit'
-    cropId?: string // required for edit
-    defaultValues?: Crop | null // required for edit
+    cropId?: string
+    defaultValues?: Crop | null
     onSuccess?: (crop: Crop) => void
 }
 
-// create mode e সব field always পাঠানো হবে (আগের logic অক্ষুণ্ণ)
-// edit mode e শুধু changed field গুলো FormData তে যাবে
 const buildCropFormData = (
     data: CropFormInputs,
     mode: 'create' | 'edit',
@@ -54,25 +58,62 @@ const buildCropFormData = (
         if (data.description) formData.append('description', data.description)
     }
 
+    // Water Requirement Enum
+    if (changed(data.waterRequirement || '', defaultValues?.waterRequirement || '')) {
+        if (data.waterRequirement) formData.append('waterRequirement', data.waterRequirement)
+    }
+
+    // Suitable Soil: string -> Array splitting for backend
+    const currentSoilArray = data.suitableSoil
+        ? data.suitableSoil.split(',').map(s => s.trim()).filter(Boolean)
+        : []
+    const oldSoilArray = defaultValues?.suitableSoil || []
+    if (mode === 'create' || JSON.stringify(currentSoilArray) !== JSON.stringify(oldSoilArray)) {
+        currentSoilArray.forEach((soil) => formData.append('suitableSoil[]', soil))
+    }
+
+    // Cultivation Duration: Number (Days)
+    if (changed(data.cultivationDuration, defaultValues?.cultivationDuration)) {
+        if (data.cultivationDuration !== undefined && data.cultivationDuration !== null && !Number.isNaN(data.cultivationDuration)) {
+            formData.append('cultivationDuration', String(data.cultivationDuration))
+        }
+    }
+
+    // Cultivation Tips: string (newline/comma) -> Array splitting for backend
+    const currentTipsArray = data.cultivationTips
+        ? data.cultivationTips.split('\n').map(t => t.trim()).filter(Boolean)
+        : []
+    const oldTipsArray = defaultValues?.cultivationTips || []
+    if (mode === 'create' || JSON.stringify(currentTipsArray) !== JSON.stringify(oldTipsArray)) {
+        currentTipsArray.forEach((tip) => formData.append('cultivationTips[]', tip))
+    }
+
+    // Weather Requirements
     const wr = data.weatherRequirement
     const oldWr = defaultValues?.weatherRequirement
     const weatherChanged =
         mode === 'create' ||
         wr.minTemperature !== oldWr?.minTemperature ||
         wr.maxTemperature !== oldWr?.maxTemperature ||
+        wr.minHumidity !== oldWr?.minHumidity ||
         wr.maxHumidity !== oldWr?.maxHumidity ||
-        wr.maxRainProbability !== oldWr?.maxRainProbability
+        wr.maxRainProbability !== oldWr?.maxRainProbability ||
+        wr.maxRainfall !== oldWr?.maxRainfall
 
-    // backend crop.weatherRequirement = weatherRequirement ?? crop.weatherRequirement
-    // pura object replace hoy, tai kichu change hole current form er pura weatherRequirement pathano hocche
     if (weatherChanged) {
         formData.append('weatherRequirement[minTemperature]', String(wr.minTemperature))
         formData.append('weatherRequirement[maxTemperature]', String(wr.maxTemperature))
+        if (wr.minHumidity !== undefined && wr.minHumidity !== null && !Number.isNaN(wr.minHumidity)) {
+            formData.append('weatherRequirement[minHumidity]', String(wr.minHumidity))
+        }
         if (wr.maxHumidity !== undefined && wr.maxHumidity !== null && !Number.isNaN(wr.maxHumidity)) {
             formData.append('weatherRequirement[maxHumidity]', String(wr.maxHumidity))
         }
         if (wr.maxRainProbability !== undefined && wr.maxRainProbability !== null && !Number.isNaN(wr.maxRainProbability)) {
             formData.append('weatherRequirement[maxRainProbability]', String(wr.maxRainProbability))
+        }
+        if (wr.maxRainfall !== undefined && wr.maxRainfall !== null && !Number.isNaN(wr.maxRainfall)) {
+            formData.append('weatherRequirement[maxRainfall]', String(wr.maxRainfall))
         }
     }
 
@@ -99,19 +140,28 @@ const CropInfoForm = ({ mode, cropId, defaultValues, onSuccess }: CropInfoFormPr
         formState: { errors }
     } = useForm<CropFormInputs>()
 
-    // edit mode e data ashar por form populate
     useEffect(() => {
         if (mode === 'edit' && defaultValues) {
             reset({
-                name: defaultValues.name,
-                banglaName: defaultValues.banglaName,
-                category: defaultValues.category,
-                description: defaultValues.description,
+                name: defaultValues.name || '',
+                banglaName: defaultValues.banglaName || '',
+                category: defaultValues.category || '',
+                description: defaultValues.description || '',
+                waterRequirement: defaultValues.waterRequirement || '',
+                suitableSoil: Array.isArray(defaultValues.suitableSoil)
+                    ? defaultValues.suitableSoil.join(', ')
+                    : '',
+                cultivationDuration: defaultValues.cultivationDuration,
+                cultivationTips: Array.isArray(defaultValues.cultivationTips)
+                    ? defaultValues.cultivationTips.join('\n')
+                    : '',
                 weatherRequirement: {
-                    minTemperature: defaultValues.weatherRequirement?.minTemperature,
-                    maxTemperature: defaultValues.weatherRequirement?.maxTemperature,
+                    minTemperature: defaultValues.weatherRequirement?.minTemperature ?? 0,
+                    maxTemperature: defaultValues.weatherRequirement?.maxTemperature ?? 0,
+                    minHumidity: defaultValues.weatherRequirement?.minHumidity,
                     maxHumidity: defaultValues.weatherRequirement?.maxHumidity,
-                    maxRainProbability: defaultValues.weatherRequirement?.maxRainProbability
+                    maxRainProbability: defaultValues.weatherRequirement?.maxRainProbability,
+                    maxRainfall: defaultValues.weatherRequirement?.maxRainfall
                 }
             })
             setImagePreview(defaultValues.image?.url || null)
@@ -135,7 +185,6 @@ const CropInfoForm = ({ mode, cropId, defaultValues, onSuccess }: CropInfoFormPr
             return
         }
 
-        // edit mode
         if (!cropId) return
         const formData = buildCropFormData(data, 'edit', defaultValues)
 
@@ -145,7 +194,7 @@ const CropInfoForm = ({ mode, cropId, defaultValues, onSuccess }: CropInfoFormPr
         }
 
         try {
-            const res = await dispatch(updateCrop({ cropId, data:formData })).unwrap()
+            const res = await dispatch(updateCrop({ cropId, data: formData })).unwrap()
             onSuccess?.(res.data)
         } catch (err) {
             console.error('Error updating crop:', err)
@@ -245,6 +294,69 @@ const CropInfoForm = ({ mode, cropId, defaultValues, onSuccess }: CropInfoFormPr
                         rows={3}
                         className="w-full px-3.5 py-2.5 bg-[#FAFBF8] border border-[#DDE1D6] rounded-lg text-[#16241A] placeholder:text-[#A3ACA0] focus:ring-2 focus:ring-[#1E3A2B]/20 focus:border-[#1E3A2B] focus:bg-white outline-none transition resize-none"
                         placeholder={t?.addCropPage?.descriptionPlaceholder || 'Provide a brief description...'}
+                    />
+                </div>
+            </div>
+
+            {/* Section: Cultivation Details */}
+            <div className="p-6 sm:p-8 border-b border-[#EEF1E9]">
+                <p className="text-xs font-semibold tracking-[0.15em] text-[#7A8A72] uppercase mb-4">
+                    {t?.addCropPage?.cultivationSection || 'Cultivation Details'}
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    {/* Enum Select for waterRequirement */}
+                    <div>
+                        <label className="block text-sm font-medium text-[#16241A] mb-1.5">
+                            {t?.addCropPage?.waterRequirement || 'Water Requirement'}
+                        </label>
+                        <select
+                            {...register('waterRequirement')}
+                            className="w-full px-3.5 py-2.5 bg-[#FAFBF8] border border-[#DDE1D6] rounded-lg text-[#16241A] focus:ring-2 focus:ring-[#1E3A2B]/20 focus:border-[#1E3A2B] focus:bg-white outline-none transition"
+                        >
+                            <option value="">Select Level</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    {/* Array of String for suitableSoil (Comma Separated) */}
+                    <div>
+                        <label className="block text-sm font-medium text-[#16241A] mb-1.5">
+                            {t?.addCropPage?.suitableSoil || 'Suitable Soil'}
+                        </label>
+                        <input
+                            {...register('suitableSoil')}
+                            className="w-full px-3.5 py-2.5 bg-[#FAFBF8] border border-[#DDE1D6] rounded-lg text-[#16241A] placeholder:text-[#A3ACA0] focus:ring-2 focus:ring-[#1E3A2B]/20 focus:border-[#1E3A2B] focus:bg-white outline-none transition"
+                            placeholder="e.g. Loamy, Clay, Sandy"
+                        />
+                    </div>
+
+                    {/* Number for cultivationDuration (Days) */}
+                    <div>
+                        <label className="block text-sm font-medium text-[#16241A] mb-1.5">
+                            {t?.addCropPage?.cultivationDuration || 'Cultivation Duration (Days)'}
+                        </label>
+                        <input
+                            type="number"
+                            {...register('cultivationDuration', { valueAsNumber: true })}
+                            className="w-full px-3.5 py-2.5 bg-[#FAFBF8] border border-[#DDE1D6] rounded-lg text-[#16241A] placeholder:text-[#A3ACA0] focus:ring-2 focus:ring-[#1E3A2B]/20 focus:border-[#1E3A2B] focus:bg-white outline-none transition"
+                            placeholder="e.g. 120"
+                        />
+                    </div>
+                </div>
+
+                {/* Array of String for cultivationTips (New Line Separated) */}
+                <div className="mt-5">
+                    <label className="block text-sm font-medium text-[#16241A] mb-1.5">
+                        {t?.addCropPage?.cultivationTips || 'Cultivation Tips'}
+                    </label>
+                    <textarea
+                        {...register('cultivationTips')}
+                        rows={3}
+                        className="w-full px-3.5 py-2.5 bg-[#FAFBF8] border border-[#DDE1D6] rounded-lg text-[#16241A] placeholder:text-[#A3ACA0] focus:ring-2 focus:ring-[#1E3A2B]/20 focus:border-[#1E3A2B] focus:bg-white outline-none transition resize-none"
+                        placeholder={t?.addCropPage?.cultivationTipsPlaceholder || 'Enter each tip in a new line...'}
                     />
                 </div>
             </div>

@@ -562,6 +562,12 @@ const en: AppTranslations = {
     changeImage: "Change Image",
     description: "Description",
     descriptionPlaceholder: "Provide a brief description of the crop...",
+    cultivationSection: "Cultivation Details",
+    waterRequirement: "Water Requirement",
+    suitableSoil: "Suitable Soil",
+    cultivationDuration: "Cultivation Duration",
+    cultivationTips: "Cultivation Tips",
+    cultivationTipsPlaceholder: "Provide guidelines or tips for cultivation...",
     weatherRequirement: "Weather Requirements",
     minTemp: "Min Temperature (°C)",
     maxTemp: "Max Temperature (°C)",
@@ -643,6 +649,45 @@ const en: AppTranslations = {
       spice: "Spice",
       "cash-crop": "Cash Crop",
       other: "Other",
+    },
+  },
+  cropList: {
+    title: "Crop Directory",
+    subtitle: "Explore crops suitable for your land and farming needs",
+
+    loading: "Loading crops...",
+    noCrops: "No crops found",
+    noCropsDescription:
+      "Try changing your search or filter to find more crops.",
+
+    category: "Category",
+    waterRequirement: "Water Requirement",
+    suitableSoil: "Suitable Soil",
+
+    page: "Page",
+    of: "of",
+    prev: "Previous",
+    next: "Next",
+
+    searchPlaceholder: "Search by crop name...",
+    allCategories: "All Categories",
+    searchBtn: "Search",
+    clearFilters: "Clear Filters",
+
+    showingResults: "Showing results",
+    cropsFound: "crops found",
+
+    categories: {
+      cereal: "Cereal",
+      vegetable: "Vegetable",
+      fruit: "Fruit",
+      pulse: "Pulse",
+    },
+
+    waterLevels: {
+      low: "Low",
+      medium: "Medium",
+      high: "High",
     },
   },
 };
