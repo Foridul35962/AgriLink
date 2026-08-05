@@ -422,6 +422,12 @@ export interface AppTranslations {
     changeImage: string;
     description: string;
     descriptionPlaceholder: string;
+    cultivationSection: string;
+    waterRequirement: string;
+    suitableSoil: string;
+    cultivationDuration: string;
+    cultivationTips: string;
+    cultivationTipsPlaceholder: string;
     weatherRequirement: string;
     minTemp: string;
     maxTemp: string;
@@ -504,5 +510,43 @@ export interface AppTranslations {
       "cash-crop": string
       other: string
     }
+  };
+  cropList: {
+    title: string;
+    subtitle: string;
+
+    loading: string;
+    noCrops: string;
+    noCropsDescription: string;
+
+    category: string;
+    waterRequirement: string;
+    suitableSoil: string;
+
+    page: string;
+    of: string;
+    prev: string;
+    next: string;
+
+    searchPlaceholder: string;
+    allCategories: string;
+    searchBtn: string;
+    clearFilters: string;
+
+    showingResults: string;
+    cropsFound: string;
+
+    categories: {
+      cereal: string;
+      vegetable: string;
+      fruit: string;
+      pulse: string;
+    };
+
+    waterLevels: {
+      low: string;
+      medium: string;
+      high: string;
+    };
   };
 }
