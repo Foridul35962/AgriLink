@@ -138,6 +138,10 @@ export const getAllCrop = AsyncHandler(async (req, res) => {
     const limit = 15;
     const skip = (page - 1) * limit;
 
+    if (category && !CropCategory.includes(category)) {
+        throw new ApiErrors(400, "Invalid category")
+    }
+
     const matchStage = {};
 
     if (name) {
@@ -595,6 +599,6 @@ export const deleteCropRecommendation = AsyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiErrors(200, { cropId: crop.cropId, cropRecommendationId }, "crop recommendation is deleted successfully")
+            new ApiResponse(200, { cropId: crop.cropId, cropRecommendationId }, "crop recommendation is deleted successfully")
         )
 })
