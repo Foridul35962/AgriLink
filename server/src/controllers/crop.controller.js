@@ -10,6 +10,7 @@ import redis from "../config/redis.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 import cloudinary from "../config/cloudinary.js";
 import { DISTRICTS } from "../constants/common.types.js";
+import axios from 'axios'
 
 export const createCrop = [
     check("name")
@@ -600,5 +601,204 @@ export const deleteCropRecommendation = AsyncHandler(async (req, res) => {
         .status(200)
         .json(
             new ApiResponse(200, { cropId: crop.cropId, cropRecommendationId }, "crop recommendation is deleted successfully")
+        )
+})
+
+const getSeason = (month) => {
+    if (month >= 3 && month <= 6)
+        return "kharif-1";
+
+    if (month >= 7 && month <= 10)
+        return "kharif-2";
+
+    if (month >= 11 || month <= 2)
+        return "rabi";
+}
+
+export const getCropSuggestion = AsyncHandler(async (req, res) => {
+    const { districts } = req.params
+    if (!districts) {
+        throw new ApiErrors(400, "districts is needed")
+    }
+
+    if (!DISTRICTS.includes(districts)) {
+        throw new ApiErrors(400, "invalid districs")
+    }
+
+    const now = new Date()
+    const currentMonth = now.getMonth() + 1;
+    const currentSeason = getSeason(currentMonth)
+
+    const weatherCacheKey = `weather:districts:${districts}`
+
+    let weather
+    const cacheWeather = await redis.get(weatherCacheKey)
+
+    if (cacheWeather) {
+        weather = JSON.parse(cacheWeather)
+    } else {
+        const weatherResponse = await axios.get(`${process.env.WEATHER_API_URL}`, {
+            params: {
+                q: districts,
+                key: process.env.WEATHER_API_KEY,
+                aqi: "no"
+            }
+        })
+
+        const weatherData = weatherResponse.data
+
+        if (!weatherData) {
+            throw new ApiErrors(500, "weather data fetch failed")
+        }
+
+        weather = {
+            location: weatherData.location,
+            temperature: weatherData.current?.temp_c ?? null,
+            humidity: weatherData.current?.humidity ?? null,
+            rainProbability: weatherData.current?.chance_of_rain ?? 0,
+            rainfall: weatherData.current?.precip_mm ?? 0,
+            condition: weatherData.current?.condition?.text ?? null,
+        }
+
+        await redis.set(
+            weatherCacheKey,
+            JSON.stringify(weather),
+            "EX",
+            2000
+        )
+    }
+
+    const cropRecommendation = await CropRecommendations.find({
+        $and: [
+            {
+                $or: [
+                    {
+                        districts: districts
+                    },
+                    {
+                        districts: {
+                            $size: 0
+                        }
+                    }
+                ]
+            },
+            {
+                plantingMonths: currentMonth
+            },
+            {
+                $or: [
+                    {
+                        season: currentSeason
+                    },
+                    {
+                        season: "all"
+                    }
+                ]
+            }
+        ]
+    })
+        .select("-reason -tips")
+        .populate({
+            path: "cropId",
+            select: "_id name banglaName category image.url"
+        })
+
+    const recommendation = cropRecommendation
+        .filter((rule) => {
+            const crop = rule.cropId;
+
+            if (!crop) {
+                return false;
+            }
+
+            const requirement = crop.weatherRequirement;
+
+            if (!requirement) {
+                return true;
+            }
+
+            if (
+                weather.temperature !== null &&
+                weather.temperature !== undefined
+            ) {
+                if (
+                    requirement.minTemperature !== undefined &&
+                    weather.temperature < requirement.minTemperature
+                ) {
+                    return false;
+                }
+
+                if (
+                    requirement.maxTemperature !== undefined &&
+                    weather.temperature > requirement.maxTemperature
+                ) {
+                    return false;
+                }
+            }
+
+            if (
+                weather.humidity !== null &&
+                weather.humidity !== undefined
+            ) {
+
+                if (
+                    requirement.minHumidity !== undefined &&
+                    weather.humidity < requirement.minHumidity
+                ) {
+                    return false;
+                }
+
+                if (
+                    requirement.maxHumidity !== undefined &&
+                    weather.humidity > requirement.maxHumidity
+                ) {
+                    return false;
+                }
+            }
+
+            if (
+                weather.rainProbability !== null &&
+                weather.rainProbability !== undefined
+            ) {
+                if (
+                    requirement.maxRainProbability !== undefined &&
+                    weather.rainProbability > requirement.maxRainProbability
+                ) {
+                    return false;
+                }
+            }
+            return true;
+        })
+        .map((rule) => {
+            return {
+                crop: {
+                    _id: rule.cropId._id,
+
+                    name: rule.cropId.name,
+
+                    banglaName: rule.cropId.banglaName,
+
+                    category: rule.cropId.category,
+
+                    image: rule.cropId.image?.url || null,
+                },
+            }
+        });
+
+    const finalResponse = {
+        location: {
+            districts,
+        },
+        currentMonth,
+        season: currentSeason,
+        weather,
+        count: recommendation.length,
+        data: recommendation
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, finalResponse, "crop suggestion fetch successfully")
         )
 })
