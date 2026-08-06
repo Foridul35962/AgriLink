@@ -14,5 +14,6 @@ cropRouter.delete("/delete/:cropId", protect, isAdmin, controller.deleteCrop)
 cropRouter.post("/create-recommendation", protect, isAdmin, controller.createCropRecommendation)
 cropRouter.patch("/update-recommendation", protect, isAdmin, controller.updateCropRecommendation)
 cropRouter.delete("/delete-recommendation/:cropRecommendationId", protect, isAdmin, controller.deleteCropRecommendation)
+cropRouter.get("/suggestion/:districts",  controller.getCropSuggestion)
 
 export default cropRouter
