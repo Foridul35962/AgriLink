@@ -690,6 +690,23 @@ const en: AppTranslations = {
       high: "High",
     },
   },
+  cropSuggestion: {
+    title: "Crop Suggestion",
+    selectDistrict: "Select District",
+    selectDistrictLabel: "Select your district",
+    loginPrompt: "Please select your district below to see crop suggestions",
+    loading: "Loading...",
+    noData: "No crop data found for this district",
+    weatherTitle: "Weather",
+    temperature: "Temperature",
+    humidity: "Humidity",
+    rainProbability: "Rain Probability",
+    rainfall: "Rainfall",
+    condition: "Condition",
+    cropsFound: "crops found",
+    waterRequirement: "Water Requirement",
+    suitableSoil: "Suitable Soil",
+  },
 };
 
 export default en;

@@ -549,4 +549,21 @@ export interface AppTranslations {
       high: string;
     };
   };
+  cropSuggestion: {
+    title: string;
+    selectDistrict: string;
+    selectDistrictLabel: string;
+    loginPrompt: string;
+    loading: string;
+    noData: string;
+    weatherTitle: string;
+    temperature: string;
+    humidity: string;
+    rainProbability: string;
+    rainfall: string;
+    condition: string;
+    cropsFound: string;
+    waterRequirement: string,
+    suitableSoil: string,
+  };
 }
