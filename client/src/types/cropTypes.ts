@@ -165,3 +165,45 @@ export interface CreateCropRequest {
     createdAt: string
     updatedAt?: string
 }
+
+export interface CropSuggestionResponse {
+    location: {
+        districts: string;
+    };
+    currentMonth: number;
+    season: "kharif-1" | "kharif-2" | "rabi";
+    weather: Weather;
+    count: number;
+    data: CropSuggestion[];
+}
+
+export interface Weather {
+    location: {
+        name: string;
+        region: string;
+        country: string;
+        lat: number;
+        lon: number;
+        tz_id: string;
+        localtime_epoch: number;
+        localtime: string;
+    };
+    temperature: number;
+    humidity: number;
+    rainProbability: number;
+    rainfall: number;
+    condition: string;
+}
+
+export interface CropSuggestion {
+    crop: {
+        _id: string;
+        name: string;
+        banglaName: string;
+        category: string;
+        image: string | null;
+        waterRequirement?: "low" | "medium" | "high"
+
+        suitableSoil?: string[]
+    }
+}

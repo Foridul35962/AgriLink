@@ -1,4 +1,4 @@
-import { CreateCropRequest, CreateRecommendationTypes, CropDetails, CropRecommendation, GetAllCropData, UpdateRecommendationTypes } from "@/types/cropTypes";
+import { CreateCropRequest, CreateRecommendationTypes, CropDetails, CropRecommendation, CropSuggestionResponse, GetAllCropData, UpdateRecommendationTypes } from "@/types/cropTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -125,10 +125,24 @@ export const deleteRecommendation = createAsyncThunk(
     }
 )
 
+export const getCropSuggestion = createAsyncThunk(
+    "crop/suggestion",
+    async ({ districts }: { districts: string }, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/suggestion/${districts}`)
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 interface initialStateType {
     cropLoading: boolean
     allCrops: GetAllCropData
     cropDetails: CropDetails
+    cropSuggestion: CropSuggestionResponse | null
 }
 
 const initialState: initialStateType = {
@@ -147,7 +161,8 @@ const initialState: initialStateType = {
     cropDetails: {
         crop: null,
         recommendation: null
-    }
+    },
+    cropSuggestion: null
 }
 
 const cropSlice = createSlice({
@@ -256,6 +271,17 @@ const cropSlice = createSlice({
                     state.cropDetails.recommendation?._id === cropRecommendationId) {
                     state.cropDetails.recommendation = null
                 }
+            })
+        builder
+            .addCase(getCropSuggestion.pending, (state) => {
+                state.cropLoading = true
+            })
+            .addCase(getCropSuggestion.fulfilled, (state, action) => {
+                state.cropLoading = false
+                state.cropSuggestion = action.payload.data
+            })
+            .addCase(getCropSuggestion.rejected, (state) => {
+                state.cropLoading = false
             })
     },
 })

@@ -715,6 +715,23 @@ const bn: AppTranslations = {
       high: "বেশি",
     },
   },
+  cropSuggestion: {
+    title: "ফসলের পরামর্শ",
+    selectDistrict: "জেলা নির্বাচন করুন",
+    selectDistrictLabel: "আপনার জেলা নির্বাচন করুন",
+    loginPrompt: "ফসলের পরামর্শ দেখতে নিচ থেকে আপনার জেলা নির্বাচন করুন",
+    loading: "লোড হচ্ছে...",
+    noData: "এই জেলার জন্য কোনো ফসলের তথ্য পাওয়া যায়নি",
+    weatherTitle: "আবহাওয়া",
+    temperature: "তাপমাত্রা",
+    humidity: "আর্দ্রতা",
+    rainProbability: "বৃষ্টির সম্ভাবনা",
+    rainfall: "বৃষ্টিপাত",
+    condition: "অবস্থা",
+    cropsFound: "টি ফসল পাওয়া গেছে",
+    waterRequirement: "পানির প্রয়োজনীয়তা",
+    suitableSoil: "উপযুক্ত মাটি",
+  },
 };
 
 export default bn;

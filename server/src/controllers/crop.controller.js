@@ -700,7 +700,7 @@ export const getCropSuggestion = AsyncHandler(async (req, res) => {
         .select("-reason -tips")
         .populate({
             path: "cropId",
-            select: "_id name banglaName category image.url"
+            select: "_id name banglaName category image.url  waterRequirement suitableSoil"
         })
 
     const recommendation = cropRecommendation
@@ -781,6 +781,8 @@ export const getCropSuggestion = AsyncHandler(async (req, res) => {
                     category: rule.cropId.category,
 
                     image: rule.cropId.image?.url || null,
+                    waterRequirement: rule.cropId.waterRequirement,
+                    suitableSoil: rule.cropId.suitableSoil
                 },
             }
         });
