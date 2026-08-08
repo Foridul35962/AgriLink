@@ -119,7 +119,7 @@ export const addInventory = [
         return res
             .status(201)
             .json(
-                new ApiResponse(201, "inventory is created successfully")
+                new ApiResponse(201, inventory, "inventory is created successfully")
             )
     })
 ]
