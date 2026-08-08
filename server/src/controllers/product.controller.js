@@ -485,6 +485,12 @@ export const getProduct = AsyncHandler(async (req, res) => {
 });
 
 export const getAllProducts = AsyncHandler(async (req, res) => {
+    const userRole = req.user.role
+
+    if (!["farmer", "aratdar", "admin"].includes(userRole)) {
+        throw new ApiErrors(401, "unauthorized access")
+    }
+
     const { category, name, district } = req.query;
     const page = Number(req.query.page) || 1;
 
