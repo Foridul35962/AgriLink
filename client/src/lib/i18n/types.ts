@@ -566,4 +566,80 @@ export interface AppTranslations {
     waterRequirement: string,
     suitableSoil: string,
   };
+  inventory: {
+    title: string;
+    subtitle: string;
+    basicInfoLabel: string;
+    quantityPricingLabel: string;
+    detailsLabel: string;
+    productNameLabel: string;
+    productNamePlaceholder: string;
+    categoryLabel: string;
+    selectCategory: string;
+    totalQuantityLabel: string;
+    allocatedQuantityLabel: string;
+    pricePerUnitLabel: string;
+    unitLabel: string;
+    selectUnit: string;
+    descriptionLabel: string;
+    descriptionPlaceholder: string;
+    imageLabel: string;
+    imagePlaceholder: string;
+    uploadClick: string;
+    uploadDrag: string;
+    uploadHint: string;
+    submitButton: string;
+    submitting: string;
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    errors: {
+      productNameRequired: string;
+      categoryRequired: string;
+      totalQuantityRequired: string;
+      totalQuantityMin: string;
+      allocatedQuantityRequired: string;
+      allocatedQuantityMin: string;
+      pricePerUnitRequired: string;
+      pricePerUnitMin: string;
+      unitRequired: string;
+      descriptionMax: string;
+      imageRequired: string;
+    };
+  };
+  inventoryDetails: {
+    status: {
+      available: string;
+      depleted: string;
+    };
+    backButton: string;
+    notFoundTitle: string;
+    notFoundMessage: string;
+    totalQuantityCard: string;
+    allocatedQuantityCard: string;
+    availableQuantityCard: string;
+    pricePerUnitCard: string;
+    descriptionTitle: string;
+    noDescription: string;
+    orderButton: string;
+    editButton: string;
+    deleteButton: string;
+    orderModal: {
+      title: string;
+      comingSoonMessage: string;
+      closeButton: string;
+    };
+    deleteModal: {
+      title: string;
+      message: string;
+      cancelButton: string;
+      confirmButton: string;
+      deleting: string;
+      successMessage: string;
+      errorMessage: string;
+    };
+  };
 }
