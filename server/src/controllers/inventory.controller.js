@@ -31,7 +31,7 @@ export const addInventory = [
     check("allocatedQuantity")
         .notEmpty()
         .withMessage("allocated quantity is required")
-        .isLength({ min: 0 })
+        .isLength({ min: 1 })
         .withMessage("allocated quantity is minimum 0 required"),
 
     check("pricePerUnit")
@@ -431,7 +431,7 @@ export const getInventoryDetails = AsyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            ApiResponse(200, inventory, "inventory details fetch done")
+            new ApiResponse(200, inventory, "inventory details fetch done")
         )
 })
 
