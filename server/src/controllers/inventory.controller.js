@@ -323,7 +323,7 @@ export const deleteInventory = AsyncHandler(async (req, res) => {
 
 export const getMyInventories = AsyncHandler(async (req, res) => {
     const userId = req.user._id
-    const { productName, category } = req.params
+    const { productName, category } = req.query
 
     const page = Number(req.query.page) || 1;
 
