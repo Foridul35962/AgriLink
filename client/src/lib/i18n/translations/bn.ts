@@ -873,6 +873,23 @@ const bn: AppTranslations = {
       onlyImageAllowed: "শুধুমাত্র ছবি ফাইল আপলোড করা যাবে",
     },
   },
+  allInventory: {
+    title: "ইনভেন্টরি তালিকা",
+    subtitle: "সকল পণ্যের মজুদ এবং তথ্য এক নজরে দেখুন",
+    searchPlaceholder: "পণ্যের নাম দিয়ে খুঁজুন...",
+    allCategories: "সকল ক্যাটাগরি",
+    noItemsFound: "কোনো ইনভেন্টরি আইটেম পাওয়া যায়নি",
+    price: "মূল্য",
+    quantity: "পরিমাণ",
+    status: "অবস্থা",
+    available: "মজুদ আছে",
+    depleted: "শেষ হয়ে গেছে",
+    viewDetails: "বিস্তারিত দেখুন",
+    page: "পৃষ্ঠা",
+    of: "এর",
+    previous: "পূর্ববর্তী",
+    next: "পরবর্তী",
+  },
 };
 
 export default bn;

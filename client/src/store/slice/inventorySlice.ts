@@ -85,7 +85,7 @@ export const getMyInventory = createAsyncThunk(
 
 export const getAllInventory = createAsyncThunk(
     "inventory/all",
-    async (params: { productName: string, category: CropCategory, page: number }, { rejectWithValue }) => {
+    async (params: { productName?: string, category?: string, page: number }, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/all`,
                 {

@@ -848,6 +848,23 @@ const en: AppTranslations = {
       onlyImageAllowed: "Only image files are allowed",
     },
   },
+  allInventory: {
+    title: "Inventory List",
+    subtitle: "Overview of all stocked agricultural products",
+    searchPlaceholder: "Search by product name...",
+    allCategories: "All Categories",
+    noItemsFound: "No inventory items found",
+    price: "Price",
+    quantity: "Quantity",
+    status: "Status",
+    available: "Available",
+    depleted: "Depleted",
+    viewDetails: "View Details",
+    page: "Page",
+    of: "of",
+    previous: "Previous",
+    next: "Next",
+  },
 };
 
 export default en;

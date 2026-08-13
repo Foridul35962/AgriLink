@@ -442,7 +442,7 @@ export const getAllInventories = AsyncHandler(async (req, res) => {
         throw new ApiErrors(401, "unauthorized access")
     }
 
-    const { category, name } = req.query;
+    const { category, productName } = req.query;
     if (category && !CropCategory.includes(category)) {
         throw new ApiErrors(400, "invalid category")
     }
@@ -454,14 +454,14 @@ export const getAllInventories = AsyncHandler(async (req, res) => {
 
     const matchStage = {};
 
-    if (name) {
-        matchStage.name = { $regex: name, $options: "i" };
+    if (productName) {
+        matchStage.productName = { $regex: productName, $options: "i" };
     }
     if (category) {
         matchStage.category = category
     }
 
-    const pipelineResult = await Products.aggregate([
+    const pipelineResult = await Inventories.aggregate([
         { $match: matchStage },
         {
             $facet: {

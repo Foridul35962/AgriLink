@@ -707,4 +707,21 @@ export interface AppTranslations {
       onlyImageAllowed: string;
     };
   };
+  allInventory: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    allCategories: string;
+    noItemsFound: string;
+    price: string;
+    quantity: string;
+    status: string;
+    available: string;
+    depleted: string;
+    viewDetails: string;
+    page: string;
+    of: string;
+    previous: string;
+    next: string;
+  };
 }
