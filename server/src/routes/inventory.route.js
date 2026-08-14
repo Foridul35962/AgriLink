@@ -3,6 +3,7 @@ import * as controller from "../controllers/inventory.controller.js"
 import protect from "../middlewares/protect.js"
 import isAratdar from "../middlewares/isAratdar.js"
 import upload from "../middlewares/upload.js"
+import isRetailer from "../middlewares/isRetailer.js"
 
 const inventoryRouter = express.Router()
 
@@ -12,5 +13,6 @@ inventoryRouter.delete("/delete/:inventoryId", protect, isAratdar, controller.de
 inventoryRouter.get("/my", protect, isAratdar, controller.getMyInventories)
 inventoryRouter.get('/details/:inventoryId', protect, controller.getInventoryDetails)
 inventoryRouter.get("/all", protect, controller.getAllInventories)
+inventoryRouter.post("/create-order", protect, isRetailer, controller.createInventoryOrder)
 
 export default inventoryRouter
