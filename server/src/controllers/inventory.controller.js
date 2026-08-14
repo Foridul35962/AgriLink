@@ -8,6 +8,8 @@ import cloudinary from "../config/cloudinary.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 import mongoose from "mongoose";
 import redis from "../config/redis.js";
+import Orders from "../models/Order.model.js";
+import Notification from "../models/Notification.model.js";
 
 export const addInventory = [
     check("productName")
@@ -506,3 +508,136 @@ export const getAllInventories = AsyncHandler(async (req, res) => {
             new ApiResponse(200, finalResult, "all inventory fetch successfull")
         )
 })
+
+export const createInventoryOrder = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    
+    const { inventoryId, quantity } = req.body;
+
+    if (!inventoryId || !mongoose.isValidObjectId(inventoryId)) {
+        throw new ApiErrors(400, "Invalid inventory id");
+    }
+
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new ApiErrors(400, "Quantity must be a positive integer");
+    }
+
+    // const session = await mongoose.startSession();
+
+    try {
+        // session.startTransaction();
+
+        const updatedInventory = await Inventories.findOneAndUpdate(
+            {
+                _id: inventoryId,
+
+                $expr: {
+                    $gte: [
+                        {
+                            $subtract: [
+                                "$totalQuantity",
+                                "$allocatedQuantity"
+                            ]
+                        },
+                        quantity
+                    ]
+                }
+            },
+            {
+                $inc: {
+                    allocatedQuantity: quantity
+                }
+            },
+            {
+                new: true,
+                // session
+            }
+        );
+
+        // Inventory doesn't exist OR insufficient quantity
+        if (!updatedInventory) {
+            const inventoryExists = await Inventories.exists({
+                _id: inventoryId
+            })
+            // .session(session);
+
+            if (!inventoryExists) {
+                throw new ApiErrors(404, "Inventory is not found");
+            }
+
+            throw new ApiErrors(400, "This inventory does not have enough quantity");
+        }
+
+        //Create order
+        const [order] = await Orders.create(
+            [
+                {
+                    sellerId: updatedInventory.aratdarId,
+                    buyerId: userId,
+
+                    sellerRole: "aratdar",
+                    buyerRole: "retailer",
+
+                    inventoryId: updatedInventory._id,
+
+                    quantity,
+
+                    pricePerUnit: updatedInventory.pricePerUnit,
+
+                    unit: updatedInventory.unit,
+
+                    totalAmount: quantity * updatedInventory.pricePerUnit,
+                    status: "PENDING"
+                }
+            ],
+            {
+                // session
+            }
+        );
+
+        if (!order) {
+            throw new ApiErrors(500, "Order creation failed");
+        }
+
+        // Create notification
+        Notification.create({
+            recipient: updatedInventory.aratdarId,
+            sender: userId,
+
+            type: NOTIFICATION_TYPES.ORDER_PLACED,
+
+            title: "New Order Received",
+
+            message: `Your ${updatedInventory.productName} has been ordered by a retailer. Please check the order details.`,
+
+            relatedId: order._id
+        });
+
+        //Todo: socket.io need
+
+        // await session.commitTransaction();
+
+        const redisKey = `inventory:${inventoryId}`;
+
+        await redis.del(redisKey);
+
+        return res
+            .status(201)
+            .json(
+                new ApiResponse(
+                    201,
+                    order,
+                    "Order confirmed successfully"
+                )
+            );
+
+    } catch (error) {
+
+        // await session.abortTransaction();
+
+        throw error;
+
+    } finally {
+        // await session.endSession();
+    }
+});
