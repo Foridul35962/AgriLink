@@ -20,7 +20,7 @@ const investorySchema = new mongoose.Schema({
     totalQuantity: {
         type: Number,
         required: true,
-        min: 0
+        min: 1
     },
     allocatedQuantity: {
         type: Number,
@@ -31,7 +31,13 @@ const investorySchema = new mongoose.Schema({
     pricePerUnit: {
         type: Number,
         required: true,
-        default: 0
+        default: 1
+    },
+    unit: {
+        type: String,
+        required: true,
+        enum: ["kg", "mon", "ton", "piece"],
+        default: "kg"
     },
     image: {
         url: {

@@ -59,3 +59,18 @@ export const DISTRICTS_BN: Record<string, string> = {
   Sirajganj: "সিরাজগঞ্জ", Sunamganj: "সুনামগঞ্জ", Sylhet: "সিলেট", Tangail: "টাঙ্গাইল",
   Thakurgaon: "ঠাকুরগাঁও"
 };
+
+export const MONTHS = [
+    { labelEn: "January", labelBn: "জানুয়ারী", value: 1 },
+    { labelEn: "February", labelBn: "ফেব্রুয়ারী", value: 2 },
+    { labelEn: "March", labelBn: "মার্চ", value: 3 },
+    { labelEn: "April", labelBn: "এপ্রিল", value: 4 },
+    { labelEn: "May", labelBn: "মে", value: 5 },
+    { labelEn: "June", labelBn: "জুন", value: 6 },
+    { labelEn: "July", labelBn: "জুলাই", value: 7 },
+    { labelEn: "August", labelBn: "আগস্ট", value: 8 },
+    { labelEn: "September", labelBn: "সেপ্টেম্বর", value: 9 },
+    { labelEn: "October", labelBn: "অক্টোবর", value: 10 },
+    { labelEn: "November", labelBn: "নভেম্বর", value: 11 },
+    { labelEn: "December", labelBn: "ডিসেম্বর", value: 12 },
+]
