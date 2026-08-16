@@ -101,6 +101,21 @@ export const getAllInventory = createAsyncThunk(
     }
 )
 
+export const createInventoryOrder = createAsyncThunk(
+    "inventory/order",
+    async(data:{inventoryId:string, quantity:number}, {rejectWithValue})=>{
+        try {
+            const res = await axios.post(`${SERVER_URL}/create-order`, data,
+                {withCredentials: true}
+            )
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 interface initialStateType {
     inventoryLoading: boolean
     myInventories: MyInventoriesResponse
