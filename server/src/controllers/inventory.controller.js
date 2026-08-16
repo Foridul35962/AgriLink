@@ -511,7 +511,7 @@ export const getAllInventories = AsyncHandler(async (req, res) => {
 
 export const createInventoryOrder = AsyncHandler(async (req, res) => {
     const userId = req.user._id;
-    
+
     const { inventoryId, quantity } = req.body;
 
     if (!inventoryId || !mongoose.isValidObjectId(inventoryId)) {
@@ -569,7 +569,7 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
         }
 
         //Create order
-        const [order] = await Orders.create(
+        const order = await Orders.create(
             [
                 {
                     sellerId: updatedInventory.aratdarId,
@@ -598,6 +598,17 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
         if (!order) {
             throw new ApiErrors(500, "Order creation failed");
         }
+
+        await order.populate([
+            {
+                path: "sellerId",
+                select: "name phoneNumber email"
+            },
+            {
+                path: "inventoryId",
+                select: "productName category image.url"
+            }
+        ]);
 
         // Create notification
         Notification.create({
