@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import redis from "../config/redis.js";
 import Orders from "../models/Order.model.js";
 import Notification from "../models/Notification.model.js";
+import { NOTIFICATION_TYPES } from "../constants/notification.types.js";
 
 export const addInventory = [
     check("productName")
@@ -73,7 +74,7 @@ export const addInventory = [
             throw new ApiErrors(400, "only image files are allowed");
         }
 
-        if (Number(allocatedQuantity) > Number(totalQuantity)) {
+        if (Number(allocatedQuantity) >= Number(totalQuantity)) {
             throw new ApiErrors(400, "allocated quantity cannot be greater than total quantity");
         }
 
@@ -514,10 +515,12 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
 
     const { inventoryId, quantity } = req.body;
 
+    // Validate inventory id
     if (!inventoryId || !mongoose.isValidObjectId(inventoryId)) {
         throw new ApiErrors(400, "Invalid inventory id");
     }
 
+    // Validate quantity
     if (!Number.isInteger(quantity) || quantity <= 0) {
         throw new ApiErrors(400, "Quantity must be a positive integer");
     }
@@ -543,61 +546,94 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
                     ]
                 }
             },
-            {
-                $inc: {
-                    allocatedQuantity: quantity
+
+            // Update pipeline
+            [
+                {
+                    $set: {
+                        // allocatedQuantity = old allocatedQuantity + ordered quantity
+                        allocatedQuantity: {
+                            $add: [
+                                "$allocatedQuantity",
+                                quantity
+                            ]
+                        },
+
+                        // If allocatedQuantity becomes equal to totalQuantity
+                        // then inventory becomes depleted
+                        status: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        {
+                                            $add: [
+                                                "$allocatedQuantity",
+                                                quantity
+                                            ]
+                                        },
+                                        "$totalQuantity"
+                                    ]
+                                },
+                                "depleted",
+                                "available"
+                            ]
+                        }
+                    }
                 }
-            },
+            ],
+
             {
                 new: true,
+                updatePipeline: true,
+
                 // session
             }
         );
 
-        // Inventory doesn't exist OR insufficient quantity
         if (!updatedInventory) {
             const inventoryExists = await Inventories.exists({
                 _id: inventoryId
-            })
+            });
             // .session(session);
 
             if (!inventoryExists) {
-                throw new ApiErrors(404, "Inventory is not found");
+                throw new ApiErrors(
+                    404,
+                    "Inventory is not found"
+                );
             }
 
-            throw new ApiErrors(400, "This inventory does not have enough quantity");
+            throw new ApiErrors(
+                400,
+                "This inventory does not have enough quantity"
+            );
         }
 
-        //Create order
-        const order = await Orders.create(
-            [
-                {
-                    sellerId: updatedInventory.aratdarId,
-                    buyerId: userId,
+        const order = new Orders({
+            sellerId: updatedInventory.aratdarId,
+            buyerId: userId,
 
-                    sellerRole: "aratdar",
-                    buyerRole: "retailer",
+            sellerRole: "aratdar",
+            buyerRole: "retailer",
 
-                    inventoryId: updatedInventory._id,
+            inventoryId: updatedInventory._id,
 
-                    quantity,
+            quantity,
 
-                    pricePerUnit: updatedInventory.pricePerUnit,
+            pricePerUnit: updatedInventory.pricePerUnit,
 
-                    unit: updatedInventory.unit,
+            unit: updatedInventory.unit,
 
-                    totalAmount: quantity * updatedInventory.pricePerUnit,
-                    status: "PENDING"
-                }
-            ],
-            {
-                // session
-            }
+            totalAmount:
+                quantity * updatedInventory.pricePerUnit,
+
+            status: "PENDING"
+        });
+
+        await order.save(
+            // {session}
         );
 
-        if (!order) {
-            throw new ApiErrors(500, "Order creation failed");
-        }
 
         await order.populate([
             {
@@ -610,7 +646,7 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
             }
         ]);
 
-        // Create notification
+
         Notification.create({
             recipient: updatedInventory.aratdarId,
             sender: userId,
@@ -624,7 +660,7 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
             relatedId: order._id
         });
 
-        //Todo: socket.io need
+        // Todo: socket.io need
 
         // await session.commitTransaction();
 

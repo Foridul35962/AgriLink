@@ -7,7 +7,7 @@ const isRetailer = AsyncHandler(async (req, res, next) => {
         throw new ApiErrors
     }
 
-    if (user.role !== "farmer") {
+    if (user.role !== "retailer") {
         throw new ApiErrors(401, "user is not authenticated")
     }
 

@@ -795,8 +795,14 @@ const bn: AppTranslations = {
     deleteButton: "মুছে ফেলুন",
     orderModal: {
       title: "অর্ডার করুন",
-      comingSoonMessage: "অর্ডার ফর্মটি শীঘ্রই যুক্ত করা হবে। আপাতত এখান থেকে অর্ডার সম্পন্ন করা যাবে না।",
+      outOfStockMessage: "দুঃখিত, এই পণ্যটি স্টকে নেই (Stock Out)।",
+      quantityLabel: "পরিমাণ (Quantity)",
+      quantityRequiredError: "পরিমাণ (Quantity) যোগ করুন",
+      quantityMinError: "কমপক্ষে ১টি পরিমাণ নির্বাচন করুন",
+      quantityMaxError: "স্টকে থাকা পরিমাণের চেয়ে বেশি অর্ডার করা যাবে না",
+      submitButton: "অর্ডার নিশ্চিত করুন",
       closeButton: "বন্ধ করুন",
+      successMessage: "আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে!",
     },
     deleteModal: {
       title: "পণ্যটি মুছে ফেলবেন?",

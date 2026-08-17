@@ -1,13 +1,14 @@
 "use client"
 
 import { useLanguage } from '@/context/LanguageContext'
-import { deleteInventory, getInventoryDetails } from '@/store/slice/inventorySlice'
+import { createInventoryOrder, deleteInventory, getInventoryDetails } from '@/store/slice/inventorySlice'
 import { AppDispatch, RootState } from '@/store/store'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { useForm } from 'react-hook-form'
 import {
     ArrowLeft,
     Wheat,
@@ -22,7 +23,13 @@ import {
     Loader2,
     PackageX,
     AlertTriangle,
+    AlertCircle,
+    CheckCircle,
 } from 'lucide-react'
+
+interface OrderFormData {
+    quantity: number
+}
 
 const page = () => {
     const { inventoryId } = useParams()
@@ -35,6 +42,18 @@ const page = () => {
     const [showOrderModal, setShowOrderModal] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isOrderSubmitted, setIsOrderSubmitted] = useState(false)
+
+    const {
+        register,
+        handleSubmit,
+        reset: resetOrderForm,
+        formState: { errors: orderErrors, isSubmitting: isOrdering },
+    } = useForm<OrderFormData>({
+        defaultValues: {
+            quantity: 1,
+        },
+    })
 
     useEffect(() => {
         const fetch = async () => {
@@ -43,7 +62,7 @@ const page = () => {
         if (inventoryDetails?._id !== inventoryId) {
             fetch()
         }
-    }, [])
+    }, [inventoryId])
 
     const handleDelete = async () => {
         setIsDeleting(true)
@@ -64,6 +83,30 @@ const page = () => {
     const availableQuantity = inventoryDetails
         ? inventoryDetails.totalQuantity - inventoryDetails.allocatedQuantity
         : 0
+
+    const isAvailable = inventoryDetails?.status === 'available' && availableQuantity > 0
+
+    const handleCloseOrderModal = () => {
+        setShowOrderModal(false)
+        setIsOrderSubmitted(false)
+        resetOrderForm()
+    }
+
+    const handleOrderSubmit = async (data: OrderFormData,e: React.BaseSyntheticEvent) => {
+        e.preventDefault()
+        try {
+            const res = await dispatch(createInventoryOrder({ inventoryId: inventoryId as string, quantity: data.quantity })).unwrap()
+
+            setIsOrderSubmitted(true)
+            toast.success(t.inventoryDetails.orderModal?.successMessage || "Order placed successfully!")
+            setTimeout(() => {
+                handleCloseOrderModal()
+                router.push(`/retailer/order/${res.data._id}`)
+            }, 2000)
+        } catch (error: any) {
+            toast.error(error?.message || "Failed to place order")
+        }
+    }
 
     // Loading skeleton
     if (inventoryLoading && inventoryDetails?._id !== inventoryId) {
@@ -244,32 +287,104 @@ const page = () => {
                 </div>
             </div>
 
-            {/* Order Modal (placeholder — fields to be added later) */}
+            {/* Order Modal */}
             {showOrderModal && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6 relative">
                         <button
-                            onClick={() => setShowOrderModal(false)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                            onClick={handleCloseOrderModal}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
                         >
                             <X className="w-5 h-5" />
                         </button>
-                        <div className="flex items-center gap-2 mb-3">
+
+                        <div className="flex items-center gap-2 mb-4">
                             <ShoppingCart className="w-5 h-5 text-green-600" />
                             <h3 className="text-lg font-semibold text-gray-900">
-                                {t.inventoryDetails.orderModal.title}
+                                {t.inventoryDetails.orderModal?.title || "Place an Order"}
                             </h3>
                         </div>
-                        <p className="text-sm text-gray-500 mb-6">
-                            {t.inventoryDetails.orderModal.comingSoonMessage}
-                        </p>
-                        {/* 🟢 order form fields will go here */}
-                        <button
-                            onClick={() => setShowOrderModal(false)}
-                            className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-xl transition"
-                        >
-                            {t.inventoryDetails.orderModal.closeButton}
-                        </button>
+
+                        {!isAvailable ? (
+                            /* Stock Out Alert */
+                            <div className="space-y-5">
+                                <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-700">
+                                    <AlertCircle className="w-5 h-5 mt-0.5 shrink-0 text-red-500" />
+                                    <p className="text-sm">
+                                        {t.inventoryDetails.orderModal?.outOfStockMessage || "Sorry, this item is out of stock or unavailable for order."}
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleCloseOrderModal}
+                                    className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition"
+                                >
+                                    {t.inventoryDetails.orderModal?.closeButton || "Close"}
+                                </button>
+                            </div>
+                        ) : isOrderSubmitted ? (
+                            /* Success State */
+                            <div className="p-4 bg-green-50 border border-green-100 rounded-xl flex items-center gap-3 text-green-700 my-2">
+                                <CheckCircle className="w-5 h-5 shrink-0 text-green-600" />
+                                <p className="text-sm font-medium">
+                                    {t.inventoryDetails.orderModal?.successMessage || "Order placed successfully!"}
+                                </p>
+                            </div>
+                        ) : (
+                            /* Order Form */
+                            <form onSubmit={(e) => handleSubmit((data) => handleOrderSubmit(data, e))(e)} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                        {t.inventoryDetails.orderModal?.quantityLabel || "Quantity"} ({inventoryDetails.unit})
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={availableQuantity}
+                                        {...register("quantity", {
+                                            required: t.inventoryDetails.orderModal?.quantityRequiredError || "Please enter quantity",
+                                            min: {
+                                                value: 1,
+                                                message: t.inventoryDetails.orderModal?.quantityMinError || "Quantity must be at least 1",
+                                            },
+                                            max: {
+                                                value: availableQuantity,
+                                                message: t.inventoryDetails.orderModal?.quantityMaxError || `Cannot exceed available stock (${availableQuantity} ${inventoryDetails.unit})`,
+                                            },
+                                            valueAsNumber: true,
+                                        })}
+                                        className={`w-full px-3.5 text-black py-2.5 border rounded-xl text-sm focus:outline-none transition ${orderErrors.quantity
+                                                ? "border-red-500 focus:ring-1 focus:ring-red-500"
+                                                : "border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600"
+                                            }`}
+                                    />
+                                    {orderErrors.quantity && (
+                                        <p className="text-xs text-red-500 mt-1.5">
+                                            {orderErrors.quantity.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleCloseOrderModal}
+                                        className="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition"
+                                    >
+                                        {t.inventoryDetails.orderModal?.closeButton || "Close"}
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isOrdering}
+                                        className="w-1/2 inline-flex items-center justify-center gap-2 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-xl transition disabled:opacity-50"
+                                    >
+                                        {isOrdering && <Loader2 className="w-4 h-4 animate-spin" />}
+                                        {t.inventoryDetails.orderModal?.submitButton || "Confirm Order"}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
                     </div>
                 </div>
             )}

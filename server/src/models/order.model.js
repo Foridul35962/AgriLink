@@ -77,7 +77,7 @@ const orderSchema = new mongoose.Schema({
         ],
         default: "PENDING",
     },
-});
+}, { timestamps: true });
 
 const Orders = mongoose.model("Orders", orderSchema)
 export default Orders
