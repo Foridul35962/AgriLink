@@ -629,8 +629,14 @@ export interface AppTranslations {
     deleteButton: string;
     orderModal: {
       title: string;
-      comingSoonMessage: string;
+      quantityRequiredError: string;
+      outOfStockMessage: string;
+      quantityLabel: string;
+      quantityMinError: string;
+      quantityMaxError: string;
+      submitButton: string;
       closeButton: string;
+      successMessage: string;
     };
     deleteModal: {
       title: string;

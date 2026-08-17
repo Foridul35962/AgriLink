@@ -770,8 +770,14 @@ const en: AppTranslations = {
     deleteButton: "Delete",
     orderModal: {
       title: "Place an Order",
-      comingSoonMessage: "The order form is coming soon. Orders can't be placed from here yet.",
+      outOfStockMessage: "Sorry, this item is currently out of stock.",
+      quantityLabel: "Quantity",
+      quantityRequiredError: "Please enter quantity",
+      quantityMinError: "Please select at least 1 item",
+      quantityMaxError: "Quantity cannot exceed available stock",
+      submitButton: "Confirm Order",
       closeButton: "Close",
+      successMessage: "Your order has been placed successfully!",
     },
     deleteModal: {
       title: "Delete this item?",
