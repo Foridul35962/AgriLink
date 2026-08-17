@@ -1,6 +1,12 @@
 export interface changeFarmerOrderStatusType {
-    orderId: string
-    status: "PROCESSING" | "SHIPPED" | "DELIVERED"
+  orderId: string
+  status: "PROCESSING" | "SHIPPED" | "DELIVERED"
+}
+
+export interface cancelOrderType {
+  orderId: string
+  productId: string
+  cancelReason: string
 }
 
 // --------------------------------
@@ -202,6 +208,7 @@ export interface AratdarReceiveOrderDetailsResponse {
   totalAmount: number;
   status: OrderStatus;
   createdAt: string;
+  cancelReason?: string;
 }
 
 
@@ -272,6 +279,7 @@ export interface RetailerPlacedOrderDetailsResponse {
   totalAmount: number;
   status: OrderStatus;
   createdAt: string;
+  cancelReason?: string;
 }
 
 
