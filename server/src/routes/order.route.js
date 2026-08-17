@@ -17,5 +17,6 @@ orderRouter.get("/aratdar-received-details/:orderId", protect, isAratdar, contro
 orderRouter.patch("/aratdar-change-status/:orderId", protect, isAratdar, controller.changeAratdarOrderStatus)
 orderRouter.get("/retailer-placed", protect, isRetailer, controller.getRetailerPlacedOrder)
 orderRouter.get("/retailer-placed-details/:orderId", protect, isRetailer, controller.getRetailerPlacedOrderDetails)
+orderRouter.patch("/cancel", protect, isRetailer, controller.cancelReailerOrder)
 
 export default orderRouter

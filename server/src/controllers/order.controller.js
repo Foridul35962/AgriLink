@@ -4,6 +4,7 @@ import AsyncHandler from "../helpers/AsyncHandler.js";
 import Orders from "../models/Order.model.js";
 import ApiResponse from "../helpers/ApiResponse.js";
 import redis from "../config/redis.js";
+import Inventories from "../models/Inventory.model.js";
 
 export const getFarmerReceiveOrder = AsyncHandler(async (req, res) => {
     const page = Number(req.query.page) || 1;
@@ -358,48 +359,90 @@ export const getAratdarReceiveOrderDetails = AsyncHandler(async (req, res) => {
 })
 
 export const changeAratdarOrderStatus = AsyncHandler(async (req, res) => {
-    const userId = req.user._id
-    const { orderId } = req.params
-    if (!orderId) {
-        throw new ApiErrors(400, "order id is required")
+    const userId = req.user._id;
+    const { orderId } = req.params;
+
+    // Validate orderId
+    if (!orderId || !mongoose.isValidObjectId(orderId)) {
+        throw new ApiErrors(400, "Invalid order id");
     }
 
-    const { status } = req.body
+    const { status } = req.body;
+
+    // Validate status
     if (!status) {
-        throw new ApiErrors(400, "status are required")
+        throw new ApiErrors(400, "Status is required");
     }
 
     if (!["PROCESSING", "SHIPPED", "DELIVERED"].includes(status)) {
-        throw new ApiErrors(400, "invalid status")
+        throw new ApiErrors(400, "Invalid status");
     }
 
-    const order = await Orders.findOneAndUpdate(
-        {
-            _id: orderId,
-            sellerId: userId,
-            sellerRole: "aratdar"
-        },
-        {
-            status: status
-        },
-        {
-            new: true,
-        }
-    )
+    // Find order belonging to this aratdar
+    const order = await Orders.findOne({
+        _id: orderId,
+        sellerId: userId,
+        sellerRole: "aratdar"
+    });
 
     if (!order) {
-        throw new ApiErrors(404, "order not found")
+        throw new ApiErrors(404, "Order not found");
     }
 
-    await redis.del(`inventoryOrderDetails:aratdar:${orderId}`)
-    await redis.del(`inventoryOrderDetails:retailer:${orderId}`)
+    // Cancelled order cannot be updated
+    if (order.status === "CANCELLED") {
+        throw new ApiErrors(
+            400,
+            "Cancelled order status cannot be changed"
+        );
+    }
+
+    // Delivered order cannot move to another status
+    if (order.status === "DELIVERED") {
+        throw new ApiErrors(
+            400,
+            "Delivered order status cannot be changed"
+        );
+    }
+
+    // Validate status transition
+    const validTransitions = {
+        PENDING: ["PROCESSING"],
+        PROCESSING: ["SHIPPED"],
+        SHIPPED: ["DELIVERED"]
+    };
+
+    if (!validTransitions[order.status]?.includes(status)) {
+        throw new ApiErrors(
+            400,
+            `Cannot change order status from ${order.status} to ${status}`
+        );
+    }
+
+    // Update order status
+    order.status = status;
+
+    await order.save();
+
+    // Clear Redis cache
+    await Promise.all([
+        redis.del(`inventoryOrderDetails:aratdar:${orderId}`),
+        redis.del(`inventoryOrderDetails:retailer:${orderId}`)
+    ]);
 
     return res
         .status(200)
         .json(
-            new ApiResponse(200, { orderId, status }, "order status change successfully")
-        )
-})
+            new ApiResponse(
+                200,
+                {
+                    orderId: order._id,
+                    status: order.status
+                },
+                "Order status changed successfully"
+            )
+        );
+});
 
 export const getRetailerPlacedOrder = AsyncHandler(async (req, res) => {
     const page = Number(req.query.page) || 1;
@@ -411,7 +454,10 @@ export const getRetailerPlacedOrder = AsyncHandler(async (req, res) => {
     const [orders, totalOrders] = await Promise.all([
         Orders.find({
             buyerId: userId,
-            buyerRole: "retailer"
+            buyerRole: "retailer",
+            status: {
+                $ne: "CANCELLED"
+            }
         })
             .select(
                 "inventoryId quantity unit totalAmount status createdAt"
@@ -506,3 +552,119 @@ export const getRetailerPlacedOrderDetails = AsyncHandler(async (req, res) => {
             new ApiResponse(200, order, "order details fetch successfully")
         )
 })
+
+export const cancelReailerOrder = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const { orderId, productId, cancelReason } = req.body;
+
+    // Validate cancel reason
+    if (!cancelReason?.trim()) {
+        throw new ApiErrors(400, "Cancel reason is required");
+    }
+
+    // Validate orderId
+    if (!orderId || !mongoose.isValidObjectId(orderId)) {
+        throw new ApiErrors(400, "Invalid orderId");
+    }
+
+    // Validate productId
+    if (!productId || !mongoose.isValidObjectId(productId)) {
+        throw new ApiErrors(400, "Invalid productId");
+    }
+
+    // Find order and inventory
+    const [order, product] = await Promise.all([
+        Orders.findById(orderId),
+        Inventories.findById(productId)
+    ]);
+
+    if (!order) {
+        throw new ApiErrors(404, "Order is not found");
+    }
+
+    if (!product) {
+        throw new ApiErrors(404, "Product is not found");
+    }
+
+    // Check buyer ownership
+    if (order.buyerId.toString() !== userId.toString()) {
+        throw new ApiErrors(403, "Unauthorized access");
+    }
+
+    // Only pending order can be cancelled
+    if (order.status !== "PENDING") {
+        throw new ApiErrors(
+            400,
+            "Order cannot be cancelled at this time"
+        );
+    }
+
+    // Make sure the order belongs to this inventory
+    if (order.inventoryId.toString() !== productId.toString()) {
+        throw new ApiErrors(
+            400,
+            "This order does not belong to this product"
+        );
+    }
+
+    // const session = await mongoose.startSession();
+
+    try {
+        // await session.startTransaction();
+
+        await Inventories.updateOne(
+            {
+                _id: productId
+            },
+            {
+                $inc: {
+                    allocatedQuantity: -order.quantity
+                },
+
+                $set: {
+                    status: "available"
+                }
+            },
+            // {
+            //     session
+            // }
+        );
+
+        await Orders.updateOne(
+            {
+                _id: orderId,
+                status: "PENDING"
+            },
+            {
+                $set: {
+                    status: "CANCELLED",
+                    cancelReason
+                }
+            },
+            // {
+            //     session
+            // }
+        );
+
+        // await session.commitTransaction();
+
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    { orderId, cancelReason },
+                    "Order cancelled successfully"
+                )
+            );
+
+    } catch (error) {
+        // await session.abortTransaction();
+
+        throw error;
+
+    } finally {
+        // await session.endSession();
+    }
+});
