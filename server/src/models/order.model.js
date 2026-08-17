@@ -65,6 +65,10 @@ const orderSchema = new mongoose.Schema({
         min: 0,
     },
 
+    cancelReason:{
+        type: String,
+    },
+
     status: {
         type: String,
         enum: [

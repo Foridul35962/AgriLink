@@ -1,4 +1,4 @@
-import { AratdarPlacedOrderDetailsResponse, AratdarPlacedOrderResponse, AratdarReceivedOrderResponse, AratdarReceiveOrderDetailsResponse, changeFarmerOrderStatusType, CreateInventoryOrderResponse, FarmerReceiveOrderDetailsResponse, FarmerReceiveOrderResponse, RetailerPlacedOrderDetailsResponse, RetailerPlacedOrderResponse } from "@/types/orderTypes";
+import { AratdarPlacedOrderDetailsResponse, AratdarPlacedOrderResponse, AratdarReceivedOrderResponse, AratdarReceiveOrderDetailsResponse, cancelOrderType, changeFarmerOrderStatusType, CreateInventoryOrderResponse, FarmerReceiveOrderDetailsResponse, FarmerReceiveOrderResponse, RetailerPlacedOrderDetailsResponse, RetailerPlacedOrderResponse } from "@/types/orderTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import { createOrder } from "./productSlice";
@@ -157,6 +157,23 @@ export const getRetailerPlacedOrderDetails = createAsyncThunk(
             const res = await axios.get(`${SERVER_URL}/retailer-placed-details/${orderId}`, {
                 withCredentials: true
             })
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const cancelRetailerOrder = createAsyncThunk(
+    "order/cancel",
+    async (data: cancelOrderType, { rejectWithValue }) => {
+        try {
+            const res = await axios.patch(`${SERVER_URL}/cancel`, data,
+                {
+                    withCredentials: true
+                }
+            )
             return res.data
         } catch (error) {
             const err = error as AxiosError<any>
@@ -369,11 +386,22 @@ const orderSlice = createSlice({
             })
             .addCase(createInventoryOrder.fulfilled, (state, action) => {
                 state.orderLoading = false
-                const data:CreateInventoryOrderResponse = action.payload.data
+                const data: CreateInventoryOrderResponse = action.payload.data
                 state.retailerPlaceOrderDetials = data
             })
             .addCase(createInventoryOrder.rejected, (state) => {
                 state.orderLoading = false
+            })
+        builder
+            .addCase(cancelRetailerOrder.fulfilled, (state, action) => {
+                const orderId = action.payload.data
+                const cancelReason = action.payload.cancelReason
+                state.retailerPlaceOrders.orders = state.retailerPlaceOrders.orders.filter((order) => order._id !== orderId)
+                if (state.retailerPlaceOrderDetials &&
+                    state.retailerPlaceOrderDetials?._id === orderId) {
+                    state.retailerPlaceOrderDetials.cancelReason = cancelReason
+                    state.retailerPlaceOrderDetials.status = "CANCELLED"
+                }
             })
     },
 })
