@@ -338,11 +338,7 @@ const orderSlice = createSlice({
                 state.orderLoading = false
             })
         builder
-            .addCase(aratdarChangeStatus.pending, (state) => {
-                state.orderLoading = true
-            })
             .addCase(aratdarChangeStatus.fulfilled, (state, action) => {
-                state.orderLoading = false
                 const orderId = action.payload.data.orderId
                 const status = action.payload.data.status
                 if (state.aratdarReceiveOrderDetails) {
@@ -354,9 +350,6 @@ const orderSlice = createSlice({
                         state.aratdarReceiveOrders.orders[idx].status = status
                     }
                 }
-            })
-            .addCase(aratdarChangeStatus.rejected, (state) => {
-                state.orderLoading = false
             })
         builder
             .addCase(getRetailerPlacedOrder.pending, (state) => {
