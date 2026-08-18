@@ -730,4 +730,44 @@ export interface AppTranslations {
     previous: string;
     next: string;
   };
+  aratdarReceiveOrders: {
+    title: string;
+    orderId: string;
+    product: string;
+    quantity: string;
+    totalAmount: string;
+    status: string;
+    date: string;
+    noOrders: string;
+    loading: string;
+    previous: string;
+    next: string;
+    page: string;
+    of: string;
+  };
+  aratdarReceiveOrderDetails: {
+    title: string;
+    backToList: string;
+    orderDetails: string;
+    buyerDetails: string;
+    productDetails: string;
+    orderId: string;
+    buyerName: string;
+    phone: string;
+    email: string;
+    district: string;
+    productName: string;
+    category: string;
+    quantity: string;
+    totalAmount: string;
+    currentStatus: string;
+    changeStatus: string;
+    selectStatus: string;
+    updateStatus: string;
+    updating: string;
+    createdAt: string;
+    cancelReason: string;
+    statusUpdatedSuccess: string;
+    invalidTransition: string;
+  };
 }
