@@ -770,4 +770,44 @@ export interface AppTranslations {
     statusUpdatedSuccess: string;
     invalidTransition: string;
   };
+  retailersPlacedOrders: {
+    title: string;
+    subtitle: string;
+    orderId: string;
+    product: string;
+    quantity: string;
+    totalAmount: string;
+    status: string;
+    date: string;
+    action: string;
+    viewDetails: string;
+    noOrders: string;
+    noOrdersDesc: string;
+    page: string;
+    of: string;
+    previous: string;
+    next: string;
+    allStatus: string;
+  };
+  retailerOrderDetails: {
+    backToList: string;
+    orderTitle: string;
+    totalAmount: string;
+    sellerDetails: string;
+    sellerName: string;
+    phone: string;
+    email: string;
+    productDetails: string;
+    quantity: string;
+    cancelOrder: string;
+    cancelReasonTitle: string;
+    cancelReasonPlaceholder: string;
+    cancelReasonRequired: string;
+    confirmCancel: string;
+    close: string;
+    cancelledSuccess: string;
+    cancelReasonLabel: string;
+    cancelling: string;
+    orderNotCancelable: string;
+  };
 }

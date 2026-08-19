@@ -387,8 +387,8 @@ const orderSlice = createSlice({
             })
         builder
             .addCase(cancelRetailerOrder.fulfilled, (state, action) => {
-                const orderId = action.payload.data
-                const cancelReason = action.payload.cancelReason
+                const orderId = action.payload.data.orderId
+                const cancelReason = action.payload.data.cancelReason
                 state.retailerPlaceOrders.orders = state.retailerPlaceOrders.orders.filter((order) => order._id !== orderId)
                 if (state.retailerPlaceOrderDetials &&
                     state.retailerPlaceOrderDetials?._id === orderId) {
