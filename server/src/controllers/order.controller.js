@@ -649,6 +649,11 @@ export const cancelReailerOrder = AsyncHandler(async (req, res) => {
 
         // await session.commitTransaction();
 
+        await Promise.all([
+            redis.del(`inventoryOrderDetails:aratdar:${orderId}`),
+            redis.del(`inventoryOrderDetails:retailer:${orderId}`)
+        ]);
+        
         return res
             .status(200)
             .json(
