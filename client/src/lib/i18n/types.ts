@@ -364,6 +364,7 @@ export interface AppTranslations {
     notProvided: string;
     notFound: string;
     notFoundSub: string;
+    report: string;
   };
   farmerReceiveOrders: {
     title: string;
@@ -402,6 +403,7 @@ export interface AppTranslations {
       SHIPPED: string;
       DELIVERED: string;
     };
+    report: string;
   };
   addCropPage: {
     eyebrow: string;
@@ -809,5 +811,6 @@ export interface AppTranslations {
     cancelReasonLabel: string;
     cancelling: string;
     orderNotCancelable: string;
+    report: string;
   };
 }

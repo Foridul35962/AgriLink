@@ -19,7 +19,8 @@ import {
     Phone,
     Mail,
     MapPin,
-    ShieldCheck
+    ShieldCheck,
+    Flag
 } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import { aratdarChangeStatus, getAratdarReceiveOrderDetails } from '@/store/slice/orderSlice'
@@ -167,7 +168,7 @@ const Page = () => {
             <div className="max-w-4xl mx-auto space-y-6">
 
                 {/* Navigation & Action Bar */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                     <Link
                         href="/aratdar/order/received"
                         className="inline-flex items-center space-x-2 text-emerald-800 hover:text-emerald-900 font-medium transition-colors text-sm bg-white/80 backdrop-blur px-3 py-1.5 rounded-lg border border-emerald-100 shadow-xs"
@@ -176,9 +177,20 @@ const Page = () => {
                         <span>{t.aratdarReceiveOrderDetails.backToList}</span>
                     </Link>
 
-                    <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border tracking-wider uppercase ${getStatusBadge(status)}`}>
-                        {status}
-                    </span>
+                    <div className="flex items-center space-x-3">
+                        {/* Report Order Link Button */}
+                        <Link
+                            href={`/create-reports/${aratdarReceiveOrderDetails.buyerId}`}
+                            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition shadow-xs"
+                        >
+                            <Flag className="w-3.5 h-3.5" />
+                            <span>Report</span>
+                        </Link>
+
+                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border tracking-wider uppercase ${getStatusBadge(status)}`}>
+                            {status}
+                        </span>
+                    </div>
                 </div>
 
                 {/* Main Header Card */}
@@ -229,8 +241,8 @@ const Page = () => {
                                                 {/* Node Circle */}
                                                 <div
                                                     className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 transition-all ${isCompleted
-                                                            ? 'bg-emerald-600 text-white ring-4 ring-emerald-100'
-                                                            : 'bg-gray-100 text-gray-400 border border-gray-300'
+                                                        ? 'bg-emerald-600 text-white ring-4 ring-emerald-100'
+                                                        : 'bg-gray-100 text-gray-400 border border-gray-300'
                                                         }`}
                                                 >
                                                     {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}

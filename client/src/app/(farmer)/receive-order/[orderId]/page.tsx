@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from '@/store/store'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useLanguage } from '@/context/LanguageContext'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -26,7 +27,8 @@ import {
     CircleDot,
     Truck,
     Edit3,
-    Loader2
+    Loader2,
+    AlertTriangle
 } from 'lucide-react'
 
 const Page = () => {
@@ -162,16 +164,26 @@ const Page = () => {
         >
             <div className="max-w-4xl mx-auto space-y-6">
 
-                {/* Back navigation */}
-                <button
-                    onClick={() => router.back()}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#0F3D2E] hover:text-[#1F7A4B] transition-colors"
-                >
-                    <span className="w-8 h-8 rounded-full bg-white border border-[#0F3D2E]/15 flex items-center justify-center shadow-sm">
-                        <ArrowLeft size={16} />
-                    </span>
-                    {t.farmerReceiveOrderDetails.back}
-                </button>
+                {/* Back navigation & Report Button */}
+                <div className="flex items-center justify-between gap-4">
+                    <button
+                        onClick={() => router.back()}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#0F3D2E] hover:text-[#1F7A4B] transition-colors"
+                    >
+                        <span className="w-8 h-8 rounded-full bg-white border border-[#0F3D2E]/15 flex items-center justify-center shadow-sm">
+                            <ArrowLeft size={16} />
+                        </span>
+                        {t.farmerReceiveOrderDetails.back}
+                    </button>
+
+                    <Link
+                        href={`/create-reports/${farmerReceivesOrderDetails?.buyerId._id}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 text-xs sm:text-sm font-bold transition-all shadow-sm"
+                    >
+                        <AlertTriangle size={16} />
+                        <span>{t.farmerReceiveOrderDetails.report || 'Report'}</span>
+                    </Link>
+                </div>
 
                 {orderLoading ? (
                     /* Skeleton Loading UI */
@@ -244,14 +256,12 @@ const Page = () => {
                                     disabled={isUpdating}
                                     className="w-full sm:w-56 px-4 py-2.5 bg-[#F3F9F5] border-2 border-[#0F3D2E]/20 rounded-xl text-xs sm:text-sm font-bold text-[#142B20] focus:outline-none focus:border-[#1F7A4B] transition-colors cursor-pointer disabled:opacity-50 appearance-none pr-8"
                                 >
-                                    {/* যদি বর্তমান status আমাদের ৩টি option-এর বাইরে থাকে (যেমন: PENDING বা CANCELLED), তবে সেটি disabled অপশন হিসেবে দেখাবে */}
                                     {!['PROCESSING', 'SHIPPED', 'DELIVERED'].includes(selectedStatus) && (
                                         <option value={selectedStatus} disabled>
                                             {selectedStatus}
                                         </option>
                                     )}
 
-                                    {/* শুধু এই ৩টি স্ট্যাটাসেই পরিবর্তন করা যাবে */}
                                     <option value="PROCESSING">
                                         {t.farmerReceiveOrderDetails.statusOptions.PROCESSING}
                                     </option>
@@ -263,7 +273,6 @@ const Page = () => {
                                     </option>
                                 </select>
 
-                                {/* Loading Spinner */}
                                 {isUpdating && (
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                         <Loader2 size={16} className="animate-spin text-[#0F3D2E]" />

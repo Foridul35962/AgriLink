@@ -18,7 +18,8 @@ import {
     Phone,
     Mail,
     X,
-    Loader2
+    Loader2,
+    Flag
 } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import { cancelRetailerOrder, getRetailerPlacedOrderDetails } from '@/store/slice/orderSlice'
@@ -170,16 +171,27 @@ const Page = () => {
                                 <p className="text-2xl font-black text-emerald-800 mt-0.5">৳{totalAmount?.toLocaleString()}</p>
                             </div>
 
-                            {/* Cancel Button - Available ONLY in PENDING Status */}
-                            {status === "PENDING" && (
-                                <button
-                                    onClick={() => setIsModalOpen(true)}
-                                    className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-xl border border-rose-200 transition active:scale-[0.98]"
+                            {/* Action Buttons: Cancel & Report */}
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href={`/create-reports/${retailerPlaceOrderDetials.buyerId}`}
+                                    className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold text-xs rounded-xl border border-amber-200 transition active:scale-[0.98]"
                                 >
-                                    <XCircle className="w-4 h-4" />
-                                    <span>{t.retailerOrderDetails.cancelOrder}</span>
-                                </button>
-                            )}
+                                    <Flag className="w-4 h-4" />
+                                    <span>{t.retailerOrderDetails.report || "Report"}</span>
+                                </Link>
+
+                                {/* Cancel Button - Available ONLY in PENDING Status */}
+                                {status === "PENDING" && (
+                                    <button
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-xl border border-rose-200 transition active:scale-[0.98]"
+                                    >
+                                        <XCircle className="w-4 h-4" />
+                                        <span>{t.retailerOrderDetails.cancelOrder}</span>
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -207,8 +219,8 @@ const Page = () => {
                                                 )}
                                                 <div
                                                     className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold z-10 transition-all ${isCompleted
-                                                            ? 'bg-emerald-600 text-white ring-4 ring-emerald-100'
-                                                            : 'bg-gray-100 text-gray-400 border border-gray-300'
+                                                        ? 'bg-emerald-600 text-white ring-4 ring-emerald-100'
+                                                        : 'bg-gray-100 text-gray-400 border border-gray-300'
                                                         }`}
                                                 >
                                                     {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}
