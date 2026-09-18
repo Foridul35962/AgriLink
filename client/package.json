@@ -18,7 +18,8 @@
     "react-dom": "19.2.4",
     "react-hook-form": "^7.81.0",
     "react-redux": "^9.3.0",
-    "react-toastify": "^11.1.0"
+    "react-toastify": "^11.1.0",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
