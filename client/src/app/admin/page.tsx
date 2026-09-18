@@ -318,7 +318,7 @@ const AdminDashboardPage = () => {
                     </Link>
 
                     <Link
-                        href="/admin/member-requests"
+                        href="/admin/members/request"
                         className="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition hover:ring-blue-400/60"
                     >
                         <div className="flex items-center gap-3">
@@ -400,13 +400,6 @@ const AdminDashboardPage = () => {
                 <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
                     <div className="mb-4 flex items-center justify-between">
                         <h3 className="text-base font-semibold text-gray-900">{t.adminDashboard.recentOrders.title}</h3>
-                        <Link
-                            href="/admin/orders"
-                            className="flex items-center gap-1 text-sm font-medium text-[#16a34a] hover:underline"
-                        >
-                            {t.adminDashboard.recentOrders.viewAll}
-                            <ArrowUpRight size={14} />
-                        </Link>
                     </div>
 
                     {dashboardData.recentOrders.length === 0 ? (
