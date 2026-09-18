@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from '@/store/store'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useLanguage } from '@/context/LanguageContext'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -24,7 +25,8 @@ import {
   RefreshCw,
   XCircle,
   CircleDot,
-  Truck
+  Truck,
+  AlertTriangle
 } from 'lucide-react'
 
 const Page = () => {
@@ -124,16 +126,26 @@ const Page = () => {
     >
       <div className="max-w-4xl mx-auto space-y-6">
 
-        {/* Back navigation */}
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#0F3D2E] hover:text-[#1F7A4B] transition-colors"
-        >
-          <span className="w-8 h-8 rounded-full bg-white border border-[#0F3D2E]/15 flex items-center justify-center shadow-sm">
-            <ArrowLeft size={16} />
-          </span>
-          {t.aratdarOrderDetails.back}
-        </button>
+        {/* Back navigation & Report Button */}
+        <div className="flex items-center justify-between gap-4">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#0F3D2E] hover:text-[#1F7A4B] transition-colors"
+          >
+            <span className="w-8 h-8 rounded-full bg-white border border-[#0F3D2E]/15 flex items-center justify-center shadow-sm">
+              <ArrowLeft size={16} />
+            </span>
+            {t.aratdarOrderDetails.back}
+          </button>
+
+          <Link
+            href={`/create-reports/${aratdarPlaceOrderDetails?.buyerId}`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 text-xs sm:text-sm font-bold transition-all shadow-sm"
+          >
+            <AlertTriangle size={16} />
+            <span>{t.aratdarOrderDetails.report || 'Report'}</span>
+          </Link>
+        </div>
 
         {orderLoading ? (
           /* Skeleton */
