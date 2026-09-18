@@ -6,6 +6,11 @@ import AsyncHandler from "../helpers/AsyncHandler.js";
 import RequestUsers from "../models/RequestUsers.model.js";
 import Users from "../models/Users.model.js";
 import Reports from "../models/Reports.model.js";
+import redis from "../config/redis.js";
+import Products from "../models/Product.model.js";
+import Inventories from "../models/Inventory.model.js";
+import Auction from "../models/auctions.model.js";
+import Orders from "../models/Order.model.js";
 
 export const getUsersRequest = AsyncHandler(async (req, res) => {
     const { role } = req.query;
@@ -150,5 +155,150 @@ export const removeMember = AsyncHandler(async (req, res) => {
         .status(200)
         .json(
             new ApiResponse(200, userId, "user removed successfully")
+        )
+})
+
+export const getAdminDashboard = AsyncHandler(async (req, res) => {
+    const redisKey = `dashboard:admin`
+    const redisValue = await redis.get(redisKey)
+    if (redisValue) {
+        const value = JSON.parse(redisValue)
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, value, "admin dashboard get successfully")
+            )
+    }
+
+    const [
+        totalUsers,
+        farmers,
+        aratdars,
+        retailers,
+        products,
+        inventories,
+        activeAuctions,
+        orders,
+        pendingReports,
+        pendingMemberRequest,
+
+        // Chart data
+        monthlyUsers,
+        monthlyOrders,
+        orderStatus,
+        userRoles,
+
+        recentOrders
+    ] = await Promise.all([
+        Users.countDocuments(),
+        Users.countDocuments({ role: "farmer" }),
+        Users.countDocuments({ role: "aratdar" }),
+        Users.countDocuments({ role: "retailer" }),
+        Products.countDocuments(),
+        Inventories.countDocuments(),
+        Auction.countDocuments({ status: "ACTIVE" }),
+        Orders.countDocuments(),
+        Reports.countDocuments({ isReviewed: false }),
+        RequestUsers.countDocuments(),
+
+        // Monthly Users
+        Users.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: new Date(new Date().getFullYear(), 0, 1)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$createdAt" },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]),
+
+        // Monthly Orders
+        Orders.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: new Date(new Date().getFullYear(), 0, 1)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$createdAt" },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]),
+
+        // Order Status
+        Orders.aggregate([
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 }
+                }
+            }
+        ]),
+
+        // User Roles
+        Users.aggregate([
+            {
+                $group: {
+                    _id: "$role",
+                    count: { $sum: 1 }
+                }
+            }
+        ]),
+
+        // Recent Orders
+        Orders.find()
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .select("_id sellerRole buyerRole status createdAt")
+            .lean()
+    ])
+
+    const value = {
+        totalUsers,
+        farmers,
+        aratdars,
+        retailers,
+        products,
+        inventories,
+        activeAuctions,
+        orders,
+        pendingReports,
+        pendingMemberRequest,
+
+        charts: {
+            monthlyUsers,
+            monthlyOrders,
+            orderStatus,
+            userRoles
+        },
+
+        recentOrders
+    }
+
+    await redis.set(redisKey,
+        JSON.stringify(value),
+        "EX", 600
+    )
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, value, "admin dashboard get successfully")
         )
 })

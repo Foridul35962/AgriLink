@@ -1,4 +1,4 @@
-import { GetUsersRequestResponse } from "@/types/adminTypes";
+import { AdminDashboardData, GetUsersRequestResponse } from "@/types/adminTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -67,9 +67,25 @@ export const deleteMember = createAsyncThunk(
     }
 )
 
+export const getAdminDashboard = createAsyncThunk(
+    "admin/dashboard",
+    async (_: null, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/dashboard`,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>;
+            return rejectWithValue(err.response?.data || "Something went wrong");
+        }
+    }
+)
+
 interface initialStateType {
     adminLoading: boolean
-    allUserReqMembers: GetUsersRequestResponse
+    allUserReqMembers: GetUsersRequestResponse,
+    dashboardData: AdminDashboardData
 }
 
 const initialState: initialStateType = {
@@ -82,6 +98,25 @@ const initialState: initialStateType = {
             totalPages: 0,
             totalUsers: 0
         }
+    },
+    dashboardData: {
+        totalUsers: 0,
+        farmers: 0,
+        aratdars: 0,
+        retailers: 0,
+        products: 0,
+        inventories: 0,
+        activeAuctions: 0,
+        orders: 0,
+        pendingReports: 0,
+        pendingMemberRequest: 0,
+        charts: {
+            monthlyOrders: [],
+            monthlyUsers: [],
+            orderStatus: [],
+            userRoles: []
+        },
+        recentOrders: []
     }
 }
 
@@ -112,6 +147,15 @@ const adminSlice = createSlice({
             .addCase(rejectRequest.fulfilled, (state, action) => {
                 const userId = action.payload.data
                 state.allUserReqMembers.users = state.allUserReqMembers.users.filter((user) => user._id !== userId)
+            })
+        // dashboard
+        builder
+            .addCase(getAdminDashboard.pending, (state) => {
+                state.adminLoading = true
+            })
+            .addCase(getAdminDashboard.fulfilled, (state, action) => {
+                state.adminLoading = true
+                state.dashboardData = action.payload.data
             })
     },
 })
