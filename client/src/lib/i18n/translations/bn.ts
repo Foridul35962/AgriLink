@@ -979,6 +979,43 @@ const bn: AppTranslations = {
     orderNotCancelable: "শুধুমাত্র PENDING স্ট্যাটাসে থাকা অর্ডার বাতিল করা সম্ভব",
     report: "রিপোর্ট করুন"
   },
+  adminDashboard: {
+    title: "অ্যাডমিন ড্যাশবোর্ড",
+    subtitle: "ব্যবহারকারী, অর্ডার এবং প্ল্যাটফর্ম কার্যক্রমের সংক্ষিপ্ত চিত্র",
+    stats: {
+      totalUsers: "মোট ব্যবহারকারী",
+      farmers: "কৃষক",
+      aratdars: "আড়তদার",
+      retailers: "খুচরা বিক্রেতা",
+      products: "পণ্য",
+      inventories: "ইনভেন্টরি",
+      activeAuctions: "চলমান নিলাম",
+      orders: "অর্ডার",
+      pendingReports: "অমীমাংসিত রিপোর্ট",
+      pendingMemberRequest: "অমীমাংসিত সদস্য অনুরোধ",
+    },
+    charts: {
+      userGrowth: "ব্যবহারকারী বৃদ্ধি",
+      orderGrowth: "অর্ডার বৃদ্ধি",
+      orderStatus: "অর্ডার স্ট্যাটাস",
+      userRoles: "ব্যবহারকারীর ভূমিকা",
+    },
+    recentOrders: {
+      title: "সাম্প্রতিক অর্ডার",
+      viewAll: "সব দেখুন",
+      seller: "বিক্রেতা",
+      buyer: "ক্রেতা",
+      status: "স্ট্যাটাস",
+      date: "তারিখ",
+      empty: "এখনো কোনো সাম্প্রতিক অর্ডার নেই",
+    },
+    roles: {
+      farmer: "কৃষক",
+      aratdar: "আড়তদার",
+      retailer: "খুচরা বিক্রেতা",
+      admin: "অ্যাডমিন",
+    },
+  }
 };
 
 export default bn;

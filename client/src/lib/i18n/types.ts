@@ -813,4 +813,41 @@ export interface AppTranslations {
     orderNotCancelable: string;
     report: string;
   };
+  adminDashboard: {
+    title: string
+    subtitle: string
+    stats: {
+      totalUsers: string
+      farmers: string
+      aratdars: string
+      retailers: string
+      products: string
+      inventories: string
+      activeAuctions: string
+      orders: string
+      pendingReports: string
+      pendingMemberRequest: string
+    }
+    charts: {
+      userGrowth: string
+      orderGrowth: string
+      orderStatus: string
+      userRoles: string
+    }
+    recentOrders: {
+      title: string
+      viewAll: string
+      seller: string
+      buyer: string
+      status: string
+      date: string
+      empty: string
+    }
+    roles: {
+      farmer: string
+      aratdar: string
+      retailer: string
+      admin: string
+    }
+  }
 }

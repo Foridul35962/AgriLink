@@ -9,5 +9,6 @@ adminRouter.get('/user-request', protect, isAdmin, controller.getUsersRequest)
 adminRouter.post('/user-request-accept', protect, isAdmin, controller.acceptAddRequest)
 adminRouter.post('/user-request-reject', protect, isAdmin, controller.rejectAddRequest)
 adminRouter.delete("/remove-member", protect, isAdmin, controller.removeMember)
+adminRouter.get("/dashboard", protect, isAdmin, controller.getAdminDashboard)
 
 export default adminRouter
