@@ -954,6 +954,43 @@ const en: AppTranslations = {
     orderNotCancelable: "Only PENDING orders can be cancelled",
     report: "Report"
   },
+  adminDashboard: {
+    title: "Admin Dashboard",
+    subtitle: "An overview of users, orders, and platform activity",
+    stats: {
+      totalUsers: "Total Users",
+      farmers: "Farmers",
+      aratdars: "Aratdars",
+      retailers: "Retailers",
+      products: "Products",
+      inventories: "Inventories",
+      activeAuctions: "Active Auctions",
+      orders: "Orders",
+      pendingReports: "Pending Reports",
+      pendingMemberRequest: "Pending Member Requests",
+    },
+    charts: {
+      userGrowth: "User Growth",
+      orderGrowth: "Order Growth",
+      orderStatus: "Order Status",
+      userRoles: "User Roles",
+    },
+    recentOrders: {
+      title: "Recent Orders",
+      viewAll: "View all",
+      seller: "Seller",
+      buyer: "Buyer",
+      status: "Status",
+      date: "Date",
+      empty: "No recent orders yet",
+    },
+    roles: {
+      farmer: "Farmer",
+      aratdar: "Aratdar",
+      retailer: "Retailer",
+      admin: "Admin",
+    },
+  }
 };
 
 export default en;
