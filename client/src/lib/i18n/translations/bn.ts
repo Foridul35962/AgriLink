@@ -529,6 +529,7 @@ const bn: AppTranslations = {
     notProvided: "দেওয়া হয়নি",
     notFound: "অর্ডারটি খুঁজে পাওয়া যায়নি",
     notFoundSub: "এই অর্ডারের তথ্য পাওয়া যায়নি অথবা এটি মুছে ফেলা হয়েছে।",
+    report: "রিপোর্ট করুন"
   },
   farmerReceiveOrders: {
     title: "প্রাপ্ত অর্ডারসমূহ",
@@ -567,6 +568,7 @@ const bn: AppTranslations = {
       SHIPPED: "শিপড (Shipped)",
       DELIVERED: "ডেলিভার্ড (Delivered)",
     },
+    report: "রিপোর্ট করুন"
   },
   addCropPage: {
     eyebrow: "ফসল নিবন্ধন",
@@ -975,6 +977,7 @@ const bn: AppTranslations = {
     cancelReasonLabel: "বাতিলের কারণ",
     cancelling: "বাতিল হচ্ছে...",
     orderNotCancelable: "শুধুমাত্র PENDING স্ট্যাটাসে থাকা অর্ডার বাতিল করা সম্ভব",
+    report: "রিপোর্ট করুন"
   },
 };
 

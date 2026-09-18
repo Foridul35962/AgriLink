@@ -504,6 +504,7 @@ const en: AppTranslations = {
     notProvided: "Not provided",
     notFound: "Order Not Found",
     notFoundSub: "We couldn't find details for this order, or it may have been removed.",
+    report: "Report"
   },
   farmerReceiveOrders: {
     title: "Received Orders",
@@ -542,6 +543,7 @@ const en: AppTranslations = {
       SHIPPED: "Shipped",
       DELIVERED: "Delivered",
     },
+    report: "Report"
   },
   addCropPage: {
     eyebrow: "Crop Registry",
@@ -950,6 +952,7 @@ const en: AppTranslations = {
     cancelReasonLabel: "Cancellation Reason",
     cancelling: "Cancelling...",
     orderNotCancelable: "Only PENDING orders can be cancelled",
+    report: "Report"
   },
 };
 
