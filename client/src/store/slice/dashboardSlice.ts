@@ -1,4 +1,4 @@
-import { FarmerDashboardResponse } from "@/types/dashboardType";
+import { AratdarDashboardResponse, FarmerDashboardResponse } from "@/types/dashboardType";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -19,10 +19,26 @@ export const getfarmerDashboard = createAsyncThunk(
     }
 )
 
+export const getAratdarDashboard = createAsyncThunk(
+    "dashboard/aratdar",
+    async (_: null, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/aratdar`,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 interface initialStateType {
     dashboardLoading: boolean
     dashboardFetch: boolean
     farmerDashboard: FarmerDashboardResponse
+    aratdarDashboard: AratdarDashboardResponse
 }
 
 const initialState: initialStateType = {
@@ -61,8 +77,50 @@ const initialState: initialStateType = {
         },
 
         activeAuctions: [],
-        monthlyData:[],
+        monthlyData: [],
         recentOrders: []
+    },
+    aratdarDashboard: {
+        summary: {
+            totalInventoryItems: 0,
+            availableInventoryItems: 0,
+            depletedInventoryItems: 0,
+
+            totalQuantity: 0,
+            totalAllocatedQuantity: 0,
+
+            lowStockItems: 0,
+
+            totalPurchase: 0,
+            totalSales: 0,
+
+            totalOrders: 0,
+            pendingOrders: 0,
+            deliveredOrders: 0,
+            cancelledOrders: 0,
+        },
+
+        inventoryStats: {
+            totalItems: 0,
+            available: 0,
+            depleted: 0,
+
+            totalQuantity: 0,
+            allocatedQuantity: 0,
+
+            lowStock: 0,
+        },
+
+        orderStats: {
+            total: 0,
+            pending: 0,
+            delivered: 0,
+            cancelled: 0,
+        },
+        inventoryList: [],
+        monthlyData: [],
+        recentPurchases: [],
+        recentSales: []
     }
 }
 
@@ -82,6 +140,20 @@ const dashboardSlice = createSlice({
                 state.farmerDashboard = action.payload.data
             })
             .addCase(getfarmerDashboard.rejected, (state) => {
+                state.dashboardLoading = false
+                state.dashboardFetch = true
+            })
+        //aratdar
+        builder
+            .addCase(getAratdarDashboard.pending, (state) => {
+                state.dashboardLoading = true
+            })
+            .addCase(getAratdarDashboard.fulfilled, (state, action) => {
+                state.dashboardLoading = false
+                state.dashboardFetch = true
+                state.aratdarDashboard = action.payload.data
+            })
+            .addCase(getAratdarDashboard.rejected, (state) => {
                 state.dashboardLoading = false
                 state.dashboardFetch = true
             })

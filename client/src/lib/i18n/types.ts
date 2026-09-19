@@ -926,4 +926,80 @@ export interface AppTranslations {
       minShort: string;
     };
   };
+  aratdarDashboard: {
+    title: string;
+    subtitle: string;
+    currency: string;
+    noData: string;
+    loadFailed: string;
+    lowStockAlert: string;
+    lowStockAlertAction: string;
+    stats: {
+      totalSales: string;
+      totalPurchase: string;
+      totalInventoryItems: string;
+      availableInventoryItems: string;
+      depletedInventoryItems: string;
+      lowStockItems: string;
+      totalOrders: string;
+      pendingOrders: string;
+      deliveredOrders: string;
+      cancelledOrders: string;
+    };
+    charts: {
+      purchaseVsSales: string;
+      orderTrend: string;
+      orderStatus: string;
+      stockUsage: string;
+      purchase: string;
+      sales: string;
+      purchaseOrders: string;
+      salesOrders: string;
+    };
+    orderStats: {
+      pending: string;
+      delivered: string;
+      cancelled: string;
+      inProgress: string;
+    };
+    stock: {
+      allocated: string;
+      remaining: string;
+    };
+    orderStatus: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+    };
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    inventory: {
+      title: string;
+      viewAll: string;
+      empty: string;
+      allocated: string;
+      remaining: string;
+      status: {
+        available: string;
+        depleted: string;
+      };
+    };
+    recentPurchases: {
+      title: string;
+      viewAll: string;
+      empty: string;
+    };
+    recentSales: {
+      title: string;
+      viewAll: string;
+      empty: string;
+    };
+  };
 }
