@@ -849,5 +849,197 @@ export interface AppTranslations {
       retailer: string
       admin: string
     }
-  }
+  };
+  farmerDashboard: {
+    title: string;
+    subtitle: string;
+    currency: string;
+    noData: string;
+    loadFailed: string;
+    waitingAlert: string;
+    waitingAlertAction: string;
+    stats: {
+      totalCrops: string;
+      availableCrops: string;
+      totalOrders: string;
+      pendingOrders: string;
+      deliveredOrders: string;
+      totalSales: string;
+      totalAuctions: string;
+      activeAuctions: string;
+      waitingAuctionSelection: string;
+      completedAuctions: string;
+    };
+    charts: {
+      salesTrend: string;
+      orderTrend: string;
+      cropStatus: string;
+      orderStatus: string;
+      sales: string;
+      orders: string;
+    };
+    cropStats: {
+      available: string;
+      sold: string;
+      expired: string;
+    };
+    orderStats: {
+      pending: string;
+      delivered: string;
+      cancelled: string;
+    };
+    orderStatus: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+    };
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    recentOrders: {
+      title: string;
+      viewAll: string;
+      empty: string;
+      product: string;
+      buyer: string;
+      quantity: string;
+      amount: string;
+      status: string;
+      date: string;
+    };
+    auctions: {
+      title: string;
+      viewAll: string;
+      empty: string;
+      startPrice: string;
+      highestBid: string;
+      noBids: string;
+      timeLeft: string;
+      ended: string;
+      hourShort: string;
+      minShort: string;
+    };
+  };
+  aratdarDashboard: {
+    title: string;
+    subtitle: string;
+    currency: string;
+    noData: string;
+    loadFailed: string;
+    lowStockAlert: string;
+    lowStockAlertAction: string;
+    stats: {
+      totalSales: string;
+      totalPurchase: string;
+      totalInventoryItems: string;
+      availableInventoryItems: string;
+      depletedInventoryItems: string;
+      lowStockItems: string;
+      totalOrders: string;
+      pendingOrders: string;
+      deliveredOrders: string;
+      cancelledOrders: string;
+    };
+    charts: {
+      purchaseVsSales: string;
+      orderTrend: string;
+      orderStatus: string;
+      stockUsage: string;
+      purchase: string;
+      sales: string;
+      purchaseOrders: string;
+      salesOrders: string;
+    };
+    orderStats: {
+      pending: string;
+      delivered: string;
+      cancelled: string;
+      inProgress: string;
+    };
+    stock: {
+      allocated: string;
+      remaining: string;
+    };
+    orderStatus: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+    };
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    inventory: {
+      title: string;
+      viewAll: string;
+      empty: string;
+      allocated: string;
+      remaining: string;
+      status: {
+        available: string;
+        depleted: string;
+      };
+    };
+    recentPurchases: {
+      title: string;
+      viewAll: string;
+      empty: string;
+    };
+    recentSales: {
+      title: string;
+      viewAll: string;
+      empty: string;
+    };
+  };
+  retailerDashboard: {
+    title: string;
+    subtitle: string;
+    currency: string;
+    noData: string;
+    loadFailed: string;
+    stats: {
+      totalPurchase: string;
+      totalOrders: string;
+      inProgressOrders: string;
+      deliveredOrders: string;
+      cancelledOrders: string;
+    };
+    charts: {
+      purchaseTrend: string;
+      orderTrend: string;
+      orderStatus: string;
+      purchase: string;
+      orders: string;
+    };
+    orderStatus: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+    };
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    recentOrders: {
+      title: string;
+      viewAll: string;
+      empty: string;
+    };
+  };
 }
