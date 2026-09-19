@@ -557,7 +557,7 @@ export const aratdarDashboard = AsyncHandler(async (req, res) => {
 
     const currentYear = new Date().getFullYear();
 
-    const startOfYear = new Date( `${currentYear}-01-01T00:00:00.000Z` );
+    const startOfYear = new Date(`${currentYear}-01-01T00:00:00.000Z`);
 
     const startOfNextYear = new Date(`${currentYear + 1}-01-01T00:00:00.000Z`);
     const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -1082,6 +1082,321 @@ export const aratdarDashboard = AsyncHandler(async (req, res) => {
                 200,
                 dashboardData,
                 "aratdar dashboard get successfully"
+            )
+        );
+});
+
+export const retailerDashboard = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const redisKey = `dashboard:retailer:${userId}`;
+
+    const redisValue = await redis.get(redisKey);
+
+    if (redisValue) {
+        const value = JSON.parse(redisValue);
+
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    value,
+                    "retailer dashboard get successfully"
+                )
+            );
+    }
+
+    const currentYear = new Date().getFullYear();
+    const startOfYear = new Date(`${currentYear}-01-01T00:00:00.000Z`);
+    const startOfNextYear = new Date(`${currentYear + 1}-01-01T00:00:00.000Z`);
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const [
+        orderStats,
+        monthlyPurchase,
+        recentOrders
+    ] = await Promise.all([
+
+        // ORDER STATS
+
+        Orders.aggregate([
+            {
+                $match: {
+                    buyerId: userObjectId,
+                    buyerRole: "retailer",
+                    sellerRole: "aratdar"
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+
+                    // All orders including cancelled
+                    totalOrders: {
+                        $sum: 1
+                    },
+
+                    pendingOrders: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        "$status",
+                                        "PENDING"
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+
+                    confirmedOrders: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        "$status",
+                                        "CONFIRMED"
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+
+                    processingOrders: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        "$status",
+                                        "PROCESSING"
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+
+                    shippedOrders: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        "$status",
+                                        "SHIPPED"
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+
+                    deliveredOrders: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        "$status",
+                                        "DELIVERED"
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+
+                    // Cancelled orders are counted
+                    cancelledOrders: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $eq: [
+                                        "$status",
+                                        "CANCELLED"
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    },
+
+                    // Cancelled orders are NOT included
+                    // in total purchase amount
+                    totalPurchase: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $ne: [
+                                        "$status",
+                                        "CANCELLED"
+                                    ]
+                                },
+                                "$totalAmount",
+                                0
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0
+                }
+            }
+        ]),
+
+        // MONTHLY PURCHASE
+
+        Orders.aggregate([
+            {
+                $match: {
+                    buyerId: userObjectId,
+                    buyerRole: "retailer",
+                    sellerRole: "aratdar",
+
+                    // Cancelled orders are excluded
+                    status: {
+                        $ne: "CANCELLED"
+                    },
+
+                    createdAt: {
+                        $gte: startOfYear,
+                        $lt: startOfNextYear
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $month: {
+                            date: "$createdAt",
+                            timezone: "Asia/Dhaka"
+                        }
+                    },
+
+                    purchase: {
+                        $sum: "$totalAmount"
+                    },
+
+                    purchaseOrders: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1
+                }
+            }
+        ]),
+
+        // RECENT ORDERS
+
+        Orders.find({
+            buyerId: userId,
+            buyerRole: "retailer",
+            sellerRole: "aratdar"
+        })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select(
+                "sellerId inventoryId quantity unit pricePerUnit totalAmount status createdAt"
+            )
+            .populate(
+                "sellerId",
+                "name email phone"
+            )
+            .populate(
+                "inventoryId",
+                "productName image.url"
+            )
+            .lean()
+    ]);
+
+    const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ];
+
+    const monthlyData = monthNames.map((month, index) => {
+        const data = monthlyPurchase.find(
+            item => item._id === index + 1
+        );
+
+        return {
+            month,
+            purchase: data?.purchase || 0,
+            purchaseOrders: data?.purchaseOrders || 0
+        };
+    });
+
+    const orders = orderStats[0] || {
+        totalOrders: 0,
+        pendingOrders: 0,
+        confirmedOrders: 0,
+        processingOrders: 0,
+        shippedOrders: 0,
+        deliveredOrders: 0,
+        cancelledOrders: 0,
+        totalPurchase: 0
+    };
+
+    const dashboardData = {
+        summary: {
+            totalOrders: orders.totalOrders,
+            totalPurchase: orders.totalPurchase,
+            pendingOrders: orders.pendingOrders,
+            confirmedOrders: orders.confirmedOrders,
+            processingOrders: orders.processingOrders,
+            shippedOrders: orders.shippedOrders,
+            deliveredOrders: orders.deliveredOrders,
+            cancelledOrders: orders.cancelledOrders
+        },
+
+        orderStats: {
+            total: orders.totalOrders,
+            pending: orders.pendingOrders,
+            confirmed: orders.confirmedOrders,
+            processing: orders.processingOrders,
+            shipped: orders.shippedOrders,
+            delivered: orders.deliveredOrders,
+            cancelled: orders.cancelledOrders
+        },
+        monthlyData,
+        recentOrders
+    };
+
+    await redis.set(
+        redisKey,
+        JSON.stringify(dashboardData),
+        "EX",
+        600
+    );
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                dashboardData,
+                "retailer dashboard get successfully"
             )
         );
 });

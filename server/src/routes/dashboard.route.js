@@ -9,5 +9,6 @@ const dashboardRouter = express.Router()
 
 dashboardRouter.get("/farmer", protect, isFarmer, controller.farmerDashboard)
 dashboardRouter.get("/aratdar", protect, isAratdar, controller.aratdarDashboard)
+dashboardRouter.get("/retailer", protect, isRetailer, controller.retailerDashboard)
 
 export default dashboardRouter
