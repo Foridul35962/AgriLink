@@ -6,6 +6,7 @@ import reportSlice from "@/store/slice/reportSlice"
 import orderSlice from "@/store/slice/orderSlice"
 import cropSlice from "@/store/slice/cropSlice"
 import inventorySlice from "@/store/slice/inventorySlice"
+import dashboardSlice from "@/store/slice/dashboardSlice"
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         order: orderSlice,
         crop: cropSlice,
         inventory: inventorySlice,
+        dashboard: dashboardSlice,
     }
 })
 
