@@ -1002,4 +1002,44 @@ export interface AppTranslations {
       empty: string;
     };
   };
+  retailerDashboard: {
+    title: string;
+    subtitle: string;
+    currency: string;
+    noData: string;
+    loadFailed: string;
+    stats: {
+      totalPurchase: string;
+      totalOrders: string;
+      inProgressOrders: string;
+      deliveredOrders: string;
+      cancelledOrders: string;
+    };
+    charts: {
+      purchaseTrend: string;
+      orderTrend: string;
+      orderStatus: string;
+      purchase: string;
+      orders: string;
+    };
+    orderStatus: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+    };
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    recentOrders: {
+      title: string;
+      viewAll: string;
+      empty: string;
+    };
+  };
 }

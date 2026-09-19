@@ -1143,6 +1143,46 @@ const en: AppTranslations = {
       empty: "No sales yet.",
     },
   },
+  retailerDashboard: {
+    title: "Retailer dashboard",
+    subtitle: "Your purchases and order progress at a glance",
+    currency: "৳",
+    noData: "No data yet",
+    loadFailed: "Could not load your dashboard. Please refresh the page.",
+    stats: {
+      totalPurchase: "Total purchase",
+      totalOrders: "Total orders",
+      inProgressOrders: "Orders in progress",
+      deliveredOrders: "Delivered orders",
+      cancelledOrders: "Cancelled orders",
+    },
+    charts: {
+      purchaseTrend: "Monthly purchase",
+      orderTrend: "Monthly orders",
+      orderStatus: "Order status",
+      purchase: "Purchase",
+      orders: "Orders",
+    },
+    orderStatus: {
+      PENDING: "Pending",
+      CONFIRMED: "Confirmed",
+      PROCESSING: "Processing",
+      SHIPPED: "Shipped",
+      DELIVERED: "Delivered",
+      CANCELLED: "Cancelled",
+    },
+    units: {
+      kg: "kg",
+      mon: "mon",
+      ton: "ton",
+      piece: "piece",
+    },
+    recentOrders: {
+      title: "Recent orders",
+      viewAll: "View all",
+      empty: "No orders yet. Your orders will show up here.",
+    },
+  },
 };
 
 export default en;

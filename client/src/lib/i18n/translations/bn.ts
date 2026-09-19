@@ -1168,6 +1168,46 @@ const bn: AppTranslations = {
       empty: "এখনো কোনো বিক্রয় নেই।",
     },
   },
+  retailerDashboard: {
+    title: "খুচরা ব্যবসায়ী ড্যাশবোর্ড",
+    subtitle: "আপনার ক্রয় ও অর্ডারের অগ্রগতির সারসংক্ষেপ",
+    currency: "৳",
+    noData: "কোনো তথ্য নেই",
+    loadFailed: "ড্যাশবোর্ড লোড করা যায়নি। পেজটি রিফ্রেশ করুন।",
+    stats: {
+      totalPurchase: "মোট ক্রয়",
+      totalOrders: "মোট অর্ডার",
+      inProgressOrders: "চলমান অর্ডার",
+      deliveredOrders: "ডেলিভারি হয়েছে",
+      cancelledOrders: "বাতিল অর্ডার",
+    },
+    charts: {
+      purchaseTrend: "মাসিক ক্রয়",
+      orderTrend: "মাসিক অর্ডার",
+      orderStatus: "অর্ডারের অবস্থা",
+      purchase: "ক্রয়",
+      orders: "অর্ডার",
+    },
+    orderStatus: {
+      PENDING: "অপেক্ষমাণ",
+      CONFIRMED: "নিশ্চিত",
+      PROCESSING: "প্রক্রিয়াধীন",
+      SHIPPED: "পাঠানো হয়েছে",
+      DELIVERED: "ডেলিভারি হয়েছে",
+      CANCELLED: "বাতিল",
+    },
+    units: {
+      kg: "কেজি",
+      mon: "মণ",
+      ton: "টন",
+      piece: "পিস",
+    },
+    recentOrders: {
+      title: "সাম্প্রতিক অর্ডার",
+      viewAll: "সব দেখুন",
+      empty: "এখনো কোনো অর্ডার নেই। আপনার অর্ডার এখানে দেখা যাবে।",
+    },
+  },
 };
 
 export default bn;
