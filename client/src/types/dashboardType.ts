@@ -251,3 +251,68 @@ export interface AratdarDashboardResponse {
             | "depleted";
     }[];
 }
+
+export interface RetailerDashboardResponse {
+    summary: {
+        totalOrders: number;
+        totalPurchase: number;
+
+        pendingOrders: number;
+        confirmedOrders: number;
+        processingOrders: number;
+        shippedOrders: number;
+        deliveredOrders: number;
+        cancelledOrders: number;
+    };
+
+    orderStats: {
+        total: number;
+        pending: number;
+        confirmed: number;
+        processing: number;
+        shipped: number;
+        delivered: number;
+        cancelled: number;
+    };
+
+    monthlyData: {
+        month: string;
+        purchase: number;
+        purchaseOrders: number;
+    }[];
+
+    recentOrders: {
+        _id: string;
+
+        sellerId: {
+            _id: string;
+            name: string;
+            email: string;
+            phone: string;
+        };
+
+        inventoryId: {
+            _id: string;
+            productName: string;
+            image?: {
+                url?: string;
+            };
+        };
+
+        quantity: number;
+        unit: "kg" | "mon" | "ton" | "piece";
+
+        pricePerUnit: number;
+        totalAmount: number;
+
+        status:
+            | "PENDING"
+            | "CONFIRMED"
+            | "PROCESSING"
+            | "SHIPPED"
+            | "DELIVERED"
+            | "CANCELLED";
+
+        createdAt: string;
+    }[];
+}

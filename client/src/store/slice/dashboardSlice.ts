@@ -1,4 +1,4 @@
-import { AratdarDashboardResponse, FarmerDashboardResponse } from "@/types/dashboardType";
+import { AratdarDashboardResponse, FarmerDashboardResponse, RetailerDashboardResponse } from "@/types/dashboardType";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -34,11 +34,27 @@ export const getAratdarDashboard = createAsyncThunk(
     }
 )
 
+export const getRetailerDashboard = createAsyncThunk(
+    "dashboard/retailer",
+    async (_: null, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/retailer`,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 interface initialStateType {
     dashboardLoading: boolean
     dashboardFetch: boolean
     farmerDashboard: FarmerDashboardResponse
     aratdarDashboard: AratdarDashboardResponse
+    retailerDashboard: RetailerDashboardResponse
 }
 
 const initialState: initialStateType = {
@@ -121,6 +137,31 @@ const initialState: initialStateType = {
         monthlyData: [],
         recentPurchases: [],
         recentSales: []
+    },
+    retailerDashboard: {
+        summary: {
+            totalOrders: 0,
+            totalPurchase: 0,
+
+            pendingOrders: 0,
+            confirmedOrders: 0,
+            processingOrders: 0,
+            shippedOrders: 0,
+            deliveredOrders: 0,
+            cancelledOrders: 0,
+        },
+
+        orderStats: {
+            total: 0,
+            pending: 0,
+            confirmed: 0,
+            processing: 0,
+            shipped: 0,
+            delivered: 0,
+            cancelled: 0,
+        },
+        monthlyData: [],
+        recentOrders: []
     }
 }
 
@@ -154,6 +195,20 @@ const dashboardSlice = createSlice({
                 state.aratdarDashboard = action.payload.data
             })
             .addCase(getAratdarDashboard.rejected, (state) => {
+                state.dashboardLoading = false
+                state.dashboardFetch = true
+            })
+        //retailer
+        builder
+            .addCase(getRetailerDashboard.pending, (state) => {
+                state.dashboardLoading = true
+            })
+            .addCase(getRetailerDashboard.fulfilled, (state, action) => {
+                state.dashboardLoading = false
+                state.dashboardFetch = true
+                state.retailerDashboard = action.payload.data
+            })
+            .addCase(getRetailerDashboard.rejected, (state) => {
                 state.dashboardLoading = false
                 state.dashboardFetch = true
             })
