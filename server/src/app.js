@@ -9,6 +9,7 @@ import productRouter from './routes/product.route.js'
 import orderRouter from './routes/order.route.js'
 import cropRouter from './routes/crop.route.js'
 import inventoryRouter from './routes/inventory.route.js'
+import dashboardRouter from './routes/dashboard.route.js'
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use('/api/product', productRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/crop', cropRouter)
 app.use('/api/inventory', inventoryRouter)
+app.use('/api/dashboard', dashboardRouter)
 
 app.get('/', (req, res) => {
     res.send("AgriLink server is running ...")
