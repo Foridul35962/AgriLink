@@ -849,5 +849,81 @@ export interface AppTranslations {
       retailer: string
       admin: string
     }
-  }
+  };
+  farmerDashboard: {
+    title: string;
+    subtitle: string;
+    currency: string;
+    noData: string;
+    loadFailed: string;
+    waitingAlert: string;
+    waitingAlertAction: string;
+    stats: {
+      totalCrops: string;
+      availableCrops: string;
+      totalOrders: string;
+      pendingOrders: string;
+      deliveredOrders: string;
+      totalSales: string;
+      totalAuctions: string;
+      activeAuctions: string;
+      waitingAuctionSelection: string;
+      completedAuctions: string;
+    };
+    charts: {
+      salesTrend: string;
+      orderTrend: string;
+      cropStatus: string;
+      orderStatus: string;
+      sales: string;
+      orders: string;
+    };
+    cropStats: {
+      available: string;
+      sold: string;
+      expired: string;
+    };
+    orderStats: {
+      pending: string;
+      delivered: string;
+      cancelled: string;
+    };
+    orderStatus: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+    };
+    units: {
+      kg: string;
+      mon: string;
+      ton: string;
+      piece: string;
+    };
+    recentOrders: {
+      title: string;
+      viewAll: string;
+      empty: string;
+      product: string;
+      buyer: string;
+      quantity: string;
+      amount: string;
+      status: string;
+      date: string;
+    };
+    auctions: {
+      title: string;
+      viewAll: string;
+      empty: string;
+      startPrice: string;
+      highestBid: string;
+      noBids: string;
+      timeLeft: string;
+      ended: string;
+      hourShort: string;
+      minShort: string;
+    };
+  };
 }
