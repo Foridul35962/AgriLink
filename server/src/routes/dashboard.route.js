@@ -8,5 +8,6 @@ import isAratdar from "../middlewares/isAratdar.js"
 const dashboardRouter = express.Router()
 
 dashboardRouter.get("/farmer", protect, isFarmer, controller.farmerDashboard)
+dashboardRouter.get("/aratdar", protect, isAratdar, controller.aratdarDashboard)
 
 export default dashboardRouter
