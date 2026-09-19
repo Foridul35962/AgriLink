@@ -500,7 +500,7 @@ export const getAllProducts = AsyncHandler(async (req, res) => {
     const matchStage = {
         status: "available",
         createdAt: {
-            $gte: new Date(Date.now() - 12 * 60 * 60 * 1000)
+            $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         }
     };
 
@@ -788,7 +788,7 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
 
         const [product, auction] = await Promise.all([
             Products.findById(productId)
-                .select("farmerId name quantity unit")
+                .select("farmerId name auctionId quantity unit status")
                 .populate({
                     path: "farmerId",
                     select: "email name"
@@ -812,8 +812,12 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
         if (!auction) {
             throw new ApiErrors(404, "auction is not found")
         }
+        
+        if (product.auctionId?.toString() !== auctionId.toString()) {
+            throw new ApiErrors(400, "product does not belong to this auction")
+        }
 
-        if (auction.endTime > Date.now()) {
+        if (auction.endTime.getTime() > Date.now()) {
             throw new ApiErrors(400, "bidding is not ended")
         }
 
@@ -854,6 +858,11 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
             ),
 
             auction.save(
+                // {session}
+            ),
+
+            product.updateOne(
+                { status: "sold" },
                 // {session}
             )
         ])
