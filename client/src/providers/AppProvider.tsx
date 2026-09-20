@@ -1,6 +1,7 @@
 "use client"
 
 import GetUser from '@/hooks/GetUser'
+import UseSocket from '@/hooks/UseSocket'
 import store from '@/store/store'
 import React from 'react'
 import { Provider } from 'react-redux'
@@ -11,6 +12,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     <>
       <Provider store={store}>
         <ToastContainer />
+        <UseSocket />
         {children}
         <GetUser />
       </Provider>
