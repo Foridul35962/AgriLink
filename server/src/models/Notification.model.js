@@ -31,6 +31,11 @@ const notificationSchema = new mongoose.Schema({
     relatedId: {
         type: mongoose.Schema.Types.ObjectId,
         default: null
+    },
+    isReaded:{
+        type: Boolean,
+        required: true,
+        default: false
     }
 }, { timestamps: true });
 
