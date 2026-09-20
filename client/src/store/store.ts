@@ -7,6 +7,7 @@ import orderSlice from "@/store/slice/orderSlice"
 import cropSlice from "@/store/slice/cropSlice"
 import inventorySlice from "@/store/slice/inventorySlice"
 import dashboardSlice from "@/store/slice/dashboardSlice"
+import notificationSlice from "@/store/slice/notificationSlice"
 
 const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
         crop: cropSlice,
         inventory: inventorySlice,
         dashboard: dashboardSlice,
+        notification: notificationSlice,
     }
 })
 
