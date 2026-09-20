@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sprout, Menu, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSwitcher from "./LanguageSwitcher";
+import NotificationMenu from "../notification/notificationMenu";
 
 export default function Navbar() {
   const { t } = useLanguage();
@@ -44,31 +45,38 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
-            <LanguageSwitcher />
-            <Link
-              href="/login"
-              className="text-sm font-medium text-gray-600 hover:text-emerald-700 transition px-3 py-2"
-            >
-              {t.nav.login}
-            </Link>
-            <Link
-              href="/register"
-              className="text-sm font-medium text-white bg-emerald-700 hover:bg-emerald-800 transition px-4 py-2 rounded-lg"
-            >
-              {t.nav.getStarted}
-            </Link>
-          </div>
+          {/* Right side: one wrapper so NotificationMenu is rendered only ONCE
+              (visible on both desktop and mobile) */}
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-3">
+              <LanguageSwitcher />
+              <Link
+                href="/login"
+                className="text-sm font-medium text-gray-600 hover:text-emerald-700 transition px-3 py-2"
+              >
+                {t.nav.login}
+              </Link>
+              <Link
+                href="/register"
+                className="text-sm font-medium text-white bg-emerald-700 hover:bg-emerald-800 transition px-4 py-2 rounded-lg"
+              >
+                {t.nav.getStarted}
+              </Link>
+            </div>
 
-          <div className="flex items-center gap-2 md:hidden">
-            <LanguageSwitcher />
-            <button
-              onClick={() => setOpen((v) => !v)}
-              className="text-gray-600"
-              aria-label="Toggle menu"
-            >
-              {open ? <X size={22} /> : <Menu size={22} />}
-            </button>
+            {/* Notification bell + dropdown (handles its own open/close state) */}
+            <NotificationMenu />
+
+            <div className="flex items-center gap-2 md:hidden">
+              <LanguageSwitcher />
+              <button
+                onClick={() => setOpen((v) => !v)}
+                className="text-gray-600"
+                aria-label="Toggle menu"
+              >
+                {open ? <X size={22} /> : <Menu size={22} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
