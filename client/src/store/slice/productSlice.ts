@@ -178,7 +178,25 @@ const initialState: initialStateType = {
 const productSlice = createSlice({
     name: "product",
     initialState,
-    reducers: {},
+    reducers: {
+        updateBidding: (state, action) => {
+            const { bid, productId }: { bid: Bid, productId: string } = action.payload
+            if (!state.product) {
+                return
+            }
+            if (state.product.product._id !== productId) {
+                return
+            }
+
+            const idx = state.product.topBids.findIndex((product)=>product._id === bid._id)
+            if (idx>-1) {
+                state.product.topBids[idx] = bid
+            } else{
+                state.product.topBids = [bid, ...state.product?.topBids]
+            }
+            state.product.auction.currentHighestBid = bid.bidAmount
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(addProduct.pending, (state) => {
@@ -298,4 +316,5 @@ const productSlice = createSlice({
     },
 })
 
+export const {updateBidding} = productSlice.actions
 export default productSlice.reducer
