@@ -129,6 +129,17 @@ const notificationSlice = createSlice({
                 0,
                 state.allNotificationData.pagination.totalNotifications - 1
             );
+        },
+
+        updateNotification: (state, action) => {
+            const { notification } = action.payload
+            if (!notification) return
+
+            if (state.allNotificationData.notifications.some((n) => n._id === notification._id)) return
+
+            state.allNotificationData.notifications = [notification, ...state.allNotificationData.notifications]
+            state.allNotificationData.pagination.totalNotifications += 1
+            state.unreadNotificationCount += 1
         }
     },
     extraReducers: (builder) => {
@@ -194,5 +205,5 @@ const notificationSlice = createSlice({
     },
 })
 
-export const { deleteNotificationPrev } = notificationSlice.actions
+export const { deleteNotificationPrev, updateNotification } = notificationSlice.actions
 export default notificationSlice.reducer

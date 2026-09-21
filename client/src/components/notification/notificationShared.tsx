@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import {
     Bell,
@@ -30,7 +30,7 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
-import { AppDispatch } from "@/store/store"
+import { AppDispatch, RootState } from "@/store/store"
 import {
     deleteNotification,
     deleteNotificationPrev,
@@ -39,19 +39,21 @@ import {
 } from "@/store/slice/notificationSlice"
 import type { Notification } from "@/types/notificationTypes"
 
-/* -------------------------------------------------------------------------- */
-/*  Config                                                                    */
-/* -------------------------------------------------------------------------- */
 
 export const NOTIFICATIONS_ROUTE = "/notifications"
 
-/* Where should a notification take the user when clicked?
-   Return a path to make the item a link, or null to just mark it as read.
-   Example:
-     if (n.type.toLowerCase().includes("order") && n.relatedId) return `/orders/${n.relatedId}`
-*/
-export const getNotificationHref = (_n: Notification): string | null => {
-    return null
+export const getNotificationHref = (n: Notification, role: "farmer" | "aratdar" | "retailer" | "admin" | undefined) => {
+    if (!n.relatedId || role === undefined) {
+        return null
+    }
+    if (["ORDER_SHIPPED", "ORDER_DELIVERED", "ORDER_CANCELLED", "ORDER_PROCESSING"].includes(n.type)) {
+        return role === "aratdar" ? `/aratdar/order/placed/${n.relatedId}` :
+            role === "retailer" && `/retailer/order/${n.relatedId}`
+    }
+    if (n.type === "ORDER_PLACED") {
+        return role === "aratdar" ? `/aratdar/order/received/${n.relatedId}` :
+            role === "farmer" && `/receive-order/${n.relatedId}`
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -138,7 +140,7 @@ export const useNotificationActions = () => {
         try {
             await dispatch(readNotification({ notificationId })).unwrap()
         } catch (error) {
-            toast.error(getErrorMessage(error))
+            // toast.error(getErrorMessage(error))
         }
     }
 
@@ -177,7 +179,7 @@ interface NotificationItemProps {
     onRead: (id: string) => void
     onDelete: (id: string) => void
     deleting?: boolean
-    onNavigate?: () => void // e.g. close the dropdown
+    onNavigate?: () => void
 }
 
 const clamp2: React.CSSProperties = {
@@ -189,8 +191,9 @@ const clamp2: React.CSSProperties = {
 
 export const NotificationItem = ({ notification, onRead, onDelete, deleting, onNavigate }: NotificationItemProps) => {
     const { icon: Icon, color } = getTypeMeta(notification.type)
+    const { user } = useSelector((state: RootState) => state.auth)
     const unread = !notification.isReaded
-    const href = getNotificationHref(notification)
+    const href = getNotificationHref(notification, user?.role)
 
     const handleOpen = () => {
         if (unread) onRead(notification._id)
@@ -208,9 +211,8 @@ export const NotificationItem = ({ notification, onRead, onDelete, deleting, onN
             <div className="min-w-0 flex-1">
                 <div className="flex items-start gap-2">
                     <p
-                        className={`min-w-0 flex-1 text-sm ${
-                            unread ? "font-semibold text-gray-900" : "font-medium text-gray-700"
-                        }`}
+                        className={`min-w-0 flex-1 text-sm ${unread ? "font-semibold text-gray-900" : "font-medium text-gray-700"
+                            }`}
                         style={clamp2}
                     >
                         {notification.title}
@@ -232,9 +234,8 @@ export const NotificationItem = ({ notification, onRead, onDelete, deleting, onN
 
     return (
         <li
-            className={`group relative flex items-start gap-1 px-4 py-3 transition-colors ${
-                unread ? "bg-[#16a34a]/6 hover:bg-[#16a34a]/10" : "bg-white hover:bg-gray-50"
-            } ${deleting ? "pointer-events-none opacity-50" : ""}`}
+            className={`group relative flex items-start gap-1 px-4 py-3 transition-colors ${unread ? "bg-[#16a34a]/6 hover:bg-[#16a34a]/10" : "bg-white hover:bg-gray-50"
+                } ${deleting ? "pointer-events-none opacity-50" : ""}`}
         >
             {href ? (
                 <Link href={href} onClick={handleOpen} className={bodyClass}>

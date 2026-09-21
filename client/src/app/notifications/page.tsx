@@ -5,10 +5,12 @@ import { useDispatch, useSelector } from "react-redux"
 import { BellOff, CheckCheck, Loader2, RotateCcw } from "lucide-react"
 import { toast } from "react-toastify"
 
-import { getAllNotification, getUnReadNotificationCount } from "@/store/slice/notificationSlice"
+import { getAllNotification, getUnReadNotificationCount, updateNotification } from "@/store/slice/notificationSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import type { Notification } from "@/types/notificationTypes"
 import { getErrorMessage, NotificationItem, NotificationSkeleton, useNotificationActions } from "@/components/notification/notificationShared"
+import { getSoundEnabled, playNotificationSound, setupSoundUnlock } from "@/components/notification/notificationSound"
+import socket from "@/socket"
 
 type Filter = "all" | "unread"
 type GroupName = "Today" | "Yesterday" | "Earlier"
@@ -35,9 +37,10 @@ const NotificationsPage = () => {
     const [filter, setFilter] = useState<Filter>("all")
     const [initialized, setInitialized] = useState(false)
     const [loadFailed, setLoadFailed] = useState(false)
+    const soundOnRef = useRef(true)
 
     const sentinelRef = useRef<HTMLDivElement | null>(null)
-    const fetchingRef = useRef(false) // blocks duplicate requests while one is running
+    const fetchingRef = useRef(false)
 
     const loadPage = useCallback(
         async (page: number) => {
@@ -47,7 +50,7 @@ const NotificationsPage = () => {
             try {
                 await dispatch(getAllNotification({ page })).unwrap()
             } catch (error) {
-                setLoadFailed(true) // stops the infinite-scroll from retrying in a loop
+                setLoadFailed(true)
                 toast.error(getErrorMessage(error))
             } finally {
                 fetchingRef.current = false
@@ -66,12 +69,8 @@ const NotificationsPage = () => {
             setInitialized(true)
         }
         init()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // Infinite scroll: when the sentinel at the bottom becomes visible, load the next page.
-    // The observer is re-created after every load, so if the sentinel is STILL visible
-    // (short list / tall screen) it immediately loads the next page again.
     useEffect(() => {
         const el = sentinelRef.current
         if (!el || !initialized || !pagination.hasNextPage || notificationLoading || loadFailed) return
@@ -94,6 +93,24 @@ const NotificationsPage = () => {
         filter,
         loadPage,
     ])
+
+    useEffect(() => {
+        const enabled = getSoundEnabled()
+        soundOnRef.current = enabled
+        return setupSoundUnlock()
+    }, [])
+
+    useEffect(() => {
+        const handleUpdateNotification = ({ notification }: { notification: Notification }) => {
+            dispatch(updateNotification({ notification }))
+            if (soundOnRef.current) playNotificationSound()
+        }
+        socket.on("updateNotification", handleUpdateNotification)
+
+        return () => {
+            socket.off("updateNotification", handleUpdateNotification)
+        }
+    }, [dispatch])
 
     const visible = filter === "unread" ? notifications.filter((n) => !n.isReaded) : notifications
 
@@ -143,15 +160,13 @@ const NotificationsPage = () => {
                                 key={tab.key}
                                 type="button"
                                 onClick={() => setFilter(tab.key)}
-                                className={`flex items-center gap-2 rounded-lg px-4 py-1.5 text-sm font-medium transition ${
-                                    active ? "bg-[#16a34a] text-white" : "text-gray-600 hover:text-gray-900"
-                                }`}
+                                className={`flex items-center gap-2 rounded-lg px-4 py-1.5 text-sm font-medium transition ${active ? "bg-[#16a34a] text-white" : "text-gray-600 hover:text-gray-900"
+                                    }`}
                             >
                                 {tab.label}
                                 <span
-                                    className={`rounded-full px-1.5 text-xs ${
-                                        active ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
-                                    }`}
+                                    className={`rounded-full px-1.5 text-xs ${active ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+                                        }`}
                                 >
                                     {tab.count}
                                 </span>
