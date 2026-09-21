@@ -812,7 +812,7 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
         if (!auction) {
             throw new ApiErrors(404, "auction is not found")
         }
-        
+
         if (product.auctionId?.toString() !== auctionId.toString()) {
             throw new ApiErrors(400, "product does not belong to this auction")
         }
@@ -881,8 +881,12 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
             message: `Your ${product.name} has been ordered by an aratdar. Please check the order details.`,
             relatedId: order._id
         })
+            .then((notification) => {
+                const io = req.app.get("io")
 
-        // socket.io need
+                io.to(`user:${order.sellerId}`)
+                    .emit("updateNotification", { notification })
+            })
 
         return res
             .status(201)
