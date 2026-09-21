@@ -4,19 +4,29 @@ import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import { AnimatePresence, motion } from "framer-motion"
-import { Bell, BellOff, CheckCheck, Loader2, ArrowRight } from "lucide-react"
+import { Bell, BellOff, CheckCheck, Loader2, ArrowRight, Volume2, VolumeX } from "lucide-react"
 import { toast } from "react-toastify"
-
-import { getAllNotification, getUnReadNotificationCount } from "@/store/slice/notificationSlice"
+import {
+    getAllNotification,
+    getUnReadNotificationCount,
+    updateNotification,
+} from "@/store/slice/notificationSlice"
 import { AppDispatch, RootState } from "@/store/store"
+import type { Notification } from "@/types/notificationTypes"
 import {
     NOTIFICATIONS_ROUTE,
     NotificationItem,
     NotificationSkeleton,
     getErrorMessage,
-    useNotificationActions
-} from "@/components/notification/notificationShared"
-
+    useNotificationActions,
+} from "./notificationShared"
+import socket from "@/socket"
+import {
+    getSoundEnabled,
+    playNotificationSound,
+    setSoundEnabled,
+    setupSoundUnlock
+} from "@/components/notification/notificationSound"
 
 const NotificationMenu = () => {
     const dispatch = useDispatch<AppDispatch>()
@@ -26,13 +36,15 @@ const NotificationMenu = () => {
     const { markRead, markAllRead, remove, deletingId, markingAll } = useNotificationActions()
 
     const [open, setOpen] = useState(false)
+    const [soundOn, setSoundOn] = useState(true)
+    const [ringKey, setRingKey] = useState(0)
     const wrapperRef = useRef<HTMLDivElement>(null)
+    const soundOnRef = useRef(true)
 
     // Menu only shows the first page of notifications
     const pageSize = allNotificationData.pagination.limit || 10
     const items = allNotificationData.notifications.slice(0, pageSize)
 
-    // Initial load: unread badge count + page 1 (if nothing is loaded yet)
     useEffect(() => {
         const init = async () => {
             try {
@@ -47,6 +59,29 @@ const NotificationMenu = () => {
         init()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    // Sound preference + unlock audio on the first user interaction
+    useEffect(() => {
+        const enabled = getSoundEnabled()
+        setSoundOn(enabled)
+        soundOnRef.current = enabled
+        return setupSoundUnlock()
+    }, [])
+
+    // Real-time: new notification from the server.
+    // This lives in the navbar, so it works on EVERY page (including the notification page).
+    useEffect(() => {
+        const handleUpdateNotification = ({ notification }: { notification: Notification }) => {
+            dispatch(updateNotification({ notification }))
+            setRingKey((k) => k + 1)
+            if (soundOnRef.current) playNotificationSound()
+        }
+        socket.on("updateNotification", handleUpdateNotification)
+
+        return () => {
+            socket.off("updateNotification", handleUpdateNotification)
+        }
+    }, [dispatch])
 
     // Refresh the badge every time the menu is opened
     useEffect(() => {
@@ -70,6 +105,14 @@ const NotificationMenu = () => {
         }
     }, [open])
 
+    const toggleSound = () => {
+        const next = !soundOn
+        setSoundOn(next)
+        soundOnRef.current = next
+        setSoundEnabled(next)
+        if (next) playNotificationSound(true)
+    }
+
     const badge = unreadNotificationCount > 99 ? "99+" : String(unreadNotificationCount)
 
     return (
@@ -83,11 +126,28 @@ const NotificationMenu = () => {
                 className={`relative flex h-10 w-10 items-center justify-center rounded-full text-gray-700 transition hover:bg-gray-100 ${open ? "bg-gray-100" : ""
                     }`}
             >
-                <Bell size={20} />
+                {/* Bell shakes on every new notification */}
+                <motion.span
+                    key={ringKey}
+                    className="inline-flex"
+                    style={{ transformOrigin: "50% 0%" }}
+                    animate={ringKey > 0 ? { rotate: [0, -18, 16, -12, 10, -6, 3, 0] } : undefined}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                >
+                    <Bell size={20} />
+                </motion.span>
+
+                {/* Unread badge pops every time the count changes */}
                 {unreadNotificationCount > 0 && (
-                    <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">
+                    <motion.span
+                        key={unreadNotificationCount}
+                        initial={{ scale: 0.4 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                        className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white"
+                    >
                         {badge}
-                    </span>
+                    </motion.span>
                 )}
             </button>
 
@@ -99,10 +159,10 @@ const NotificationMenu = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.98 }}
                         transition={{ duration: 0.15 }}
-                        className="fixed inset-x-3 top-16 z-50 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/10 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-3 sm:w-100"
+                        className="fixed inset-x-3 top-16 z-50 flex max-h-[calc(100vh-5rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/10 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-3 sm:max-h-[85vh] sm:w-100"
                     >
                         {/* Header */}
-                        <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
+                        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
                             <div className="flex items-center gap-2">
                                 <h3 className="text-base font-semibold text-gray-900">Notifications</h3>
                                 {unreadNotificationCount > 0 && (
@@ -111,21 +171,36 @@ const NotificationMenu = () => {
                                     </span>
                                 )}
                             </div>
-                            {unreadNotificationCount > 0 && (
+                            <div className="flex items-center gap-2">
+                                {unreadNotificationCount > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={markAllRead}
+                                        disabled={markingAll}
+                                        className="flex items-center gap-1 text-xs font-medium text-[#16a34a] hover:underline disabled:opacity-60"
+                                    >
+                                        {markingAll ? (
+                                            <Loader2 size={14} className="animate-spin" />
+                                        ) : (
+                                            <CheckCheck size={14} />
+                                        )}
+                                        Mark all as read
+                                    </button>
+                                )}
                                 <button
                                     type="button"
-                                    onClick={markAllRead}
-                                    disabled={markingAll}
-                                    className="flex items-center gap-1 text-xs font-medium text-[#16a34a] hover:underline disabled:opacity-60"
+                                    onClick={toggleSound}
+                                    title={soundOn ? "Mute notification sound" : "Turn on notification sound"}
+                                    aria-label={soundOn ? "Mute notification sound" : "Turn on notification sound"}
+                                    className="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
                                 >
-                                    {markingAll ? <Loader2 size={14} className="animate-spin" /> : <CheckCheck size={14} />}
-                                    Mark all as read
+                                    {soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
                                 </button>
-                            )}
+                            </div>
                         </div>
 
                         {/* List */}
-                        <div className="max-h-105 overflow-y-auto">
+                        <div className="max-h-80 overflow-y-auto sm:max-h-95">
                             {notificationLoading && items.length === 0 ? (
                                 <NotificationSkeleton rows={4} />
                             ) : items.length === 0 ? (
@@ -156,7 +231,7 @@ const NotificationMenu = () => {
                         <Link
                             href={NOTIFICATIONS_ROUTE}
                             onClick={() => setOpen(false)}
-                            className="flex items-center justify-center gap-1.5 border-t border-gray-100 py-3 text-sm font-medium text-[#16a34a] transition hover:bg-gray-50"
+                            className="flex shrink-0 items-center justify-center gap-1.5 border-t border-gray-100 py-3 text-sm font-medium text-[#16a34a] transition hover:bg-gray-50"
                         >
                             View all notifications
                             <ArrowRight size={14} />
