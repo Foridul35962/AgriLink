@@ -114,7 +114,7 @@ export const addProduct = [
             startPrice,
             currentHighestBid: 0,
             startTime: new Date(),
-            endTime: new Date(Date.now() + 12 * 60 * 60 * 1000),
+            endTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
             status: "ACTIVE"
         };
 
@@ -643,8 +643,13 @@ export const addBidding = AsyncHandler(async (req, res) => {
 
     const populatedBid = await Bids.findById(bid._id).populate(
         "aratdarId",
-        "name district phoneNumber"
+        "name district phoneNumber email"
     );
+
+    const io = req.app.get("io")
+
+    io.to(`auction:${auction._id}`)
+        .emit("updateBid", { bid: populatedBid, productId: auction.productId })
 
     return res.status(200).json(
         new ApiResponse(200, {

@@ -28,9 +28,11 @@ import {
 } from "lucide-react";
 
 import { AppDispatch, RootState } from "@/store/store";
-import { acceptBid, addBid, createOrder, deleteProduct, getProduct } from "@/store/slice/productSlice";
+import { acceptBid, addBid, createOrder, deleteProduct, getProduct, updateBidding } from "@/store/slice/productSlice";
 import { useLanguage } from "@/context/LanguageContext";
 import { toast } from "react-toastify";
+import socket from "@/socket";
+import { Bid } from "@/types/productTypes";
 
 export default function ProductDetailPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -65,6 +67,30 @@ export default function ProductDetailPage() {
       });
     }
   }, [dispatch, productId]);
+
+  useEffect(() => {
+    if (!productData?.auction) {
+      return
+    }
+
+    socket.emit("joinBidding", { auctionId: productData.auction._id })
+
+    return () => {
+      socket.emit("leaveBidding", { auctionId: productData.auction._id })
+    }
+  }, [dispatch, productData])
+
+  useEffect(() => {
+    const handleUpdateBid = ({ bid, productId }: { bid: Bid, productId: string }) => {
+      dispatch(updateBidding({ bid, productId }))
+    }
+
+    socket.on("updateBid", handleUpdateBid)
+
+    return () => {
+      socket.off("updateBid", handleUpdateBid)
+    }
+  }, [])
 
   // Handle Delete Product
   const handleDeleteProduct = async () => {
