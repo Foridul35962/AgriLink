@@ -46,13 +46,16 @@ export const getNotificationHref = (n: Notification, role: "farmer" | "aratdar" 
     if (!n.relatedId || role === undefined) {
         return null
     }
-    if (["ORDER_SHIPPED", "ORDER_DELIVERED", "ORDER_CANCELLED", "ORDER_PROCESSING"].includes(n.type)) {
+    if (["ORDER_SHIPPED", "ORDER_DELIVERED", "ORDER_PROCESSING"].includes(n.type)) {
         return role === "aratdar" ? `/aratdar/order/placed/${n.relatedId}` :
             role === "retailer" && `/retailer/order/${n.relatedId}`
     }
     if (n.type === "ORDER_PLACED") {
         return role === "aratdar" ? `/aratdar/order/received/${n.relatedId}` :
             role === "farmer" && `/receive-order/${n.relatedId}`
+    }
+    if (n.type === "ORDER_CANCELLED") {
+        return role === "aratdar" && `/aratdar/order/received/${n.relatedId}`
     }
 }
 
