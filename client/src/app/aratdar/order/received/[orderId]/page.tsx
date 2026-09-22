@@ -180,7 +180,7 @@ const Page = () => {
                     <div className="flex items-center space-x-3">
                         {/* Report Order Link Button */}
                         <Link
-                            href={`/create-reports/${aratdarReceiveOrderDetails.buyerId}`}
+                            href={`/create-reports/${aratdarReceiveOrderDetails.buyerId._id}`}
                             className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition shadow-xs"
                         >
                             <Flag className="w-3.5 h-3.5" />

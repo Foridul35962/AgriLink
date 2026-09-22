@@ -177,7 +177,7 @@ export const changeFarmerOrderStatus = AsyncHandler(async (req, res) => {
             const io = req.app.get("io")
 
             io.to(`user:${order.buyerId}`)
-                .emit("updateNotification", {notification})
+                .emit("updateNotification", { notification })
         })
         .catch((error) => {
             console.error(
@@ -370,7 +370,7 @@ export const getAratdarReceiveOrderDetails = AsyncHandler(async (req, res) => {
             sellerId: userId,
             sellerRole: "aratdar"
         })
-            .select("sellerId buyerId inventoryId quantity unit totalAmount status createdAt")
+            .select("sellerId buyerId inventoryId quantity unit totalAmount status createdAt cancelReason")
             .populate({
                 path: "buyerId",
                 select: "name phoneNumber email district"
@@ -473,6 +473,45 @@ export const changeAratdarOrderStatus = AsyncHandler(async (req, res) => {
         redis.del(`inventoryOrderDetails:retailer:${orderId}`)
     ]);
 
+    Notification.create({
+        sender: userId,
+        recipient: order.buyerId,
+        title:
+            status === "PROCESSING"
+                ? "Order Processing"
+                : status === "SHIPPED"
+                    ? "Order Shipped"
+                    : "Order Delivered",
+
+        message:
+            status === "PROCESSING"
+                ? "Your order is now being processed."
+                : status === "SHIPPED"
+                    ? "Your order has been shipped."
+                    : "Your order has been delivered.",
+
+        relatedId: order._id,
+        isReaded: false,
+        type:
+            status === "PROCESSING"
+                ? NOTIFICATION_TYPES.ORDER_PROCESSING
+                : status === "SHIPPED"
+                    ? NOTIFICATION_TYPES.ORDER_SHIPPED
+                    : NOTIFICATION_TYPES.ORDER_DELIVERED
+
+    })
+        .then((notification) => {
+            const io = req.app.get("io")
+
+            io.to(`user:${order.buyerId}`)
+                .emit("updateNotification", { notification })
+        })
+        .catch((error) => {
+            console.error(
+                "Order notification creation failed:", error
+            )
+        })
+
     return res
         .status(200)
         .json(
@@ -498,9 +537,6 @@ export const getRetailerPlacedOrder = AsyncHandler(async (req, res) => {
         Orders.find({
             buyerId: userId,
             buyerRole: "retailer",
-            status: {
-                $ne: "CANCELLED"
-            }
         })
             .select(
                 "inventoryId quantity unit totalAmount status createdAt"
@@ -696,6 +732,28 @@ export const cancelReailerOrder = AsyncHandler(async (req, res) => {
             redis.del(`inventoryOrderDetails:aratdar:${orderId}`),
             redis.del(`inventoryOrderDetails:retailer:${orderId}`)
         ]);
+
+        Notification.create({
+            sender: userId,
+            recipient: order.sellerId,
+            title: "Order Cancelled",
+            message: `Your inventory ${product.productName} order is cancelled by a retailer.`,
+            relatedId: order._id,
+            isReaded: false,
+            type: NOTIFICATION_TYPES.ORDER_CANCELLED
+
+        })
+            .then((notification) => {
+                const io = req.app.get("io")
+
+                io.to(`user:${order.sellerId}`)
+                    .emit("updateNotification", { notification })
+            })
+            .catch((error) => {
+                console.error(
+                    "Order notification creation failed:", error
+                )
+            })
 
         return res
             .status(200)

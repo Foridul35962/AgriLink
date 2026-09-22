@@ -103,10 +103,10 @@ export const getAllInventory = createAsyncThunk(
 
 export const createInventoryOrder = createAsyncThunk(
     "inventory/order",
-    async(data:{inventoryId:string, quantity:number}, {rejectWithValue})=>{
+    async (data: { inventoryId: string, quantity: number }, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/create-order`, data,
-                {withCredentials: true}
+                { withCredentials: true }
             )
             return res.data
         } catch (error) {
@@ -149,7 +149,16 @@ const initialState: initialStateType = {
 const inventorySlice = createSlice({
     name: "inventory",
     initialState,
-    reducers: {},
+    reducers: {
+        updateAllocatedQuantity: (state, action) => {
+            const { inventoryId, currentAllocatedQuantity } = action.payload
+            if (!state.inventoryDetails || state.inventoryDetails?._id !== inventoryId) {
+                return
+            }
+
+            state.inventoryDetails.allocatedQuantity = currentAllocatedQuantity
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(addInventory.pending, (state) => {
@@ -227,4 +236,5 @@ const inventorySlice = createSlice({
     },
 })
 
+export const {updateAllocatedQuantity} = inventorySlice.actions
 export default inventorySlice.reducer

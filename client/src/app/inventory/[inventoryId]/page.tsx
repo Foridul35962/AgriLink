@@ -1,7 +1,7 @@
 "use client"
 
 import { useLanguage } from '@/context/LanguageContext'
-import { createInventoryOrder, deleteInventory, getInventoryDetails } from '@/store/slice/inventorySlice'
+import { createInventoryOrder, deleteInventory, getInventoryDetails, updateAllocatedQuantity } from '@/store/slice/inventorySlice'
 import { AppDispatch, RootState } from '@/store/store'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -26,6 +26,7 @@ import {
     AlertCircle,
     CheckCircle,
 } from 'lucide-react'
+import socket from '@/socket'
 
 interface OrderFormData {
     quantity: number
@@ -64,6 +65,32 @@ const page = () => {
         }
     }, [inventoryId])
 
+    useEffect(() => {
+        if (!inventoryId || !inventoryDetails) {
+            return
+        }
+
+        socket.emit("joinInventory", { inventoryId })
+
+        return () => {
+            socket.emit("leaveInventor", { inventoryId })
+        }
+    }, [dispatch, inventoryDetails])
+
+    useEffect(() => {
+        const handleUpdateQuantity = (
+            { currentAllocatedQuantity, inventoryId }:
+                { currentAllocatedQuantity: number, inventoryId: string }) => {
+            dispatch(updateAllocatedQuantity({ currentAllocatedQuantity, inventoryId }))
+        }
+
+        socket.on("updateQuantity", handleUpdateQuantity)
+
+        return () => {
+            socket.off("updateQuantity", handleUpdateQuantity)
+        }
+    }, [])
+
     const handleDelete = async () => {
         setIsDeleting(true)
         try {
@@ -92,7 +119,7 @@ const page = () => {
         resetOrderForm()
     }
 
-    const handleOrderSubmit = async (data: OrderFormData,e: React.BaseSyntheticEvent) => {
+    const handleOrderSubmit = async (data: OrderFormData, e: React.BaseSyntheticEvent) => {
         e.preventDefault()
         try {
             const res = await dispatch(createInventoryOrder({ inventoryId: inventoryId as string, quantity: data.quantity })).unwrap()
@@ -355,8 +382,8 @@ const page = () => {
                                             valueAsNumber: true,
                                         })}
                                         className={`w-full px-3.5 text-black py-2.5 border rounded-xl text-sm focus:outline-none transition ${orderErrors.quantity
-                                                ? "border-red-500 focus:ring-1 focus:ring-red-500"
-                                                : "border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600"
+                                            ? "border-red-500 focus:ring-1 focus:ring-red-500"
+                                            : "border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600"
                                             }`}
                                     />
                                     {orderErrors.quantity && (

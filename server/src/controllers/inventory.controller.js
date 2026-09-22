@@ -634,6 +634,7 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
             // {session}
         );
 
+        // await session.commitTransaction();
 
         await order.populate([
             {
@@ -646,23 +647,35 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
             }
         ]);
 
-
         Notification.create({
             recipient: updatedInventory.aratdarId,
             sender: userId,
-
             type: NOTIFICATION_TYPES.ORDER_PLACED,
-
             title: "New Order Received",
-
             message: `Your ${updatedInventory.productName} has been ordered by a retailer. Please check the order details.`,
+            relatedId: order._id,
+            isReaded: false,
+        })
+            .then((notification) => {
+                const io = req.app.get("io")
 
-            relatedId: order._id
-        });
+                io.to(`user:${order.sellerId}`)
+                    .emit("updateNotification", { notification })
+            })
+            .catch((error) => {
+                console.error(
+                    "Order notification creation failed:", error
+                )
+            })
 
-        // Todo: socket.io need
+        //update allocated quantity in real time
+        const io = req.app.get("io")
 
-        // await session.commitTransaction();
+        io.to(`inventory:${inventoryId}`)
+            .emit("updateQuantity", {
+                currentAllocatedQuantity: updatedInventory.allocatedQuantity,
+                inventoryId
+            })
 
         const redisKey = `inventory:${inventoryId}`;
 
