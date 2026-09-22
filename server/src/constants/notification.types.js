@@ -1,6 +1,7 @@
 // src/constants/notification.types.js
 export const NOTIFICATION_TYPES = {
   // Marketplace & Order
+  BID_WON: 'BID_WON',
   ORDER_PLACED: 'ORDER_PLACED',
   ORDER_PROCESSING: 'ORDER_PROCESSING',
   ORDER_CONFIRMED: 'ORDER_CONFIRMED',

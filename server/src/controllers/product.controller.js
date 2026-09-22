@@ -740,11 +740,17 @@ export const acceptBidding = AsyncHandler(async (req, res) => {
         Notification.create({
             recipient: bid.aratdarId._id,
             sender: userId,
-            type: NOTIFICATION_TYPES.ORDER_PLACED,
+            type: NOTIFICATION_TYPES.BID_WON,
             title: "🎉 Congratulations! Your Bid Won",
             message: `Your bid for ${auction.productId.name} has been accepted. Please confirm your order to continue.`,
             relatedId: auction.productId._id
-        }),
+        })
+            .then((notification) => {
+                const io = req.app.get("io")
+
+                io.to(`user:${bid.aratdarId._id}`)
+                    .emit("updateNotification", { notification })
+            }),
 
         sendBrevoMail(
             bid.aratdarId.email,
