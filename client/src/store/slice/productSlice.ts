@@ -1,4 +1,4 @@
-import { acceptBidType, addBidType, AddProductResponse, Bid, createOrderType, GetAllMyProductsResponse, GetAllProductsResponse, getAllProductsType, GetProductResponse } from "@/types/productTypes";
+import { acceptBidType, addBidType, AddProductResponse, Bid, createOrderType, GetAllMyProductsResponse, GetAllProductsResponse, getAllProductsType, GetAratdarBiddingProductResponse, GetProductResponse } from "@/types/productTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -145,11 +145,30 @@ export const createOrder = createAsyncThunk(
     }
 )
 
+export const getAratdarBiddingProducts = createAsyncThunk(
+    "product/biddingProducts",
+    async (params: { category?: string, name?: string, page:number }, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/my-bidding`,
+                {
+                    withCredentials: true,
+                    params
+                }
+            )
+            return res.data
+        } catch (error) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 interface initialStateType {
     productLoading: boolean
     myProducts: GetAllMyProductsResponse
     product: GetProductResponse | null
     allProducts: GetAllProductsResponse
+    allBiddingProduct: GetAratdarBiddingProductResponse
 }
 
 const initialState: initialStateType = {
@@ -172,6 +191,17 @@ const initialState: initialStateType = {
             totalPages: 0,
             totalProducts: 0
         }
+    },
+    allBiddingProduct: {
+        data: [],
+        pagination: {
+            currentPage: 0,
+            totalPages: 0,
+            totalProducts: 0,
+            limit: 0,
+            hasNextPage: false,
+            hasPrevPage: false
+        }
     }
 }
 
@@ -188,10 +218,10 @@ const productSlice = createSlice({
                 return
             }
 
-            const idx = state.product.topBids.findIndex((product)=>product._id === bid._id)
-            if (idx>-1) {
+            const idx = state.product.topBids.findIndex((product) => product._id === bid._id)
+            if (idx > -1) {
                 state.product.topBids[idx] = bid
-            } else{
+            } else {
                 state.product.topBids = [bid, ...state.product?.topBids]
             }
             state.product.auction.currentHighestBid = bid.bidAmount
@@ -313,8 +343,21 @@ const productSlice = createSlice({
                     };
                 }
             })
+
+        //get my bidding products
+        builder
+            .addCase(getAratdarBiddingProducts.pending, (state) => {
+                state.productLoading = true
+            })
+            .addCase(getAratdarBiddingProducts.fulfilled, (state, action) => {
+                state.productLoading = false
+                state.allBiddingProduct = action.payload.data
+            })
+            .addCase(getAratdarBiddingProducts.rejected, (state) => {
+                state.productLoading = false
+            })
     },
 })
 
-export const {updateBidding} = productSlice.actions
+export const { updateBidding } = productSlice.actions
 export default productSlice.reducer

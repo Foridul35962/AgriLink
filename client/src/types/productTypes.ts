@@ -211,3 +211,34 @@ export interface Bid {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AratdarBiddingProduct {
+  productId: string;
+  name: string;
+  category: string;
+  quantity: number;
+  unit: "kg" | "mon" | "ton" | "piece";
+  image: {
+    url: string | null;
+  };
+  productStatus: "available" | "sold" | "expired";
+  currentHighestBid: number;
+  myBid: number;
+  createdAt: string;
+  endTime: string;
+  isExpired: boolean;
+}
+
+export interface AratdarBiddingPagination {
+  currentPage: number;
+  totalPages: number;
+  totalProducts: number;
+  limit: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface GetAratdarBiddingProductResponse {
+  data: AratdarBiddingProduct[];
+  pagination: AratdarBiddingPagination;
+}

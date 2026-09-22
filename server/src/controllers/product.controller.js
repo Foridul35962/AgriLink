@@ -740,11 +740,17 @@ export const acceptBidding = AsyncHandler(async (req, res) => {
         Notification.create({
             recipient: bid.aratdarId._id,
             sender: userId,
-            type: NOTIFICATION_TYPES.ORDER_PLACED,
+            type: NOTIFICATION_TYPES.BID_WON,
             title: "🎉 Congratulations! Your Bid Won",
             message: `Your bid for ${auction.productId.name} has been accepted. Please confirm your order to continue.`,
             relatedId: auction.productId._id
-        }),
+        })
+            .then((notification) => {
+                const io = req.app.get("io")
+
+                io.to(`user:${bid.aratdarId._id}`)
+                    .emit("updateNotification", { notification })
+            }),
 
         sendBrevoMail(
             bid.aratdarId.email,
@@ -906,3 +912,189 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
         // session.endSession();
     }
 })
+
+export const getAratdarBiddingProduct = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { category, name } = req.query;
+
+    const page = Number(req.query.page) || 1;
+    const limit = 15;
+    const skip = (page - 1) * limit;
+
+    // Recent bidding history: last 7 days
+    const recentDate = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000
+    );
+
+    const productMatch = {
+        "product.status": {
+            $in: ["available", "sold"]
+        },
+
+        "product.createdAt": {
+            $gte: recentDate
+        }
+    };
+
+    // Search by product name
+    if (name) {
+        productMatch["product.name"] = {
+            $regex: name,
+            $options: "i"
+        };
+    }
+
+    // Filter by category
+    if (category) {
+        productMatch["product.category"] = category;
+    }
+
+    const result = await Bids.aggregate([
+        {
+            $match: {
+                aratdarId: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
+
+        // Get auction
+        {
+            $lookup: {
+                from: "auctions",
+                localField: "auctionId",
+                foreignField: "_id",
+                as: "auction"
+            }
+        },
+
+        {
+            $unwind: "$auction"
+        },
+
+        // Get product
+        {
+            $lookup: {
+                from: "products",
+                localField: "auction.productId",
+                foreignField: "_id",
+                as: "product"
+            }
+        },
+
+        {
+            $unwind: "$product"
+        },
+
+        // Product filter
+        {
+            $match: productMatch
+        },
+
+        // One product/auction only
+        // Aratdar may have placed multiple bids
+        // on the same auction
+        {
+            $group: {
+                _id: "$auction._id",
+
+                latestBid: {
+                    $first: "$$ROOT"
+                }
+            }
+        },
+
+        // Latest bidding activity first
+        {
+            $sort: {
+                "latestBid.createdAt": -1
+            }
+        },
+
+        //  Pagination + total
+        {
+            $facet: {
+
+                data: [
+                    {
+                        $skip: skip
+                    },
+                    {
+                        $limit: limit
+                    }
+                ],
+
+                total: [
+                    {
+                        $count: "count"
+                    }
+                ]
+            }
+        }
+    ]);
+
+    const products = result[0]?.data || [];
+
+    const totalProducts =
+        result[0]?.total[0]?.count || 0;
+
+    const totalPages = Math.ceil(
+        totalProducts / limit
+    );
+
+    // Only required response fields
+    const biddingProducts = products.map((item) => {
+        const bid = item.latestBid;
+        const product = bid.product;
+        const auction = bid.auction;
+
+        return {
+            productId: product._id,
+
+            name: product.name,
+
+            category: product.category,
+
+            quantity: product.quantity,
+
+            unit: product.unit,
+
+            image: {
+                url: product.image?.url || null
+            },
+
+            productStatus: product.status,
+
+            currentHighestBid: auction.currentHighestBid,
+
+            myBid: bid.bidAmount,
+
+            createdAt: product.createdAt,
+
+            endTime: auction.endTime,
+
+            isExpired: new Date() >= new Date(auction.endTime)
+        };
+    });
+
+    const finalResponse = {
+        data: biddingProducts,
+        pagination: {
+            currentPage: page,
+            totalPages,
+            totalProducts,
+            limit,
+            hasNextPage: page < totalPages,
+            hasPrevPage: page > 1
+        }
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, finalResponse, "Aratdar bidding products fetched successfully")
+        )
+});

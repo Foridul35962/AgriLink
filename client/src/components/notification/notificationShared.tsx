@@ -57,6 +57,9 @@ export const getNotificationHref = (n: Notification, role: "farmer" | "aratdar" 
     if (n.type === "ORDER_CANCELLED") {
         return role === "aratdar" && `/aratdar/order/received/${n.relatedId}`
     }
+    if (n.type === "BID_WON") {
+        return `/products/${n.relatedId}`
+    }
 }
 
 /* -------------------------------------------------------------------------- */

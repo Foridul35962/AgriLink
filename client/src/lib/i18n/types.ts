@@ -1042,4 +1042,31 @@ export interface AppTranslations {
       empty: string;
     };
   };
+  biddingProduct: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    searchBtn: string;
+    allCategories: string;
+    reset: string;
+    noProducts: string;
+    noProductsDesc: string;
+    myBid: string;
+    highestBid: string;
+    ends: string;
+    active: string;
+    expired: string;
+    sold: string;
+    previous: string;
+    next: string;
+    page: string;
+    of: string;
+    leading: string;
+    outbid: string;
+    timeLeft: string;
+    ended: string;
+    daysShort: string;
+    hoursShort: string;
+    minutesShort: string;
+  };
 }

@@ -16,5 +16,6 @@ productRouter.get("/all", protect, controller.getAllProducts)
 productRouter.post("/add-bid", protect, isAratdar, controller.addBidding)
 productRouter.post("/accept-bid", protect, isFarmer, controller.acceptBidding)
 productRouter.post("/create-order", protect, isAratdar, controller.createProductOrder)
+productRouter.get("/my-bidding", protect, isAratdar, controller.getAratdarBiddingProduct)
 
 export default productRouter
