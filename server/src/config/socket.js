@@ -13,5 +13,15 @@ export const socketHandler = (io) => {
             const room = `auction:${auctionId}`
             socket.leave(room)
         })
+
+        socket.on("joinInventory", ({ inventoryId }) => {
+            const room = `inventory:${inventoryId}`
+            socket.join(room)
+        })
+
+        socket.on("leaveInventory", ({ inventoryId }) => {
+            const room = `inventory:${inventoryId}`
+            socket.leave(room)
+        })
     })
 }
