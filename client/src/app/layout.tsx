@@ -9,6 +9,8 @@ import {
   LOCALE_COOKIE_NAME,
   isValidLocale,
 } from "@/lib/i18n/config";
+import Footer from "@/components/home/Footer";
+import Navbar from "@/components/home/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,8 +46,9 @@ export default async function RootLayout({
       <body className="min-h-full">
         <LanguageProvider initialLocale={initialLocale}>
           <AppProvider >
-
+            <Navbar />
             {children}
+            <Footer />
           </AppProvider>
         </LanguageProvider>
       </body>

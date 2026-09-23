@@ -4,9 +4,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Sprout, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export default function CTA() {
   const { t } = useLanguage();
+  const { user, isUserFetch } = useSelector((state: RootState) => state.auth)
 
   return (
     <section className="py-20 bg-white">
@@ -50,13 +53,13 @@ export default function CTA() {
             <p className="text-emerald-50/80 max-w-lg mx-auto mb-8 leading-relaxed">
               {t.cta.subtitle}
             </p>
-            <Link
+            {isUserFetch && !user && <Link
               href="/register"
               className="inline-flex items-center gap-2 rounded-lg bg-white hover:bg-emerald-50 transition px-6 py-3 text-sm font-medium text-emerald-800"
             >
               {t.cta.button}
               <ArrowRight size={16} />
-            </Link>
+            </Link>}
           </div>
         </motion.div>
       </div>

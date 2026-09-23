@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Tractor, Warehouse, Store, ShoppingBasket, Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import TiltCard from "./TiltCart";
 
 const ICONS = [Tractor, Warehouse, Store, ShoppingBasket];
 
@@ -27,7 +28,7 @@ export default function Roles() {
           </h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {t.roles.items.map(({ title, description, points }, i) => {
             const Icon = ICONS[i];
             return (
@@ -37,31 +38,40 @@ export default function Roles() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="flex flex-col rounded-2xl border border-gray-100 p-6 hover:border-emerald-200 hover:shadow-[0_4px_20px_-4px_rgba(16,185,129,0.15)] transition-all"
               >
-                <div className="w-12 h-12 rounded-xl bg-emerald-700 flex items-center justify-center mb-5">
-                  <Icon size={22} className="text-white" strokeWidth={1.75} />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1.5">
-                  {title}
-                </h3>
-                <p className="text-sm text-gray-500 leading-relaxed mb-4">
-                  {description}
-                </p>
-                <ul className="mt-auto space-y-2">
-                  {points.map((point) => (
-                    <li
-                      key={point}
-                      className="flex items-start gap-2 text-sm text-gray-600"
+                <TiltCard>
+                  <div className="flex h-full flex-col rounded-2xl border border-gray-100 p-6 bg-white shadow-[0_2px_10px_-4px_rgba(16,24,40,0.06)] hover:border-emerald-200 hover:shadow-[0_24px_38px_-16px_rgba(16,185,129,0.28)] transition-shadow">
+                    <div
+                      style={{ transform: "translateZ(30px)" }}
+                      className="w-12 h-12 rounded-xl bg-linear-to-br from-emerald-600 to-emerald-800 flex items-center justify-center mb-5 shadow-[0_10px_18px_-6px_rgba(4,120,87,0.55)]"
                     >
-                      <Check
-                        size={15}
-                        className="mt-0.5 shrink-0 text-emerald-600"
-                      />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
+                      <Icon size={22} className="text-white" strokeWidth={1.75} />
+                    </div>
+                    <h3
+                      style={{ transform: "translateZ(16px)" }}
+                      className="text-lg font-semibold text-gray-900 mb-1.5"
+                    >
+                      {title}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-4">
+                      {description}
+                    </p>
+                    <ul className="mt-auto space-y-2">
+                      {points.map((point) => (
+                        <li
+                          key={point}
+                          className="flex items-start gap-2 text-sm text-gray-600"
+                        >
+                          <Check
+                            size={15}
+                            className="mt-0.5 shrink-0 text-emerald-600"
+                          />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </TiltCard>
               </motion.div>
             );
           })}
