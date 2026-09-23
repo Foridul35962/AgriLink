@@ -2,13 +2,19 @@ import type { AppTranslations } from "../types";
 
 const bn: AppTranslations = {
   nav: {
-    home: "হোম",
-    features: "বৈশিষ্ট্য",
-    howItWorks: "কীভাবে কাজ করে",
-    whoItsFor: "কাদের জন্য",
-    contact: "যোগাযোগ",
+    crops: "ফসল",
+    cropSuggestions: "ফসলের পরামর্শ",
+    product: "পণ্য",
+    inventory: "মজুদ",
     login: "লগ ইন",
     getStarted: "শুরু করুন",
+    dashboard: "ড্যাশবোর্ড",
+  },
+  logout: {
+    title: "আপনি কি লগ আউট করতে চান?",
+    message: "লগ আউট করলে আপনার অ্যাকাউন্ট থেকে সাইন আউট হয়ে যাবে। আবার ব্যবহার করতে লগ ইন করতে হবে।",
+    cancel: "বাতিল করুন",
+    confirm: "লগ আউট করুন",
   },
   languageSwitcher: {
     label: "ভাষা",
@@ -129,16 +135,6 @@ const bn: AppTranslations = {
         title: "খুচরা বিক্রেতা",
         description: "সরাসরি উৎস থেকে তাজা পণ্য মজুত করুন, ভালো মুনাফায়।",
         points: ["সরাসরি সংগ্রহ", "নিয়মিত সরবরাহ", "অর্ডার ট্র্যাকিং"],
-      },
-      {
-        title: "ভোক্তা",
-        description:
-          "আপনার খাবার কোথা থেকে আসছে জানুন এবং স্থানীয় কৃষকদের সমর্থন করুন।",
-        points: [
-          "খামার থেকে তাজা পণ্য",
-          "স্বচ্ছ মূল্য নির্ধারণ",
-          "স্থানীয় কৃষকদের সহায়তা",
-        ],
       },
     ],
   },

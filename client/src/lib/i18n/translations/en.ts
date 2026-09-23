@@ -3,13 +3,19 @@ import type { AppTranslations } from "../types";
 
 const en: AppTranslations = {
   nav: {
-    home: "Home",
-    features: "Features",
-    howItWorks: "How it works",
-    whoItsFor: "Who it's for",
-    contact: "Contact",
+    crops: "Crops",
+    cropSuggestions: "Crop Suggestions",
+    product: "Products",
+    inventory: "Inventory",
     login: "Log in",
     getStarted: "Get started",
+    dashboard: "Dashboard",
+  },
+  logout: {
+    title: "Do you want to log out?",
+    message: "You will be signed out of your account. You’ll need to log in again to continue.",
+    cancel: "Cancel",
+    confirm: "Log out",
   },
   languageSwitcher: {
     label: "Language",

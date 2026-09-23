@@ -1,12 +1,18 @@
 export interface AppTranslations {
   nav: {
-    home: string;
-    features: string;
-    howItWorks: string;
-    whoItsFor: string;
-    contact: string;
+    crops: string;
+    cropSuggestions: string;
+    product: string;
+    inventory: string;
     login: string;
     getStarted: string;
+    dashboard: string;
+  };
+  logout: {
+    title: string;
+    message: string;
+    cancel: string;
+    confirm: string;
   };
   languageSwitcher: {
     label: string;
