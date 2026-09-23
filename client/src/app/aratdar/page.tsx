@@ -37,8 +37,7 @@ import { AppDispatch, RootState } from "@/store/store"
 import { MONTH_LABELS } from "@/constants/constantValues"
 import { toast } from "react-toastify"
 
-/*  Routes (change these if your routes are different)                        */
-
+/*  Routes */
 const ROUTES = {
     inventory: "/aratdar/inventory",
     purchases: "/aratdar/order/placed",
@@ -59,7 +58,7 @@ const ORDER_STATUS_COLORS: Record<string, string> = {
     CANCELLED: "#ef4444",
 }
 
-// Chart text colors (dark enough to read clearly)
+// Chart text colors
 const AXIS_TEXT = "#374151"
 const AXIS_LINE = "#d1d5db"
 const GRID_LINE = "#e5e7eb"
@@ -73,7 +72,7 @@ const xAxisProps = {
     interval: 0 as const,
 }
 
-/*  Small building blocks*/
+/* Small building blocks */
 
 interface StatCardProps {
     label: string
@@ -88,8 +87,8 @@ const StatCard = ({ label, value, icon, index, highlight, tone = "default" }: St
     const iconBox = highlight
         ? "bg-white/20 text-white"
         : tone === "warning"
-            ? "bg-amber-100 text-amber-600"
-            : "bg-[#16a34a]/10 text-[#16a34a]"
+            ? "bg-amber-100 text-amber-700"
+            : "bg-emerald-100 text-emerald-700"
 
     return (
         <motion.div
@@ -98,14 +97,18 @@ const StatCard = ({ label, value, icon, index, highlight, tone = "default" }: St
             transition={{ duration: 0.3, delay: index * 0.04 }}
             className={
                 highlight
-                    ? "flex items-center gap-4 rounded-2xl bg-[#16a34a] p-5 text-white shadow-sm"
-                    : "flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5"
+                    ? "flex items-center gap-3 rounded-2xl bg-[#16a34a] p-4 text-white shadow-md min-w-0"
+                    : "flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm border border-gray-200/80 min-w-0"
             }
         >
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconBox}`}>{icon}</div>
-            <div className="min-w-0">
-                <p className={`truncate text-sm ${highlight ? "text-white/85" : "text-gray-600"}`}>{label}</p>
-                <p className={`truncate text-2xl font-semibold ${highlight ? "text-white" : "text-gray-900"}`}>
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-bold ${iconBox}`}>
+                {icon}
+            </div>
+            <div className="min-w-0 flex-1 overflow-hidden">
+                <p className={`text-[11px] sm:text-xs font-semibold uppercase tracking-wider leading-tight line-clamp-2 ${highlight ? "text-emerald-100" : "text-gray-500"}`}>
+                    {label}
+                </p>
+                <p className={`text-base sm:text-lg font-bold mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis ${highlight ? "text-white" : "text-gray-900"}`}>
                     {value}
                 </p>
             </div>
@@ -122,9 +125,9 @@ const Section = ({
     action?: React.ReactNode
     children: React.ReactNode
 }) => (
-    <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-            <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-200/80">
+        <div className="mb-4 flex items-center justify-between gap-3 border-b border-gray-100 pb-3">
+            <h3 className="text-base font-bold text-gray-900">{title}</h3>
             {action}
         </div>
         {children}
@@ -132,14 +135,14 @@ const Section = ({
 )
 
 const ViewAll = ({ href, label }: { href: string; label: string }) => (
-    <Link href={href} className="flex items-center gap-1 text-sm font-medium text-[#16a34a] hover:underline">
+    <Link href={href} className="flex items-center gap-1 text-sm font-semibold text-[#16a34a] hover:text-emerald-700 hover:underline transition-colors">
         {label}
         <ArrowUpRight size={14} />
     </Link>
 )
 
 const EmptyState = ({ text, height = 260 }: { text: string; height?: number }) => (
-    <div className="flex items-center justify-center text-center text-sm text-gray-500" style={{ height }}>
+    <div className="flex items-center justify-center text-center text-sm font-medium text-gray-500" style={{ height }}>
         {text}
     </div>
 )
@@ -147,7 +150,7 @@ const EmptyState = ({ text, height = 260 }: { text: string; height?: number }) =
 const ChartLegend = ({ items }: { items: { name: string; color: string }[] }) => (
     <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-1">
         {items.map((item) => (
-            <div key={item.name} className="flex items-center gap-2 text-sm text-gray-700">
+            <div key={item.name} className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
                 {item.name}
             </div>
@@ -158,16 +161,16 @@ const ChartLegend = ({ items }: { items: { name: string; color: string }[] }) =>
 const ChartTooltip = ({ active, payload, label, format }: any) => {
     if (!active || !payload?.length) return null
     return (
-        <div className="min-w-40 rounded-xl bg-white px-3 py-2 text-sm shadow-lg ring-1 ring-black/10">
-            {label && <p className="mb-1 font-semibold text-gray-900">{label}</p>}
+        <div className="min-w-40 rounded-xl bg-white p-3 text-sm shadow-xl border border-gray-100">
+            {label && <p className="mb-1.5 font-bold text-gray-900 border-b border-gray-100 pb-1">{label}</p>}
             {payload.map((p: any) => (
-                <div key={p.dataKey ?? p.name} className="flex items-center gap-2 text-gray-600">
+                <div key={p.dataKey ?? p.name} className="flex items-center gap-2 text-gray-600 my-1">
                     <span
-                        className="h-2.5 w-2.5 rounded-full"
+                        className="h-2.5 w-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: p.payload?.color ?? p.color ?? p.stroke ?? p.fill }}
                     />
-                    <span>{p.name}</span>
-                    <span className="ml-auto pl-3 font-semibold text-gray-900">
+                    <span className="font-medium text-gray-700">{p.name}</span>
+                    <span className="ml-auto pl-3 font-bold text-gray-900">
                         {format ? format(Number(p.value)) : Number(p.value).toLocaleString()}
                     </span>
                 </div>
@@ -191,7 +194,7 @@ const DonutChart = ({
     data: DonutItem[]
     emptyText: string
     nf: (n: number) => string
-    center?: string // text in the middle (defaults to the total)
+    center?: string
 }) => {
     const total = data.reduce((sum, item) => sum + item.value, 0)
     if (total === 0) return <EmptyState text={emptyText} />
@@ -220,16 +223,16 @@ const DonutChart = ({
                     </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-gray-900">{center ?? nf(total)}</span>
+                    <span className="text-2xl font-black text-gray-900">{center ?? nf(total)}</span>
                 </div>
             </div>
 
-            <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {data.map((item) => (
                     <li key={item.name} className="flex items-center gap-2 text-sm">
                         <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />
-                        <span className="truncate text-gray-700">{item.name}</span>
-                        <span className="ml-auto font-semibold text-gray-900">{nf(item.value)}</span>
+                        <span className="truncate font-medium text-gray-600">{item.name}</span>
+                        <span className="ml-auto font-bold text-gray-900">{nf(item.value)}</span>
                     </li>
                 ))}
             </ul>
@@ -244,12 +247,12 @@ const Thumb = ({ src, alt, size = 40 }: { src?: string; alt: string; size?: numb
             alt={alt}
             width={size}
             height={size}
-            className="shrink-0 rounded-lg bg-gray-100 object-cover"
+            className="shrink-0 rounded-lg bg-gray-100 object-cover border border-gray-200"
             style={{ width: size, height: size }}
         />
     ) : (
         <div
-            className="flex shrink-0 items-center justify-center rounded-lg bg-[#16a34a]/10 text-[#16a34a]"
+            className="flex shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100"
             style={{ width: size, height: size }}
         >
             <Package size={size / 2} />
@@ -267,18 +270,18 @@ interface OrderRowProps {
 }
 
 const OrderRow = ({ image, name, subtitle, quantityText, amountText, statusLabel, statusColor }: OrderRowProps) => (
-    <li className="flex items-center gap-3 py-3">
+    <li className="flex items-center gap-3 py-3.5">
         <Thumb src={image} alt={name} size={44} />
         <div className="min-w-0 flex-1">
-            <p className="truncate font-medium text-gray-900">{name}</p>
-            <p className="truncate text-xs text-gray-600">{subtitle}</p>
-            <p className="text-xs text-gray-500">{quantityText}</p>
+            <p className="truncate font-semibold text-gray-900">{name}</p>
+            <p className="truncate text-xs font-medium text-gray-500">{subtitle}</p>
+            <p className="text-xs font-semibold text-gray-700 mt-0.5">{quantityText}</p>
         </div>
         <div className="shrink-0 text-right">
-            <p className="font-semibold text-gray-900">{amountText}</p>
+            <p className="font-bold text-gray-900">{amountText}</p>
             <span
-                className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-                style={{ backgroundColor: `${statusColor}1A`, color: statusColor }}
+                className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold"
+                style={{ backgroundColor: `${statusColor}1F`, color: statusColor }}
             >
                 {statusLabel}
             </span>
@@ -288,13 +291,13 @@ const OrderRow = ({ image, name, subtitle, quantityText, amountText, statusLabel
 
 const LoadingSkeleton = () => (
     <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
             {Array.from({ length: 10 }).map((_, i) => (
                 <motion.div
                     key={i}
                     animate={{ opacity: [0.4, 0.8, 0.4] }}
                     transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.05 }}
-                    className="h-24 rounded-2xl bg-white ring-1 ring-black/5"
+                    className="h-24 rounded-2xl bg-white border border-gray-200"
                 />
             ))}
         </div>
@@ -304,14 +307,14 @@ const LoadingSkeleton = () => (
                     key={i}
                     animate={{ opacity: [0.4, 0.8, 0.4] }}
                     transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.1 }}
-                    className="h-80 rounded-2xl bg-white ring-1 ring-black/5"
+                    className="h-80 rounded-2xl bg-white border border-gray-200"
                 />
             ))}
         </div>
     </div>
 )
 
-/*  Page */
+/* Page */
 
 const AratdarDashboardPage = () => {
     const dispatch = useDispatch<AppDispatch>()
@@ -352,7 +355,6 @@ const AratdarDashboardPage = () => {
         )
     }
 
-
     const numLocale = locale === "bn" ? "bn-BD" : "en-US"
     const nf = (n: number) => n.toLocaleString(numLocale)
     const money = (n: number) => `${d.currency}${nf(n)}`
@@ -366,7 +368,6 @@ const AratdarDashboardPage = () => {
 
     const { summary, orderStats, monthlyData, recentPurchases, recentSales, inventoryList } = aratdarDashboard
 
-    // Backend sends all 12 months (future months = 0). Show only Jan -> current month.
     const monthlyChartData = (monthlyData ?? []).slice(0, currentMonth).map((entry, i) => ({
         month: months[i] ?? entry.month,
         purchase: entry.purchase,
@@ -375,7 +376,6 @@ const AratdarDashboardPage = () => {
         salesOrders: entry.salesOrders,
     }))
 
-    // Orders that are not pending/delivered/cancelled (confirmed, processing, shipped)
     const inProgress = Math.max(0, orderStats.total - orderStats.pending - orderStats.delivered - orderStats.cancelled)
 
     const orderData: DonutItem[] = [
@@ -403,24 +403,24 @@ const AratdarDashboardPage = () => {
         highlight?: boolean
         tone?: "default" | "warning"
     }[] = [
-            { key: "totalSales", label: d.stats.totalSales, value: money(summary.totalSales), icon: <Wallet size={22} />, highlight: true },
-            { key: "totalPurchase", label: d.stats.totalPurchase, value: money(summary.totalPurchase), icon: <ShoppingBag size={22} /> },
-            { key: "totalInventoryItems", label: d.stats.totalInventoryItems, value: nf(summary.totalInventoryItems), icon: <Warehouse size={22} /> },
-            { key: "availableInventoryItems", label: d.stats.availableInventoryItems, value: nf(summary.availableInventoryItems), icon: <CheckCircle2 size={22} /> },
-            { key: "depletedInventoryItems", label: d.stats.depletedInventoryItems, value: nf(summary.depletedInventoryItems), icon: <PackageX size={22} /> },
-            { key: "lowStockItems", label: d.stats.lowStockItems, value: nf(summary.lowStockItems), icon: <AlertTriangle size={22} />, tone: summary.lowStockItems > 0 ? "warning" : "default" },
-            { key: "totalOrders", label: d.stats.totalOrders, value: nf(summary.totalOrders), icon: <ShoppingCart size={22} /> },
-            { key: "pendingOrders", label: d.stats.pendingOrders, value: nf(summary.pendingOrders), icon: <Clock size={22} /> },
-            { key: "deliveredOrders", label: d.stats.deliveredOrders, value: nf(summary.deliveredOrders), icon: <PackageCheck size={22} /> },
-            { key: "cancelledOrders", label: d.stats.cancelledOrders, value: nf(summary.cancelledOrders), icon: <XCircle size={22} /> },
-        ]
+        { key: "totalSales", label: d.stats.totalSales, value: money(summary.totalSales), icon: <Wallet size={22} />, highlight: true },
+        { key: "totalPurchase", label: d.stats.totalPurchase, value: money(summary.totalPurchase), icon: <ShoppingBag size={22} /> },
+        { key: "totalInventoryItems", label: d.stats.totalInventoryItems, value: nf(summary.totalInventoryItems), icon: <Warehouse size={22} /> },
+        { key: "availableInventoryItems", label: d.stats.availableInventoryItems, value: nf(summary.availableInventoryItems), icon: <CheckCircle2 size={22} /> },
+        { key: "depletedInventoryItems", label: d.stats.depletedInventoryItems, value: nf(summary.depletedInventoryItems), icon: <PackageX size={22} /> },
+        { key: "lowStockItems", label: d.stats.lowStockItems, value: nf(summary.lowStockItems), icon: <AlertTriangle size={22} />, tone: summary.lowStockItems > 0 ? "warning" : "default" },
+        { key: "totalOrders", label: d.stats.totalOrders, value: nf(summary.totalOrders), icon: <ShoppingCart size={22} /> },
+        { key: "pendingOrders", label: d.stats.pendingOrders, value: nf(summary.pendingOrders), icon: <Clock size={22} /> },
+        { key: "deliveredOrders", label: d.stats.deliveredOrders, value: nf(summary.deliveredOrders), icon: <PackageCheck size={22} /> },
+        { key: "cancelledOrders", label: d.stats.cancelledOrders, value: nf(summary.cancelledOrders), icon: <XCircle size={22} /> },
+    ]
 
     const moneyYAxis = {
         tickLine: false,
         axisLine: false,
         allowDecimals: false,
         width: locale === "bn" ? 64 : 48,
-        tick: { fontSize: 12, fill: AXIS_TEXT },
+        tick: { fontSize: 12, fill: AXIS_TEXT, fontWeight: 500 },
         tickFormatter: axisMoney,
     }
     const countYAxis = {
@@ -428,7 +428,7 @@ const AratdarDashboardPage = () => {
         axisLine: false,
         allowDecimals: false,
         width: 36,
-        tick: { fontSize: 12, fill: AXIS_TEXT },
+        tick: { fontSize: 12, fill: AXIS_TEXT, fontWeight: 500 },
         tickFormatter: (v: number) => nf(v),
     }
 
@@ -439,34 +439,34 @@ const AratdarDashboardPage = () => {
         <div className="min-h-screen bg-[#F3F9F5] p-4 sm:p-6 lg:p-8">
             <div className="mx-auto max-w-7xl space-y-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">{d.title}</h1>
-                    <p className="mt-1 text-sm text-gray-600">{d.subtitle}</p>
+                    <h1 className="text-2xl font-black text-gray-900 tracking-tight">{d.title}</h1>
+                    <p className="mt-1 text-sm font-medium text-gray-600">{d.subtitle}</p>
                 </div>
 
                 {/* Low stock banner */}
                 {summary.lowStockItems > 0 && (
                     <Link
                         href={ROUTES.inventory}
-                        className="flex items-center justify-between gap-3 rounded-2xl bg-amber-50 p-4 ring-1 ring-amber-300 transition hover:ring-amber-400"
+                        className="flex items-center justify-between gap-3 rounded-2xl bg-amber-50/90 p-4 border border-amber-200/80 shadow-sm transition hover:bg-amber-100/60"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-200/60 text-amber-800">
                                 <AlertTriangle size={20} />
                             </div>
-                            <p className="text-sm text-amber-900">
-                                <span className="text-base font-semibold">{nf(summary.lowStockItems)}</span>{" "}
+                            <p className="text-sm font-medium text-amber-950">
+                                <span className="text-base font-bold">{nf(summary.lowStockItems)}</span>{" "}
                                 {d.lowStockAlert}
                             </p>
                         </div>
-                        <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-amber-700">
+                        <span className="flex shrink-0 items-center gap-1 text-sm font-bold text-amber-800">
                             {d.lowStockAlertAction}
                             <ArrowUpRight size={14} />
                         </span>
                     </Link>
                 )}
 
-                {/* Stat cards */}
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {/* Stat cards grid - Responsive & Fixed overflow */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
                     {stats.map((stat, index) => (
                         <StatCard
                             key={stat.key}
@@ -544,17 +544,17 @@ const AratdarDashboardPage = () => {
                                 const barColor = percent >= 100 ? RED : percent >= 80 ? AMBER : GREEN
                                 const isAvailable = item.status === "available"
                                 return (
-                                    <div key={item._id} className="rounded-xl bg-[#F3F9F5] p-4 ring-1 ring-black/5">
+                                    <div key={item._id} className="rounded-xl bg-[#F8FCF9] p-4 border border-gray-200/80">
                                         <div className="flex items-center gap-3">
                                             <Thumb src={item.image?.url} alt={item.productName} size={48} />
                                             <div className="min-w-0 flex-1">
-                                                <p className="truncate font-semibold text-gray-900">{item.productName}</p>
-                                                <p className="truncate text-xs text-gray-600">
+                                                <p className="truncate font-bold text-gray-900">{item.productName}</p>
+                                                <p className="truncate text-xs font-medium text-gray-500">
                                                     {item.category} · {money(item.pricePerUnit)}/{unitText(item.unit)}
                                                 </p>
                                             </div>
                                             <span
-                                                className="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
+                                                className="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold"
                                                 style={{
                                                     backgroundColor: isAvailable ? "#16a34a1A" : "#ef44441A",
                                                     color: isAvailable ? GREEN : RED,
@@ -566,14 +566,14 @@ const AratdarDashboardPage = () => {
 
                                         <div className="mt-4 flex items-end justify-between text-sm">
                                             <div>
-                                                <p className="text-xs text-gray-600">{d.inventory.allocated}</p>
-                                                <p className="font-semibold text-gray-900">
+                                                <p className="text-xs font-medium text-gray-500">{d.inventory.allocated}</p>
+                                                <p className="font-bold text-gray-900">
                                                     {nf(item.allocatedQuantity)} / {nf(item.totalQuantity)} {unitText(item.unit)}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xs text-gray-600">{d.inventory.remaining}</p>
-                                                <p className="font-semibold text-gray-900">
+                                                <p className="text-xs font-medium text-gray-500">{d.inventory.remaining}</p>
+                                                <p className="font-bold text-gray-900">
                                                     {nf(remaining)} {unitText(item.unit)}
                                                 </p>
                                             </div>
@@ -581,7 +581,7 @@ const AratdarDashboardPage = () => {
 
                                         <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
                                             <div
-                                                className="h-full rounded-full"
+                                                className="h-full rounded-full transition-all duration-300"
                                                 style={{ width: `${percent}%`, backgroundColor: barColor }}
                                             />
                                         </div>
