@@ -17,7 +17,6 @@ import {
     NOTIFICATIONS_ROUTE,
     NotificationItem,
     NotificationSkeleton,
-    getErrorMessage,
     useNotificationActions,
 } from "./notificationShared"
 import socket from "@/socket"
@@ -53,7 +52,7 @@ const NotificationMenu = () => {
                     await dispatch(getAllNotification({ page: 1 })).unwrap()
                 }
             } catch (error) {
-                toast.error(getErrorMessage(error))
+                // toast.error(getErrorMessage(error))
             }
         }
         init()
