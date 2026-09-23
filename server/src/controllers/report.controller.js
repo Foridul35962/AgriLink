@@ -63,7 +63,10 @@ export const createReports = [
             relatedId: report._id
         })
             .then((notification) => {
-                // TODO: Socket need
+                const io = req.app.get("io")
+
+                io.to(`user:${userId}`)
+                    .emit("updateNotification", { notification })
             })
 
         return res
@@ -207,7 +210,10 @@ export const makeWarning = AsyncHandler(async (req, res) => {
         relatedId: report._id
     })
         .then((notification) => {
-            // TODO: Socket need
+            const io = req.app.get("io")
+
+            io.to(`user:${report.reportedUserId._id}`)
+                .emit("updateNotification", { notification })
         })
 
     return res
