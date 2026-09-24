@@ -10,7 +10,7 @@ import redis from "../config/redis.js";
 import Products from "../models/Product.model.js";
 import Inventories from "../models/Inventory.model.js";
 import Auction from "../models/auctions.model.js";
-import Orders from "../models/order.model.js";
+import Orders from "../models/Order.model.js";
 
 export const getUsersRequest = AsyncHandler(async (req, res) => {
     const { role } = req.query;
