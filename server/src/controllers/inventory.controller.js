@@ -525,10 +525,10 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
         throw new ApiErrors(400, "Quantity must be a positive integer");
     }
 
-    // const session = await mongoose.startSession();
+    const session = await mongoose.startSession();
 
     try {
-        // session.startTransaction();
+        session.startTransaction();
 
         const updatedInventory = await Inventories.findOneAndUpdate(
             {
@@ -586,15 +586,15 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
                 new: true,
                 updatePipeline: true,
 
-                // session
+                session
             }
         );
 
         if (!updatedInventory) {
             const inventoryExists = await Inventories.exists({
                 _id: inventoryId
-            });
-            // .session(session);
+            })
+            .session(session);
 
             if (!inventoryExists) {
                 throw new ApiErrors(
@@ -631,10 +631,10 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
         });
 
         await order.save(
-            // {session}
+            {session}
         );
 
-        // await session.commitTransaction();
+        await session.commitTransaction();
 
         await order.populate([
             {
@@ -693,11 +693,11 @@ export const createInventoryOrder = AsyncHandler(async (req, res) => {
 
     } catch (error) {
 
-        // await session.abortTransaction();
+        await session.abortTransaction();
 
         throw error;
 
     } finally {
-        // await session.endSession();
+        await session.endSession();
     }
 });

@@ -357,13 +357,13 @@ export const deleteCrop = AsyncHandler(async (req, res) => {
         throw new ApiErrors(400, "invalid crop id")
     }
 
-    // const session = await mongoose.startSession()
+    const session = await mongoose.startSession()
 
-    // try {
-    // session.startTransaction()
+    try {
+    session.startTransaction()
 
     const crop = await Crops.findById(cropId)
-    // .session(session)
+    .session(session)
 
     if (!crop) {
         throw new ApiErrors(404, "crop is not found")
@@ -379,15 +379,15 @@ export const deleteCrop = AsyncHandler(async (req, res) => {
 
     await Promise.all([
         crop.deleteOne(
-            // { session }
+            { session }
         ),
 
         CropRecommendations.findOneAndDelete({ cropId },
-            // { session }
+            { session }
         )
     ])
 
-    // await session.commitTransaction()
+    await session.commitTransaction()
 
     await redis.del(`cropDetails:${cropId}`);
 
@@ -397,13 +397,13 @@ export const deleteCrop = AsyncHandler(async (req, res) => {
             ApiResponse(200, cropId, "crop deleted successfully")
         )
 
-    // } catch (error) {
-    //     await session.abortTransaction()
+    } catch (error) {
+        await session.abortTransaction()
 
-    //     throw error
-    // } finally {
-    //     await session.endSession()
-    // }
+        throw error
+    } finally {
+        await session.endSession()
+    }
 })
 
 export const createCropRecommendation = [

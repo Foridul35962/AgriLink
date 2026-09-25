@@ -687,10 +687,10 @@ export const cancelReailerOrder = AsyncHandler(async (req, res) => {
         );
     }
 
-    // const session = await mongoose.startSession();
+    const session = await mongoose.startSession();
 
     try {
-        // await session.startTransaction();
+        await session.startTransaction();
 
         await Inventories.updateOne(
             {
@@ -705,9 +705,9 @@ export const cancelReailerOrder = AsyncHandler(async (req, res) => {
                     status: "available"
                 }
             },
-            // {
-            //     session
-            // }
+            {
+                session
+            }
         );
 
         await Orders.updateOne(
@@ -721,12 +721,12 @@ export const cancelReailerOrder = AsyncHandler(async (req, res) => {
                     cancelReason
                 }
             },
-            // {
-            //     session
-            // }
+            {
+                session
+            }
         );
 
-        // await session.commitTransaction();
+        await session.commitTransaction();
 
         await Promise.all([
             redis.del(`inventoryOrderDetails:aratdar:${orderId}`),
@@ -766,11 +766,11 @@ export const cancelReailerOrder = AsyncHandler(async (req, res) => {
             );
 
     } catch (error) {
-        // await session.abortTransaction();
+        await session.abortTransaction();
 
         throw error;
 
     } finally {
-        // await session.endSession();
+        await session.endSession();
     }
 });
