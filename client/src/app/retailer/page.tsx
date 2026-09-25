@@ -87,22 +87,31 @@ const StatCard = ({ label, value, icon, index, highlight }: StatCardProps) => (
         transition={{ duration: 0.3, delay: index * 0.04 }}
         className={
             highlight
-                ? "flex items-center gap-4 rounded-2xl bg-[#16a34a] p-5 text-white shadow-sm"
-                : "flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5"
+                ? "flex items-center gap-3 rounded-2xl bg-[#16a34a] p-4 text-white shadow-sm"
+                : "flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5"
         }
     >
         <div
             className={
                 highlight
-                    ? "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20 text-white"
-                    : "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#16a34a]/10 text-[#16a34a]"
+                    ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 text-white"
+                    : "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#16a34a]/10 text-[#16a34a]"
             }
         >
             {icon}
         </div>
-        <div className="min-w-0">
-            <p className={`truncate text-sm ${highlight ? "text-white/85" : "text-gray-600"}`}>{label}</p>
-            <p className={`truncate text-2xl font-semibold ${highlight ? "text-white" : "text-gray-900"}`}>
+        <div className="min-w-0 flex-1">
+            <p
+                className={`text-xs font-medium leading-tight sm:text-sm ${highlight ? "text-white/90" : "text-gray-600"
+                    }`}
+                title={label}
+            >
+                {label}
+            </p>
+            <p
+                className={`mt-1 text-xl font-bold leading-none sm:text-2xl ${highlight ? "text-white" : "text-gray-900"
+                    }`}
+            >
                 {value}
             </p>
         </div>
