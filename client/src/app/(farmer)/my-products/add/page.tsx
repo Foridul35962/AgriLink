@@ -112,7 +112,6 @@ export default function AddProductPage() {
 
   const onSubmit = async (data: ProductFormValues) => {
     setServerError("");
-    console.log("🚀 Form Submitted Successfully! Data:", data);
 
     try {
       const formData = new FormData();

@@ -64,7 +64,6 @@ const CropListPage = () => {
     fetchCrops();
   }, [currentPage, nameParam, categoryParam, dispatch]);
 
-  console.log(allCrops);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
