@@ -792,10 +792,10 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
         throw new ApiErrors(400, "invalid auctionId")
     }
 
-    // const session = await mongoose.startSession();
+    const session = await mongoose.startSession();
 
     try {
-        // session.startTransaction();
+        session.startTransaction();
 
         const [product, auction] = await Promise.all([
             Products.findById(productId)
@@ -804,7 +804,7 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
                     path: "farmerId",
                     select: "email name"
                 })
-            // .session(session)
+            .session(session)
             ,
 
             Auction.findById(auctionId)
@@ -813,7 +813,7 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
                     path: "winnerBidId",
                     select: "aratdarId bidAmount"
                 })
-            // .session(session)
+            .session(session)
         ])
 
         if (!product) {
@@ -865,20 +865,20 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
                 totalAmount: auction.winnerBidId.bidAmount,
                 status: "PENDING"
             },
-                // {session}
+                {session}
             ),
 
             auction.save(
-                // {session}
+                {session}
             ),
 
             product.updateOne(
                 { status: "sold" },
-                // {session}
+                {session}
             )
         ])
 
-        // await session.commitTransaction();
+        await session.commitTransaction();
 
         if (!order) {
             throw new ApiErrors(500, "order created failed")
@@ -905,11 +905,11 @@ export const createProductOrder = AsyncHandler(async (req, res) => {
                 new ApiResponse(201, order, "order created successfully")
             )
     } catch (error) {
-        // await session.abortTransaction();
+        await session.abortTransaction();
 
         throw error;
     } finally {
-        // session.endSession();
+        session.endSession();
     }
 })
 
