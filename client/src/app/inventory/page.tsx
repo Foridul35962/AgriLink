@@ -187,10 +187,9 @@ export default function InventoryPage() {
                     {/* Image Container */}
                     <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
                       {item.image?.url ? (
-                        <Image
+                        <img
                           src={item.image.url}
                           alt={item.productName}
-                          fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
