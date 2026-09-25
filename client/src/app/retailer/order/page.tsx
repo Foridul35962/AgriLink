@@ -144,7 +144,7 @@ const Page = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center space-x-3">
                           {order.inventoryId?.image?.url ? (
-                            <Image
+                            <img
                               src={order.inventoryId.image.url}
                               alt={order.inventoryId.productName || 'Product'}
                               width={40}

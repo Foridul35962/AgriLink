@@ -240,10 +240,9 @@ const CropListPage = () => {
                   >
                     {/* Image Container */}
                     <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
-                      <Image
+                      <img
                         src={crop.image?.url || "/placeholder-crop.png"}
                         alt={crop.name || "Crop image"}
-                        fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />

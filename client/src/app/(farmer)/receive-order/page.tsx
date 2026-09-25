@@ -185,10 +185,9 @@ const Page = () => {
                                 <div className="flex items-center gap-4 w-full md:w-1/2">
                                     <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-[#F3F9F5] border-2 border-[#0F3D2E]/15 shrink-0">
                                         {order.productId?.image?.url ? (
-                                            <Image
+                                            <img
                                                 src={order.productId.image.url}
                                                 alt={order.productId.name || 'Product'}
-                                                fill
                                                 className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                                             />
                                         ) : (

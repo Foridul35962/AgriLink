@@ -296,7 +296,7 @@ const Page = () => {
 
                         <div className="flex items-center space-x-4 bg-emerald-50/40 p-3 rounded-xl border border-emerald-100/50">
                             {inventoryId?.image?.url ? (
-                                <Image
+                                <img
                                     src={inventoryId.image.url}
                                     alt={inventoryId.productName}
                                     width={64}

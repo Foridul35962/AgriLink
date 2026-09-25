@@ -150,7 +150,7 @@ const AratdarReceivedOrdersPage = () => {
                                                 <td className="p-4">
                                                     <div className="flex items-center space-x-3">
                                                         {order.inventoryId?.image?.url ? (
-                                                            <Image
+                                                            <img
                                                                 src={order.inventoryId.image.url}
                                                                 alt={order.inventoryId.productName}
                                                                 width={48}
@@ -200,7 +200,7 @@ const AratdarReceivedOrdersPage = () => {
                                 >
                                     <div className="flex items-center space-x-3">
                                         {order.inventoryId?.image?.url ? (
-                                            <Image
+                                            <img
                                                 src={order.inventoryId.image.url}
                                                 alt={order.inventoryId.productName}
                                                 width={56}

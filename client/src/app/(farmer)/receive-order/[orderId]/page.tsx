@@ -285,10 +285,9 @@ const Page = () => {
                         <div className="bg-white rounded-2xl border border-[#0F3D2E]/12 shadow-sm p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
                             <div className="relative w-full sm:w-28 h-40 sm:h-28 rounded-xl overflow-hidden bg-[#F3F9F5] border-2 border-[#0F3D2E]/15 shrink-0">
                                 {farmerReceivesOrderDetails.productId?.image?.url ? (
-                                    <Image
+                                    <img
                                         src={farmerReceivesOrderDetails.productId.image.url}
                                         alt={farmerReceivesOrderDetails.productId.name || 'Product'}
-                                        fill
                                         className="object-cover"
                                     />
                                 ) : (

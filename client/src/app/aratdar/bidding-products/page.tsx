@@ -261,10 +261,9 @@ const AratdarBiddingProductsPage = () => {
                                     >
                                         <div className="relative h-48 w-full overflow-hidden bg-emerald-50/50">
                                             {product.image?.url ? (
-                                                <Image
+                                                <img
                                                     src={product.image.url}
                                                     alt={product.name}
-                                                    fill
                                                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                                                 />
                                             ) : (
